@@ -1,0 +1,4 @@
+[submodule "brainchop-models"]
+	path = brainchop-models
+	url = https://github.com/cdrake/brainchop-models.git
+	branch = add-model-metadata
