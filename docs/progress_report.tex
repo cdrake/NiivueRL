@@ -1,0 +1,197 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{url}
+
+\title{Deep Reinforcement Learning for Anatomical Landmark Navigation in 3D Brain MRI}
+\author{Chris Drake}
+\date{April 14, 2026}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Localizing anatomical landmarks in brain MRI is a building block for atlas registration, surgical planning, and volumetric analysis. The standard approaches---template-based registration or supervised CNNs---both need a lot of manual annotation and can fail on atypical or pathological anatomy. This project takes a different angle: we frame landmark detection as a navigation problem where an RL agent starts at a random location in a 3D T1-weighted MNI152 volume and learns to navigate to a target subcortical structure. We're targeting 15 subcortical landmarks that cover a range of sizes, depths, and tissue contrasts (thalamus, hippocampus, lateral ventricles, brain-stem, putamen, etc.).
+
+We built the system in-browser using TensorFlow.js for training and Niivue\footnote{\url{https://github.com/niivue/niivue}} for real-time neuroimaging visualization. The agent sees a $7 \times 7 \times 7$ voxel neighborhood around its current position plus a unit direction vector toward the target (346-dimensional state), and picks one of 6 actions (move $\pm1$ voxel along $x$, $y$, or $z$). An episode ends when the agent gets within 3 voxels of the target (success) or runs out of 200 steps. So far we've implemented DQN and A2C and run initial experiments on 5 landmarks. DQN shows learning on most landmarks from unconstrained random starts, while A2C with a frozen MeshNet~\cite{brainchop2024} convolutional backbone diverges even when starting within 50 voxels of the target.
+
+\section{Related Work}
+
+Ghesu et al.~\cite{ghesu2019} were the first to frame anatomical landmark detection as RL navigation, using DQN in 3D CT with a fixed-scale patch observation and frame history buffer. Alansary et al.~\cite{alansary2018} extended this to MRI view planning with a multi-scale coarse-to-fine strategy. Both works only tested DQN variants (Double DQN, Dueling DQN) and found no single architecture wins across all landmarks. Our project differs in three ways: we compare across algorithm families (DQN vs.\ A2C/PPO), we use an explicit direction-to-target vector instead of frame history, and we plan systematic ablations of reward shaping and state representation. We also run entirely in-browser, using pretrained MeshNet~\cite{brainchop2024} layers from Brainchop\footnote{\url{https://github.com/neuroneural/brainchop}} as a frozen feature extractor for A2C.
+
+\section{Approach}
+
+At each step the agent receives a $7 \times 7 \times 7$ neighborhood of min-max normalized voxel intensities (343 values) centered at its current position, concatenated with a 3D unit direction vector toward the target (346 dimensions total). It picks one of 6 actions: $\{+x, -x, +y, -y, +z, -z\}$, each moving one voxel. The reward has three components: a distance-based shaping signal $r_{\text{dist}} = -(d_{t+1} - d_t)$ (positive when moving closer), a step penalty of $-0.1$, and a $+10$ bonus for reaching within 3 voxels. Episodes cap at 200 steps.
+
+\textbf{DQN}~\cite{mnih2015} takes the flat 346-dim state through a feedforward Q-network (256-128-64-6 dense layers, ReLU), with experience replay (10K buffer), epsilon-greedy exploration ($\epsilon$: $1.0 \to 0.05$, decay 0.995/episode), and a target network synced every 100 steps. \textbf{A2C}~\cite{mnih2016} was originally implemented with a frozen MeshNet backbone (two 3D conv layers, 30 filters, $3 \times 3 \times 3$ kernels, dilation 1 and 2) producing a 10{,}290-dim feature vector that was compressed through trainable $128 \to 64$ dense layers before splitting into policy and value heads. That variant diverged uniformly, so the results reported below use a flat A2C variant that takes the same 346-dim state as DQN through fully trainable dense layers ($128 \to 64$), with GAE ($\lambda = 0.95$), entropy regularization (0.01), and Adam (lr $= 3\text{e-}4$). \textbf{PPO}~\cite{schulman2017} uses the same flat 346-dim input and $128 \to 64$ shared trunk, a clipped surrogate objective (clip $\epsilon = 0.2$), GAE ($\lambda = 0.95$), 4 epochs per batch (batch size 64 trajectories), and Adam (lr $= 3\text{e-}4$). All three algorithms in the main comparison use a 50-voxel starting radius.
+
+\section{Experimental Results}
+
+We ran a full three-algorithm sweep across all 15 subcortical landmarks (DQN, A2C, PPO $\times$ 15 targets, 300 episodes each, 50-voxel starting radius, identical reward function, state representation, and 200-step cap). The A2C variant is the flat architecture (346-dim input, no frozen MeshNet backbone) described above. Performance is summarized using mean-over-first-50 (early) and mean-over-last-50 (late) episodes.
+
+\textbf{Aggregate.} Averaged over 15 landmarks, PPO achieved the best late reward ($-18.7$), lowest late final distance (36.5 voxels), and highest late-window success rate (1.2\%). Flat A2C improved slightly during training ($-43.2 \to -37.6$) but remained worse than PPO on nearly every landmark. DQN \textit{regressed} on average ($-10.7 \to -32.6$, final distance 50.1): individual episodes early in training occasionally succeed under high-$\epsilon$ exploration, but the policy deteriorates as $\epsilon$ decays and the replay buffer is dominated by the agent's own drifting trajectories---a pattern consistent with Q-value overestimation/catastrophic forgetting.
+
+\textbf{PPO} won 11/15 landmarks by late reward and 13/15 by final distance, and was the only algorithm with non-zero late-window success on a majority of landmarks (9/15). It did best on the cerebellar structures (Cerebellum-White-Matter: late $-7.1$; Cerebellum-Cortex: $-7.5$) and the 4th Ventricle ($-8.9$)---all spatially distinctive regions with clear tissue boundaries. Its hardest targets were the 3rd Ventricle ($-27.8$), Pallidum ($-23.3$), and Putamen ($-26.4$)---small, medial gray/CSF structures where the $7 \times 7 \times 7$ neighborhood captures less distinctive context.
+
+\textbf{A2C} (flat) learned to navigate but under-performed PPO on every landmark except VentralDC (tie). It diverged on Hippocampus (late $-123$, dist 138) and Putamen ($-80$, dist 97)---small/curved structures where high-variance single-sample advantage updates appear fragile. The flat architecture clearly recovers the stability that the frozen MeshNet backbone destroyed in our earlier experiments, but pure A2C without PPO's trust-region clipping is still not robust.
+
+\textbf{DQN} outperformed PPO only on Lateral-Ventricle (late $-15.6$ vs.\ $-18.5$), where it also hit the highest single-landmark success rate observed (4\%). It was otherwise dominated by both on-policy methods. Interestingly, DQN's early reward is the best of the three algorithms ($-10.7$)---random exploration under high $\epsilon$ plus dense distance shaping yields good initial trajectories---but the policy then regresses.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/reward_curves.png}
+\caption{Smoothed mean episode reward over 300 training episodes for each algorithm on each of the 15 subcortical landmarks. PPO (green) improves or stays stable on all landmarks; A2C (orange) improves modestly but diverges on Hippocampus and Putamen; DQN (blue) regresses on most landmarks after initial high-$\epsilon$ exploration.}
+\label{fig:rewards}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/final_distance.png}
+\caption{Smoothed mean final Euclidean distance to target (voxels), 30-episode rolling window. PPO achieves the lowest final distances on 13/15 landmarks.}
+\label{fig:distance}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/success_rate.png}
+\caption{Success rate (within 3 voxels of target), 30-episode rolling window. Success rates remain in the low single digits across all algorithms at 300 episodes, but PPO is the only algorithm with non-zero late-window success on a majority of landmarks.}
+\label{fig:success}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Late-window (last 50 episodes) metrics per (algorithm, landmark). R = mean reward; d = mean final distance (voxels); \% = success rate. All runs used 50-voxel starting radius and 200-step cap.}
+\label{tab:summary}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Landmark & DQN R & A2C R & PPO R & DQN d & A2C d & PPO d & DQN \% & A2C \% & PPO \% \\
+\midrule
+3rd-Ventricle              & $-32.0$ &  $-23.3$ & $-27.8$ &  47.8 &  37.8 &  45.9 & 0\% & 0\% & 0\% \\
+4th-Ventricle              & $-22.7$ &  $-43.3$ &  $-8.9$ &  41.6 &  62.4 &  25.8 & 2\% & 0\% & 4\% \\
+Accumbens-area             & $-40.6$ &  $-27.9$ & $-20.0$ &  59.1 &  46.7 &  37.4 & 0\% & 0\% & 2\% \\
+Amygdala                   & $-27.4$ &  $-24.8$ & $-19.2$ &  46.8 &  43.1 &  36.8 & 2\% & 0\% & 2\% \\
+Brain-Stem                 & $-46.2$ &  $-16.2$ & $-12.1$ &  63.9 &  35.8 &  31.1 & 0\% & 0\% & 2\% \\
+Caudate                    & $-45.1$ &  $-20.1$ & $-18.3$ &  59.3 &  39.0 &  35.2 & 0\% & 0\% & 0\% \\
+Cerebellum-Cortex          & $-35.5$ &  $-20.2$ &  $-7.5$ &  52.7 &  37.9 &  26.2 & 0\% & 2\% & 0\% \\
+Cerebellum-White-Matter    & $-21.3$ &  $-23.5$ &  $-7.1$ &  41.5 &  40.5 &  25.7 & 2\% & 2\% & 0\% \\
+Hippocampus                & $-40.3$ & $-123.0$ & $-23.2$ &  55.5 & 138.0 &  41.2 & 0\% & 0\% & 2\% \\
+Inferior-Lateral-Ventricle & $-34.2$ &  $-27.0$ & $-22.8$ &  51.6 &  44.0 &  39.6 & 0\% & 0\% & 0\% \\
+Lateral-Ventricle          & $-15.6$ &  $-40.7$ & $-18.5$ &  35.3 &  60.7 &  38.7 & 4\% & 0\% & 2\% \\
+Pallidum                   & $-24.7$ &  $-46.4$ & $-23.3$ &  41.6 &  65.0 &  43.0 & 0\% & 0\% & 0\% \\
+Putamen                    & $-36.3$ &  $-80.2$ & $-26.4$ &  53.7 &  97.1 &  42.3 & 0\% & 0\% & 0\% \\
+Thalamus                   & $-29.7$ &  $-25.8$ & $-22.3$ &  46.8 &  44.0 &  38.8 & 0\% & 0\% & 4\% \\
+VentralDC                  & $-36.8$ &  $-21.0$ & $-23.9$ &  53.4 &  41.3 &  39.4 & 0\% & 0\% & 0\% \\
+\midrule
+\textbf{Mean}              & $\mathbf{-32.6}$ & $\mathbf{-37.6}$ & $\mathbf{-18.7}$ & \textbf{50.1} & \textbf{55.5} & \textbf{36.5} & \textbf{0.7\%} & \textbf{0.3\%} & \textbf{1.2\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Neighborhood-size ablation (PPO, $7^3$ vs $15^3$)}
+
+As a first ablation motivated by Ghesu et al.'s $25^3$ receptive field, we re-ran PPO on the three easiest landmarks (Cerebellum-White-Matter, Cerebellum-Cortex, 4th-Ventricle) with the observation cube enlarged from $7^3$ (346-dim state) to $15^3$ (3{,}378-dim state). Architecture, learning rate ($3 \times 10^{-4}$), entropy coefficient (0.01), and 300-episode budget held constant.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{PPO with $7^3$ vs $15^3$ observation window on the three easiest landmarks (last 50 episodes).}
+\label{tab:neighborhood}
+\begin{tabular}{lrrrrrr}
+\toprule
+Landmark & Late R ($7^3$) & Late R ($15^3$) & $\Delta$R & Dist ($7^3$) & Dist ($15^3$) & $\Delta$dist \\
+\midrule
+Cerebellum-White-Matter & $-7.1$ & $-20.7$ & $-13.7$ & 25.8 & 40.6 & $+14.9$ \\
+Cerebellum-Cortex       & $-7.5$ & $-79.3$ & $-71.8$ & 26.2 & 96.3 & $+70.1$ \\
+4th-Ventricle           & $-8.9$ & $-18.1$ &  $-9.2$ & 25.8 & 34.8 &  $+9.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across all three landmarks, enlarging the receptive field \emph{hurt} performance under fixed hyperparameters. The first dense layer grew from $\sim$89K parameters (at $7^3$) to $\sim$865K (at $15^3$). Cerebellum-Cortex initially diverged to late reward $-79$ on one seed, but a second seed at the same configuration ran to $-14.7$, so the $15^3$-flat regression is noisy across seeds rather than systematically catastrophic. To separate receptive field from architecture-capacity, we then ran PPO at $15^3$ with a small trainable 3D conv trunk (two $3^3$ conv layers with 16 filters each, ReLU, max-pool 2, followed by the same 128/64 dense heads and direction concatenation).
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{PPO at $15^3$ with flat MLP vs trainable 3D conv trunk, against the $7^3$ baseline (last 50 episodes, two independent seeds for the flat variant).}
+\label{tab:conv-trunk}
+\begin{tabular}{lrrrr}
+\toprule
+Landmark & PPO $7^3$ flat & PPO $15^3$ flat (s1) & PPO $15^3$ flat (s2) & PPO $15^3$ conv \\
+\midrule
+Cerebellum-White-Matter & $-7.1$ & $-20.7$ & $-23.9$ & $-22.0$ \\
+Cerebellum-Cortex       & $-7.5$ & $-79.3$ & $-14.7$ & $-22.0$ \\
+4th-Ventricle           & $-8.9$ & $-18.1$ & $-16.9$ & $-22.4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The trainable conv trunk lands inside the flat-seed noise band on all three landmarks and does not close the gap to the $7^3$ baseline. Giving the larger receptive field an appropriate inductive bias does not rescue it. A plausible explanation is that the explicit unit-direction-to-target vector already encodes the coarse navigation signal the agent needs; enlarging the voxel window then contributes little task-relevant information while requiring more training to fit.
+
+\subsection*{Direction-vector ablation}
+
+To test that hypothesis, we re-ran PPO with the 3-component direction input replaced by zeros (everything else held constant) on the three easiest landmarks, at both $7^3$ (flat) and $15^3$ (flat).
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Direction-vector ablation: PPO late-window reward (last 50 episodes) with direction input kept vs zeroed.}
+\label{tab:nodir}
+\begin{tabular}{lrrrr}
+\toprule
+Landmark & PPO $7^3$ kept & PPO $7^3$ zeroed & PPO $15^3$ kept (s1) & PPO $15^3$ zeroed \\
+\midrule
+Cerebellum-White-Matter & $-7.1$  & $-16.0$ & $-20.7$ & $-18.9$ \\
+Cerebellum-Cortex       & $-7.5$  & $-17.8$ & $-79.3$ & $-24.9$ \\
+4th-Ventricle           & $-8.9$  & $-15.7$ & $-18.1$ & $-13.8$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At $7^3$, zeroing the direction vector roughly doubles the negative late-window reward on all three landmarks, confirming that the unit-direction cue is doing most of the navigation work at the small receptive field. At $15^3$, the ablation is \emph{not} worse than the direction-kept baseline on any landmark---and on Cerebellum-Cortex and 4th-Ventricle the zeroed variant is in fact closer to the $7^3$-kept reward than the $15^3$-kept variant was. That pattern is consistent with the direction vector acting as a shortcut that the flat $15^3$ trunk partially memorizes instead of learning from voxel context; removing the shortcut forces the larger window to be used, and the reward actually recovers. None of the $15^3$ runs reach the $7^3$-kept baseline, however, so the larger receptive field does not yet unlock navigation that the small window cannot also perform. A direction-zeroed run with the trainable conv trunk at $15^3$ is the next cell needed to finish this ablation grid.
+
+Two follow-ups motivate the remaining work. First, absolute success rates are still low (single digits) even for PPO, confirming 300 episodes is short; a 1000--3000-episode PPO run on the three easiest landmarks will establish whether PPO plateaus or continues climbing. Second, the DQN regression pattern suggests the target-network sync interval (100 steps) and replay buffer size (10K) are under-tuned for navigation-length episodes; we plan a short DQN hyperparameter sweep rather than discarding the algorithm.
+
+\section{Future Milestones}
+
+\begin{itemize}
+\item \textbf{April 14 (in progress):} Configurable observation neighborhood size ($5^3$--$25^3$), serialized into every result record so runs at different scales accumulate in the same corpus. Motivated by Ghesu et al., who use a $25^3$ ROI rather than our $7^3$.
+\item \textbf{April 17:} Neighborhood-size ablation on the three easiest PPO landmarks (Cerebellum-WM, Cerebellum-Cortex, 4th-Ventricle): sizes $7^3, 11^3, 15^3, 19^3$. For $19^3$+ we swap the flat-dense trunk for a small task-trained 3D conv (two $3^3$ conv layers, 16 filters, no frozen weights).
+\item \textbf{April 19:} Remaining ablations---reward formulation (sparse vs.\ dense vs.\ hybrid), with/without direction vector, starting-distance curriculum---only after the receptive-field ablation identifies a configuration with non-trivial success rates.
+\item \textbf{April 21:} Longer-training PPO (1000--3000 ep) on best neighborhood size; DQN hyperparameter sweep (replay buffer, target-sync interval).
+\item \textbf{April 22:} Difficulty ranking vs.\ anatomical properties; final report and presentation.
+\item \textbf{April 22--27:} Project presentations.
+\end{itemize}
+
+\section{Conclusion}
+
+We've built a browser-based platform for deep RL landmark navigation in 3D brain MRI using TensorFlow.js and Niivue. A full three-algorithm comparison across all 15 subcortical landmarks ranks PPO first on 11/15 landmarks by late reward and 13/15 by final distance, with flat A2C a clear second and DQN third. PPO is the only algorithm that reaches non-zero late-window success on a majority of landmarks; A2C remains fragile on small structures (Hippocampus, Putamen); and DQN exhibits a regression pattern suggestive of Q-value instability as $\epsilon$ decays. Remaining work: extending PPO training to 1000--3000 episodes to establish a usable success-rate ceiling, a short DQN hyperparameter sweep (replay size, target-sync interval), and ablations of reward shaping, observation size, and the direction-vector component of the state before project presentations on April 22--27.
+
+\begin{thebibliography}{6}
+
+\bibitem{ghesu2019}
+F.~C.~Ghesu et al., ``Multi-scale deep reinforcement learning for real-time 3D-landmark detection in CT scans,'' \textit{IEEE Trans.\ Pattern Anal.\ Mach.\ Intell.}, vol.~41, no.~1, pp.~176--189, 2019.
+
+\bibitem{alansary2018}
+A.~Alansary et al., ``Automatic view planning with multi-scale deep reinforcement learning agents,'' in \textit{Proc.\ MICCAI}, 2018.
+
+\bibitem{schulman2017}
+J.~Schulman et al., ``Proximal policy optimization algorithms,'' \textit{arXiv:1707.06347}, 2017.
+
+\bibitem{mnih2015}
+V.~Mnih et al., ``Human-level control through deep reinforcement learning,'' \textit{Nature}, vol.~518, pp.~529--533, 2015.
+
+\bibitem{mnih2016}
+V.~Mnih et al., ``Asynchronous methods for deep reinforcement learning,'' in \textit{Proc.\ ICML}, 2016.
+
+\bibitem{brainchop2024}
+S.~M.~Plis, M.~Masoud, and F.~Hu, ``Brainchop: Providing an edge ecosystem for deployment of neuroimaging artificial intelligence models,'' \textit{Aperture Neuro}, vol.~4, 2024.
+
+\end{thebibliography}
+
+\end{document}

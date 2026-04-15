@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page {
+    size: letter;
+    margin: 1in;
+  }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    max-width: 6.5in;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 24pt;
+  }
+  .header .course {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 8pt;
+  }
+  .header h1 {
+    font-size: 16pt;
+    margin: 8pt 0;
+    line-height: 1.25;
+  }
+  .header .meta {
+    font-size: 12pt;
+    margin: 4pt 0 0 0;
+  }
+  h2 {
+    font-size: 14pt;
+    margin-top: 18pt;
+    margin-bottom: 8pt;
+  }
+  p {
+    margin: 0 0 10pt 0;
+    text-align: justify;
+  }
+  .figure {
+    text-align: center;
+    margin: 16pt 0;
+    page-break-inside: avoid;
+  }
+  .figure img {
+    max-width: 100%;
+    height: auto;
+  }
+  .figure .caption {
+    font-size: 10pt;
+    margin-top: 6pt;
+    color: #333;
+  }
+  .references {
+    font-size: 11pt;
+  }
+  .references p {
+    margin: 0 0 4pt 0;
+    padding-left: 24pt;
+    text-indent: -24pt;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="course">CSCE 775: Deep Reinforcement Learning and Search</div>
+  <h1>Deep Reinforcement Learning for Anatomical Landmark Navigation in 3D Brain MRI</h1>
+  <div class="meta">Team Members: Chris Drake</div>
+  <div class="meta">February 24, 2026</div>
+</div>
+
+<h2>Introduction</h2>
+
+<p>Finding anatomical landmarks in brain MRI is important for many neuroimaging tasks, including atlas registration, surgical planning, and volumetric analysis. Traditional approaches use template-based atlas registration or supervised CNNs trained on large, manually annotated datasets. Both require a lot of labeling effort and can generalize poorly to atypical or pathological brains.</p>
+
+<p>This project frames landmark detection as a <b>navigation problem</b>: a deep RL agent starts at a random location inside a 3D brain volume and has to learn to navigate to a specified anatomical target. This is appealing because it does not require voxel-level segmentation labels, only target coordinates, and the agent learns an implicit spatial model of brain anatomy through interaction. We target 15 subcortical structures (e.g., thalamus, hippocampus, ventricles, brain-stem) that span a wide range of sizes, depths, and MRI contrast levels within a standard MNI152 T1-weighted volume. The central question is: <b>how do different deep RL algorithms and environment design choices affect the agent's ability to reliably locate these landmarks?</b></p>
+
+<div class="figure">
+  <img src="figure_system_diagram.svg" alt="System diagram showing the MDP formulation for landmark navigation">
+  <div class="caption"><b>Figure 1.</b> Landmark navigation formulated as a Markov Decision Process. The agent observes a local voxel neighborhood and direction vector from the 3D brain volume, selects a movement action, and receives a distance-based reward signal. The cycle repeats until the agent reaches the target landmark or the episode times out.</div>
+</div>
+
+<h2>Approach</h2>
+
+<p>We model the problem as an episodic MDP with a discrete action space (Figure 1). At each step, the agent observes a local neighborhood of voxel intensities (e.g., 7&times;7&times;7 = 343 values) around its current position, plus a 3-component direction vector toward the target. It picks one of 6 actions (move &plusmn;1 voxel along each spatial axis). An episode ends when the agent gets within 3 voxels of the target (success) or exceeds 200 steps (failure). Rewards combine a dense distance-based signal, a step penalty, and a success bonus. We compare three algorithms that represent different points in the RL design space (Sutton &amp; Barto [4]). <b>DQN</b> is an off-policy method that approximates the optimal action-value function q<sub>*</sub>(s, a) using a neural network, then acts greedily with respect to it (Ch. 10). It uses experience replay, where transitions are stored in a buffer and sampled randomly for training, and a separate target network to stabilize the semi-gradient updates. Action selection follows an &epsilon;-greedy policy (Ch. 2.2) that decays over time. <b>A2C</b> is an on-policy actor-critic method (Ch. 13.5) that maintains two function approximators: an actor &pi;(a|s; &theta;) that parameterizes the policy directly, and a critic v&#770;(s; w) that estimates the state-value function for use as a baseline. The policy is updated via the policy gradient theorem (Ch. 13.2), using the advantage function A(s, a) = q(s, a) &minus; v(s) to reduce variance. <b>PPO</b> builds on the actor-critic framework but constrains how much the policy can change per update by clipping the probability ratio between the new and old policies, which prevents the large destructive updates that can occur with standard policy gradient methods. The entire system runs in-browser using TensorFlow.js, and we use a pretrained MeshNet model from Brainchop [3] for subject-specific brain parcellation to define landmark regions.</p>
+
+<p>The closest prior work is Ghesu et al. [1] and Alansary et al. [2], both of which formulate anatomical landmark detection as RL navigation with 6 discrete movement actions and a distance-based reward. Ghesu et al. [1] use DQN on 3D CT scans with a fixed-scale approach: the agent observes a fixed-size image patch and a frame history buffer of the last 4 steps to reduce oscillation. Alansary et al. [2] extend this with a multi-scale coarse-to-fine strategy for MRI view planning, starting with large step sizes (9 voxels) and coarse image spacing, then refining to single-voxel steps across 3 scales. Both evaluate only DQN variants (DQN, Double DQN, Dueling DQN) and find that no single architecture consistently wins across landmarks. Our approach shares the same basic formulation but differs in several ways: we compare across algorithm families (off-policy DQN versus on-policy A2C and PPO), which neither prior work does; we provide the agent with an explicit direction-to-target vector instead of a frame history buffer and ablate this choice; we systematically vary the neighborhood size (3&times;3&times;3 to 7&times;7&times;7) rather than fixing the patch size and varying image spacing; and we ablate the reward function itself (sparse vs. dense vs. hybrid), which prior work treats as fixed.</p>
+
+<h2>Evaluation</h2>
+
+<p>We evaluate each configuration on all 15 landmarks using 5 random seeds per condition. The main metrics are <b>success rate</b> (fraction of episodes reaching within 3 voxels of the target), <b>path efficiency</b> (ratio of straight-line distance to actual steps taken), and <b>sample efficiency</b> (episodes needed to reach 80% success rate). We also report mean episode reward and final Euclidean distance to the target.</p>
+
+<p>The experiments are structured in stages to keep the total number of runs manageable. First, we compare the three algorithms with a fixed hybrid reward and 7&times;7&times;7 state (3 &times; 15 &times; 5 = 225 runs). Next, we fix the best-performing algorithm and ablate reward formulation (sparse, dense, hybrid) and state representation (3&times;3&times;3, 5&times;5&times;5, 7&times;7&times;7, with and without direction vector). Finally, we aggregate results to rank landmarks by difficulty and look at correlations with anatomical properties like structure volume and MRI contrast. Baselines include a random-walk agent and a greedy agent that always steps toward the target.</p>
+
+<h2>Conclusion</h2>
+
+<p>We propose a systematic study of deep RL for anatomical landmark navigation in 3D brain MRI. By comparing DQN, A2C, and PPO under controlled variations in reward shaping and state representation across 15 subcortical landmarks, we want to find out which algorithmic and design choices matter most for navigation performance. The project builds on an existing browser-based environment (NiivueRL) with working DQN and A2C agents. The remaining work is to implement PPO, build an experiment runner for batch evaluation, and run the proposed ablation studies over the remainder of the semester.</p>
+
+<h2>References</h2>
+
+<div class="references">
+<p>[1] F. C. Ghesu et al., &ldquo;Multi-scale deep reinforcement learning for real-time 3D-landmark detection in CT scans,&rdquo; <i>IEEE Trans. Pattern Anal. Mach. Intell.</i>, vol. 41, no. 1, pp. 176&ndash;189, 2019.</p>
+<p>[2] A. Alansary et al., &ldquo;Automatic view planning with multi-scale deep reinforcement learning agents,&rdquo; in <i>Proc. MICCAI</i>, 2018.</p>
+<p>[3] S. M. Plis, M. Masoud, and F. Hu, &ldquo;Brainchop: Providing an edge ecosystem for deployment of neuroimaging artificial intelligence models,&rdquo; <i>Aperture Neuro</i>, vol. 4, 2024.</p>
+<p>[4] R. S. Sutton and A. G. Barto, <i>Reinforcement Learning: An Introduction</i>, 2nd ed. MIT Press, 2018.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,7274 @@
+[
+  {
+    "config": {
+      "landmark": "Cerebellum-White-Matter",
+      "agentType": "ppo",
+      "numEpisodes": 300,
+      "maxStartDistance": 50,
+      "zeroDirection": true,
+      "neighborhoodSize": 7,
+      "ppoConfig": {
+        "lr": 0.0003,
+        "entropyCoeff": 0.01,
+        "clipEpsilon": 0.2,
+        "numEpochs": 4,
+        "minibatchSize": 64,
+        "rolloutSize": 4,
+        "useConvBackbone": false,
+        "trunk": "flat"
+      }
+    },
+    "episodes": [
+      {
+        "episode": 0,
+        "totalReward": -35.067786316151064,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 1,
+        "totalReward": -27.396516178030225,
+        "finalDistance": 45.880278987817846,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 2,
+        "totalReward": -2.982873422958361,
+        "finalDistance": 19.87460691435179,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 3,
+        "totalReward": -21.74598483584094,
+        "finalDistance": 44.68780594300866,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 4,
+        "totalReward": -24.71111138565382,
+        "finalDistance": 36.742346141747674,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 5,
+        "totalReward": -21.78736387952886,
+        "finalDistance": 27.748873851023216,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 6,
+        "totalReward": -43.334593554340465,
+        "finalDistance": 56.36488268416781,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 7,
+        "totalReward": -41.16681594189582,
+        "finalDistance": 55.18151864528558,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 8,
+        "totalReward": -22.693388567473946,
+        "finalDistance": 52.583267300539625,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 9,
+        "totalReward": -26.802144733316045,
+        "finalDistance": 44.56455991031439,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 10,
+        "totalReward": -25.671320558328585,
+        "finalDistance": 52.38320341483518,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 11,
+        "totalReward": -15.484066944079204,
+        "finalDistance": 31.400636936215164,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 12,
+        "totalReward": -17.354226450591682,
+        "finalDistance": 44.78839135311738,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 13,
+        "totalReward": -45.97598912945106,
+        "finalDistance": 49.82971001320397,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 14,
+        "totalReward": -48.21030160246836,
+        "finalDistance": 76.95453203028396,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 15,
+        "totalReward": -41.50612838389365,
+        "finalDistance": 50.695167422546305,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 16,
+        "totalReward": -53.98489970389632,
+        "finalDistance": 80.25584090893322,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 17,
+        "totalReward": -36.05357440459496,
+        "finalDistance": 34.438350715445125,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 18,
+        "totalReward": -32.22212071622417,
+        "finalDistance": 49.63869458396343,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 19,
+        "totalReward": -61.97413368670821,
+        "finalDistance": 56.15158056546583,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 20,
+        "totalReward": -26.208698833896207,
+        "finalDistance": 45.46427168667722,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 21,
+        "totalReward": -40.23980905611698,
+        "finalDistance": 56.859475903318,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 22,
+        "totalReward": -60.141593236682944,
+        "finalDistance": 82.44998483929515,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 23,
+        "totalReward": -57.30924075920428,
+        "finalDistance": 56.95612346359257,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 24,
+        "totalReward": -62.667840812764666,
+        "finalDistance": 70.03570517957252,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 25,
+        "totalReward": -29.099725254449673,
+        "finalDistance": 45.81484475582123,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 26,
+        "totalReward": -23.52305371790157,
+        "finalDistance": 28.442925306655784,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 27,
+        "totalReward": -44.692715850402365,
+        "finalDistance": 44.339598554790726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 28,
+        "totalReward": -26.891105077545426,
+        "finalDistance": 51.76871642217914,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 29,
+        "totalReward": -39.84877845530735,
+        "finalDistance": 67.96322535018479,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 30,
+        "totalReward": -53.423954029851394,
+        "finalDistance": 77.20751258783046,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 31,
+        "totalReward": -26.797452311598306,
+        "finalDistance": 48.85693400122443,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 32,
+        "totalReward": -21.946635981633406,
+        "finalDistance": 50.28916384272063,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 33,
+        "totalReward": -21.235451492220655,
+        "finalDistance": 48.373546489791295,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 34,
+        "totalReward": -1.9259538221888488,
+        "finalDistance": 26.981475126464083,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 35,
+        "totalReward": -29.351538225387667,
+        "finalDistance": 47.77028364998475,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 36,
+        "totalReward": -34.62969247312203,
+        "finalDistance": 59.67411499134277,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 37,
+        "totalReward": -24.03212246861744,
+        "finalDistance": 48.14561246884289,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 38,
+        "totalReward": -30.01893006061293,
+        "finalDistance": 59.50630218724736,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 39,
+        "totalReward": -3.8681660028517495,
+        "finalDistance": 32.90896534380867,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 40,
+        "totalReward": -27.237242295134937,
+        "finalDistance": 53.637673327615545,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 41,
+        "totalReward": -28.191123718762988,
+        "finalDistance": 39.25557285278104,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 42,
+        "totalReward": -37.618251923263486,
+        "finalDistance": 43.94314508543966,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 43,
+        "totalReward": -23.08384981445625,
+        "finalDistance": 38.8329756778952,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 44,
+        "totalReward": -35.862292704557966,
+        "finalDistance": 64.03905058634146,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 45,
+        "totalReward": -30.32742042742872,
+        "finalDistance": 32.37282811247729,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 46,
+        "totalReward": -0.5502505290472177,
+        "finalDistance": 27.910571473905726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 47,
+        "totalReward": -28.765099335524646,
+        "finalDistance": 55.72252686302013,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 48,
+        "totalReward": -3.477130197913567,
+        "finalDistance": 14.071247279470288,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 49,
+        "totalReward": -41.851567575333966,
+        "finalDistance": 45.110974274559844,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 50,
+        "totalReward": 0.42319476196405054,
+        "finalDistance": 16.522711641858304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 51,
+        "totalReward": -45.37234027454729,
+        "finalDistance": 40.66939881532551,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 52,
+        "totalReward": -22.826694229285323,
+        "finalDistance": 49.879855653359705,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 53,
+        "totalReward": -32.234252727590246,
+        "finalDistance": 46.08687448721165,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 54,
+        "totalReward": -29.954386829719923,
+        "finalDistance": 56.61271941887264,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 55,
+        "totalReward": -9.509814646886735,
+        "finalDistance": 27.16615541441225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 56,
+        "totalReward": -10.76881781110337,
+        "finalDistance": 29.832867780352597,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 57,
+        "totalReward": -38.27379001523624,
+        "finalDistance": 30.643106892089126,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 58,
+        "totalReward": -7.577667740834418,
+        "finalDistance": 33.555923471125034,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 59,
+        "totalReward": -48.7514900960107,
+        "finalDistance": 66.40783086353596,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 60,
+        "totalReward": -11.328191089271678,
+        "finalDistance": 32.449961479175904,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 61,
+        "totalReward": -38.85842251164404,
+        "finalDistance": 62.56196927846821,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 62,
+        "totalReward": -19.115852980387896,
+        "finalDistance": 21.047565179849187,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 63,
+        "totalReward": -23.350720060804935,
+        "finalDistance": 17.4928556845359,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 64,
+        "totalReward": -13.657831533861582,
+        "finalDistance": 19.849433241279208,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 65,
+        "totalReward": -10.82610131261795,
+        "finalDistance": 15.905973720586866,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 66,
+        "totalReward": -17.276994859053183,
+        "finalDistance": 25.079872407968907,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 67,
+        "totalReward": -9.774463076191699,
+        "finalDistance": 38.40572873934304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 68,
+        "totalReward": -29.864035326412182,
+        "finalDistance": 36.359317925395686,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 69,
+        "totalReward": -34.23182395329114,
+        "finalDistance": 52.507142371300304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 70,
+        "totalReward": -9.140919672117453,
+        "finalDistance": 15.84297951775486,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 71,
+        "totalReward": -2.022279971863627,
+        "finalDistance": 13.038404810405298,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 72,
+        "totalReward": -14.618975437516378,
+        "finalDistance": 19.05255888325765,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 73,
+        "totalReward": -21.168601192384543,
+        "finalDistance": 43.37049688440288,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 74,
+        "totalReward": -17.4523568931291,
+        "finalDistance": 35.62302626111375,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 75,
+        "totalReward": -7.566130678602191,
+        "finalDistance": 19.519221295943137,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 76,
+        "totalReward": 5.381338939815906,
+        "finalDistance": 16.0312195418814,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 77,
+        "totalReward": -9.40225833615266,
+        "finalDistance": 16.30950643030009,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 78,
+        "totalReward": -2.1135732452750093,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 79,
+        "totalReward": -15.81974318690073,
+        "finalDistance": 31.400636936215164,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 80,
+        "totalReward": -36.006336662362685,
+        "finalDistance": 41.677331968349414,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 81,
+        "totalReward": -26.016265692702753,
+        "finalDistance": 52.706735812417755,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 82,
+        "totalReward": -25.095976497583656,
+        "finalDistance": 33.74907406137241,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 83,
+        "totalReward": -1.2130311212182532,
+        "finalDistance": 28.930952282978865,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 84,
+        "totalReward": -25.231767256771995,
+        "finalDistance": 22.494443758403985,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 85,
+        "totalReward": -33.97223927248733,
+        "finalDistance": 36.68787265568828,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 86,
+        "totalReward": -17.639469961898428,
+        "finalDistance": 43.30127018922193,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 87,
+        "totalReward": -31.75929572970411,
+        "finalDistance": 58.008620049092706,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 88,
+        "totalReward": -9.315884212796975,
+        "finalDistance": 36.02776706930364,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 89,
+        "totalReward": -34.68044106620559,
+        "finalDistance": 60.199667773169644,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 90,
+        "totalReward": -12.845148763317583,
+        "finalDistance": 42.68489194082609,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 91,
+        "totalReward": -15.539967060896416,
+        "finalDistance": 36.78314831549904,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 92,
+        "totalReward": -29.42046678041731,
+        "finalDistance": 50.24937810560445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 93,
+        "totalReward": -11.936199905415368,
+        "finalDistance": 36.89173349139343,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 94,
+        "totalReward": -9.292791970385263,
+        "finalDistance": 39.102429592034305,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 95,
+        "totalReward": -4.688609133152897,
+        "finalDistance": 16.24807680927192,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 96,
+        "totalReward": -19.508248294993155,
+        "finalDistance": 48.55924216871593,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 97,
+        "totalReward": -19.370889925938844,
+        "finalDistance": 44.19275958796871,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 98,
+        "totalReward": -22.64261643152873,
+        "finalDistance": 43.70354676682432,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 99,
+        "totalReward": -38.22029454439666,
+        "finalDistance": 53.291650377896914,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 100,
+        "totalReward": -13.672248005228335,
+        "finalDistance": 28.442925306655784,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 101,
+        "totalReward": -41.82252410460029,
+        "finalDistance": 69.74955196988724,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 102,
+        "totalReward": -19.979116755031153,
+        "finalDistance": 47.8748368143433,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 103,
+        "totalReward": -42.31479299039872,
+        "finalDistance": 72.01388754955533,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 104,
+        "totalReward": -18.1250045558091,
+        "finalDistance": 44.395945760846224,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 105,
+        "totalReward": 8.238564131640912,
+        "finalDistance": 12.36931687685298,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 106,
+        "totalReward": -3.074042682471261,
+        "finalDistance": 12.569805089976535,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 107,
+        "totalReward": -39.28408765240443,
+        "finalDistance": 44.02272140611028,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 108,
+        "totalReward": -27.797448086190713,
+        "finalDistance": 46.861498055439924,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 109,
+        "totalReward": -28.214886532851732,
+        "finalDistance": 48.05205510693585,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 110,
+        "totalReward": 5.0156466430939215,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 111,
+        "totalReward": -24.74229475399469,
+        "finalDistance": 45.17742799230607,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 112,
+        "totalReward": 30.746663907158375,
+        "finalDistance": 2.449489742783178,
+        "steps": 145,
+        "success": true,
+        "epsilon": 0
+      },
+      {
+        "episode": 113,
+        "totalReward": -7.310576736463954,
+        "finalDistance": 25.019992006393608,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 114,
+        "totalReward": -2.9540455681445525,
+        "finalDistance": 18.81488772222678,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 115,
+        "totalReward": -17.722718138579918,
+        "finalDistance": 23.45207879911715,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 116,
+        "totalReward": -21.31021753137715,
+        "finalDistance": 32.71085446759225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 117,
+        "totalReward": -38.86071762257258,
+        "finalDistance": 55.98214000911362,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 118,
+        "totalReward": -21.897525740369524,
+        "finalDistance": 46.2709412050371,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 119,
+        "totalReward": -19.128178639112996,
+        "finalDistance": 17.916472867168917,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 120,
+        "totalReward": -23.48025178277909,
+        "finalDistance": 34.49637662132068,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 121,
+        "totalReward": -24.919926427818663,
+        "finalDistance": 41.48493702538308,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 122,
+        "totalReward": 6.8929876786796545,
+        "finalDistance": 15.297058540778355,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 123,
+        "totalReward": -9.55834666801795,
+        "finalDistance": 39.408120990476064,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 124,
+        "totalReward": -30.055374801611674,
+        "finalDistance": 52.96225070746144,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 125,
+        "totalReward": -30.667858350661202,
+        "finalDistance": 36.45545226711637,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 126,
+        "totalReward": -39.52213872295746,
+        "finalDistance": 54.01851534427802,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 127,
+        "totalReward": -15.176096353268928,
+        "finalDistance": 37.389838191679836,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 128,
+        "totalReward": -19.820071302030787,
+        "finalDistance": 33.25657829663178,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 129,
+        "totalReward": -36.20467454227989,
+        "finalDistance": 22.9128784747792,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 130,
+        "totalReward": -12.089669084044234,
+        "finalDistance": 30.430248109405877,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 131,
+        "totalReward": -15.157191366320763,
+        "finalDistance": 44.45222154178574,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 132,
+        "totalReward": -43.02523337223886,
+        "finalDistance": 62.369864518050704,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 133,
+        "totalReward": -14.054660106371694,
+        "finalDistance": 37.5632799419859,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 134,
+        "totalReward": -31.4795013082564,
+        "finalDistance": 30.479501308256342,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 135,
+        "totalReward": -7.34954622226087,
+        "finalDistance": 32.17141588429082,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 136,
+        "totalReward": -36.96892882211452,
+        "finalDistance": 50.08991914547278,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 137,
+        "totalReward": -9.347851695118782,
+        "finalDistance": 22.64950330581225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 138,
+        "totalReward": -10.652564974025243,
+        "finalDistance": 39.93745109543172,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 139,
+        "totalReward": -17.78397854059083,
+        "finalDistance": 26.870057685088806,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 140,
+        "totalReward": -15.25857016202136,
+        "finalDistance": 32.218007387174026,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 141,
+        "totalReward": -22.191293680996562,
+        "finalDistance": 34.40930106817051,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 142,
+        "totalReward": -28.37696910312634,
+        "finalDistance": 53.60970061472084,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 143,
+        "totalReward": -13.547333072262134,
+        "finalDistance": 20.639767440550294,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 144,
+        "totalReward": -17.47753248327332,
+        "finalDistance": 36.796738985948195,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 145,
+        "totalReward": -17.96775870163421,
+        "finalDistance": 29,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 146,
+        "totalReward": -13.657198497757568,
+        "finalDistance": 23,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 147,
+        "totalReward": -25.821878655209986,
+        "finalDistance": 31.080540535840107,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 148,
+        "totalReward": -27.97828657999093,
+        "finalDistance": 53.1224999411737,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 149,
+        "totalReward": -21.831783653424395,
+        "finalDistance": 28.75760768909681,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 150,
+        "totalReward": -29.815534885495246,
+        "finalDistance": 25.079872407968907,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 151,
+        "totalReward": -22.652634944529943,
+        "finalDistance": 51.088159097779204,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 152,
+        "totalReward": -0.3969106986008371,
+        "finalDistance": 29.171904291629644,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 153,
+        "totalReward": -23.49293504010908,
+        "finalDistance": 38.67815921162743,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 154,
+        "totalReward": -4.835439356675185,
+        "finalDistance": 17.146428199482248,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 155,
+        "totalReward": -33.17239872649346,
+        "finalDistance": 31.63858403911275,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 156,
+        "totalReward": -45.831433571380444,
+        "finalDistance": 71.87489130426563,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 157,
+        "totalReward": -14.81865625958357,
+        "finalDistance": 22.11334438749598,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 158,
+        "totalReward": -6.874840413145131,
+        "finalDistance": 27.03701166919155,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 159,
+        "totalReward": -16.620192534117912,
+        "finalDistance": 43.87482193696061,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 160,
+        "totalReward": -6.857779882741923,
+        "finalDistance": 21.354156504062622,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 161,
+        "totalReward": -30.025866637971145,
+        "finalDistance": 29.748949561287034,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 162,
+        "totalReward": 2.592403853678466,
+        "finalDistance": 21.6794833886788,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 163,
+        "totalReward": 0.17518107689536588,
+        "finalDistance": 19.8997487421324,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 164,
+        "totalReward": -14.826464239159423,
+        "finalDistance": 43.41658669218482,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 165,
+        "totalReward": -52.19317617183703,
+        "finalDistance": 58.077534382926416,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 166,
+        "totalReward": -13.733974633526978,
+        "finalDistance": 26.870057685088806,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 167,
+        "totalReward": -10.198182520897605,
+        "finalDistance": 35.397740040855716,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 168,
+        "totalReward": -42.23620578484138,
+        "finalDistance": 51.09794516416487,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 169,
+        "totalReward": -12.036046650956024,
+        "finalDistance": 38.961519477556315,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 170,
+        "totalReward": 0.8686799216645615,
+        "finalDistance": 20.808652046684813,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 171,
+        "totalReward": -27.287270210290306,
+        "finalDistance": 56.3382640840131,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 172,
+        "totalReward": -5.403477159239789,
+        "finalDistance": 28.600699292150182,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 173,
+        "totalReward": -36.349540024467025,
+        "finalDistance": 64.56779382943171,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 174,
+        "totalReward": -22.49444269356945,
+        "finalDistance": 24.899799195977465,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 175,
+        "totalReward": -36.12105905012483,
+        "finalDistance": 48.938737212968626,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 176,
+        "totalReward": -19.75203566175593,
+        "finalDistance": 48.27007354458868,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 177,
+        "totalReward": -30.824811099566467,
+        "finalDistance": 56.868268832451726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 178,
+        "totalReward": -34.01692719222507,
+        "finalDistance": 48.67237409455183,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 179,
+        "totalReward": -11.028577615271768,
+        "finalDistance": 22.93468988235943,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 180,
+        "totalReward": -22.837688488517436,
+        "finalDistance": 50.049975024968795,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 181,
+        "totalReward": -27.551751090964093,
+        "finalDistance": 40.32369030731191,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 182,
+        "totalReward": -37.90775321528089,
+        "finalDistance": 40.95119045888654,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 183,
+        "totalReward": -23.92021564596589,
+        "finalDistance": 49.4064773081425,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 184,
+        "totalReward": -14.157247657673695,
+        "finalDistance": 43.289721643826724,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 185,
+        "totalReward": -30.052263112811094,
+        "finalDistance": 34.77067730142742,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 186,
+        "totalReward": -6.6774876051746,
+        "finalDistance": 34.322004603461025,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 187,
+        "totalReward": -26.7485843099449,
+        "finalDistance": 54.644304369257,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 188,
+        "totalReward": -19.411813024989176,
+        "finalDistance": 40.50925820105819,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 189,
+        "totalReward": -2.5353685081785393,
+        "finalDistance": 31.176914536239792,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 190,
+        "totalReward": -9.072978311848651,
+        "finalDistance": 18.788294228055936,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 191,
+        "totalReward": -12.99108986296084,
+        "finalDistance": 28.74021572639983,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 192,
+        "totalReward": -17.103530288744683,
+        "finalDistance": 38.600518131237564,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 193,
+        "totalReward": -38.22539025977286,
+        "finalDistance": 44.77722635447622,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 194,
+        "totalReward": -40.35013677906927,
+        "finalDistance": 41.82104733265297,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 195,
+        "totalReward": -4.728973287220405,
+        "finalDistance": 17.11724276862369,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 196,
+        "totalReward": -5.904952566141894,
+        "finalDistance": 21.2602916254693,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 197,
+        "totalReward": 18.583064757343834,
+        "finalDistance": 2.449489742783178,
+        "steps": 68,
+        "success": true,
+        "epsilon": 0
+      },
+      {
+        "episode": 198,
+        "totalReward": -22.946953215233982,
+        "finalDistance": 49.658836071740545,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 199,
+        "totalReward": -25.94468558644571,
+        "finalDistance": 47.54997371187496,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 200,
+        "totalReward": -5.795149203830775,
+        "finalDistance": 31.96873472629156,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 201,
+        "totalReward": -12.063921346413979,
+        "finalDistance": 38.118237105091836,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 202,
+        "totalReward": -5.806035387245278,
+        "finalDistance": 25.099800796022265,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 203,
+        "totalReward": -27.761698936527573,
+        "finalDistance": 28.231188426986208,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 204,
+        "totalReward": -8.250459986670588,
+        "finalDistance": 26.38181191654584,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 205,
+        "totalReward": -41.82760785721638,
+        "finalDistance": 61.40032573203501,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 206,
+        "totalReward": -23.750299811042712,
+        "finalDistance": 49.07137658554119,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 207,
+        "totalReward": -9.17645102282051,
+        "finalDistance": 27.294688127912362,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 208,
+        "totalReward": -10.491217946431066,
+        "finalDistance": 28.583211855912904,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 209,
+        "totalReward": -49.99806525720542,
+        "finalDistance": 57.0350769263968,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 210,
+        "totalReward": -21.485070138645504,
+        "finalDistance": 31.71750305430741,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 211,
+        "totalReward": -2.9027369236772254,
+        "finalDistance": 31.04834939252005,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 212,
+        "totalReward": -5.6676001803000675,
+        "finalDistance": 31.906112267087632,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 213,
+        "totalReward": -9.082738377206313,
+        "finalDistance": 31.63858403911275,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 214,
+        "totalReward": -22.961493995023663,
+        "finalDistance": 34.23448553724738,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 215,
+        "totalReward": -21.9442795950839,
+        "finalDistance": 18.973665961010276,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 216,
+        "totalReward": 4.947262747678163,
+        "finalDistance": 19.87460691435179,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 217,
+        "totalReward": 5.749861983866195,
+        "finalDistance": 21.494185260204677,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 218,
+        "totalReward": -7.886664585770734,
+        "finalDistance": 19.28730152198591,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 219,
+        "totalReward": -27.841616462770027,
+        "finalDistance": 49.82971001320397,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 220,
+        "totalReward": -3.377878697886336,
+        "finalDistance": 25.25866188063018,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 221,
+        "totalReward": -8.430755906404322,
+        "finalDistance": 25.15949125081825,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 222,
+        "totalReward": 4.576998602948529,
+        "finalDistance": 16.76305461424021,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 223,
+        "totalReward": -25.62788478609217,
+        "finalDistance": 30,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 224,
+        "totalReward": -34.15437765285294,
+        "finalDistance": 58.08614292583042,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 225,
+        "totalReward": -25.345756916128966,
+        "finalDistance": 40.45985664828782,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 226,
+        "totalReward": 22.953384791799657,
+        "finalDistance": 2.8284271247461903,
+        "steps": 106,
+        "success": true,
+        "epsilon": 0
+      },
+      {
+        "episode": 227,
+        "totalReward": -10.407507899492911,
+        "finalDistance": 18.138357147217054,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 228,
+        "totalReward": -26.008599212104055,
+        "finalDistance": 30.298514815086232,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 229,
+        "totalReward": -32.637921754748014,
+        "finalDistance": 43.508619835614184,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 230,
+        "totalReward": 1.2053650337091646,
+        "finalDistance": 20.049937655763422,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 231,
+        "totalReward": -26.19553562281705,
+        "finalDistance": 52.81098370604357,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 232,
+        "totalReward": -8.182784089613454,
+        "finalDistance": 18.547236990991408,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 233,
+        "totalReward": -29.404414939713046,
+        "finalDistance": 44.04543109109048,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 234,
+        "totalReward": 5.195519125814095,
+        "finalDistance": 15.264337522473747,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 235,
+        "totalReward": 8.478884922817334,
+        "finalDistance": 16.30950643030009,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 236,
+        "totalReward": -12.355095227783652,
+        "finalDistance": 32.28002478313795,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 237,
+        "totalReward": -2.9984155195675912,
+        "finalDistance": 16.673332000533065,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 238,
+        "totalReward": -45.327969967152505,
+        "finalDistance": 70.14983962918234,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 239,
+        "totalReward": -22.480181102654793,
+        "finalDistance": 45.18849411078001,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 240,
+        "totalReward": -18.846832440439897,
+        "finalDistance": 26.30589287593181,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 241,
+        "totalReward": -9.232975750099062,
+        "finalDistance": 25.079872407968907,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 242,
+        "totalReward": -26.961636606745127,
+        "finalDistance": 55.767373974394744,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 243,
+        "totalReward": -40.30044523838167,
+        "finalDistance": 69.06518659932803,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 244,
+        "totalReward": -35.355036447538346,
+        "finalDistance": 34.899856733230294,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 245,
+        "totalReward": -26.23856018756683,
+        "finalDistance": 20.591260281974,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 246,
+        "totalReward": -35.904729064024885,
+        "finalDistance": 26.248809496813376,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 247,
+        "totalReward": -28.892283629089373,
+        "finalDistance": 18.16590212458495,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 248,
+        "totalReward": -16.26139943123634,
+        "finalDistance": 42.532340636273474,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 249,
+        "totalReward": 11.286438017534723,
+        "finalDistance": 10.63014581273465,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 250,
+        "totalReward": 2.4049814403683083,
+        "finalDistance": 23.388031127053,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 251,
+        "totalReward": -6.438444361366084,
+        "finalDistance": 24.779023386727733,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 252,
+        "totalReward": -39.55602868710408,
+        "finalDistance": 67.86751800382861,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 253,
+        "totalReward": -7.969586479247139,
+        "finalDistance": 35.21363372331802,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 254,
+        "totalReward": -12.639241225585415,
+        "finalDistance": 27.294688127912362,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 255,
+        "totalReward": -17.359013796417912,
+        "finalDistance": 22.9128784747792,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 256,
+        "totalReward": -4.889487803804227,
+        "finalDistance": 25.534290669607408,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 257,
+        "totalReward": -11.119734735396593,
+        "finalDistance": 31.25699921617557,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 258,
+        "totalReward": -52.888120262215374,
+        "finalDistance": 82.54695633395576,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 259,
+        "totalReward": -50.41941436891206,
+        "finalDistance": 77.47257579298626,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 260,
+        "totalReward": -34.29883746581549,
+        "finalDistance": 58.412327466040935,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 261,
+        "totalReward": -22.436812425121218,
+        "finalDistance": 25.019992006393608,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 262,
+        "totalReward": -13.239237154682604,
+        "finalDistance": 41.88078318274385,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 263,
+        "totalReward": -22.476137648769022,
+        "finalDistance": 38.39270764090493,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 264,
+        "totalReward": -1.5254995108224882,
+        "finalDistance": 15.066519173319364,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 265,
+        "totalReward": -9.944326960897774,
+        "finalDistance": 37.33630940518894,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 266,
+        "totalReward": -10.148042733358823,
+        "finalDistance": 31.20897306865447,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 267,
+        "totalReward": -27.15551225596289,
+        "finalDistance": 47.18050444834179,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 268,
+        "totalReward": -2.652475842498512,
+        "finalDistance": 15.652475842498529,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 269,
+        "totalReward": -38.230886791462616,
+        "finalDistance": 66.49060083951716,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 270,
+        "totalReward": -14.890390417811055,
+        "finalDistance": 36,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 271,
+        "totalReward": 1.2912632996331594,
+        "finalDistance": 20.493901531919196,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 272,
+        "totalReward": -20.236619477466043,
+        "finalDistance": 25.475478405713993,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 273,
+        "totalReward": 9.301686120980364,
+        "finalDistance": 18.24828759089466,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 274,
+        "totalReward": -26.994928245909126,
+        "finalDistance": 49.10193478876367,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 275,
+        "totalReward": -5.711121189034995,
+        "finalDistance": 28.75760768909681,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 276,
+        "totalReward": -15.50247636034536,
+        "finalDistance": 39.774363602702685,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 277,
+        "totalReward": -37.58708306572843,
+        "finalDistance": 58.83026432033091,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 278,
+        "totalReward": -8.76878102693242,
+        "finalDistance": 28.930952282978865,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 279,
+        "totalReward": -12.50355557449365,
+        "finalDistance": 32.802438933713454,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 280,
+        "totalReward": -16.647707672257816,
+        "finalDistance": 41.27953488110059,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 281,
+        "totalReward": -10.228604952230299,
+        "finalDistance": 36.15245496505044,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 282,
+        "totalReward": -13.42766567873901,
+        "finalDistance": 29.274562336608895,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 283,
+        "totalReward": -27.63548614366033,
+        "finalDistance": 49.13247398615299,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 284,
+        "totalReward": -19.163360237141163,
+        "finalDistance": 47.391982444291145,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 285,
+        "totalReward": -11.955476371562511,
+        "finalDistance": 37.49666651850535,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 286,
+        "totalReward": 15.700000000000014,
+        "finalDistance": 3,
+        "steps": 93,
+        "success": true,
+        "epsilon": 0
+      },
+      {
+        "episode": 287,
+        "totalReward": -32.387074325063125,
+        "finalDistance": 40.422765862815474,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 288,
+        "totalReward": -34.38632921344272,
+        "finalDistance": 39.72404813208241,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 289,
+        "totalReward": -15.947105856312566,
+        "finalDistance": 30.789608636681304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 290,
+        "totalReward": -3.880116453695329,
+        "finalDistance": 9.433981132056603,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 291,
+        "totalReward": -22.88807336602162,
+        "finalDistance": 37.107950630558946,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 292,
+        "totalReward": -17.259373853733926,
+        "finalDistance": 43.87482193696061,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 293,
+        "totalReward": -0.4074744249740695,
+        "finalDistance": 18.275666882497067,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 294,
+        "totalReward": -24.694152556222644,
+        "finalDistance": 32.17141588429082,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 295,
+        "totalReward": -10.560631752658894,
+        "finalDistance": 35.749125863438955,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 296,
+        "totalReward": -2.396785598251941,
+        "finalDistance": 26.248809496813376,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 297,
+        "totalReward": -36.621076924991264,
+        "finalDistance": 57.043842787806646,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 298,
+        "totalReward": -11.8887048374582,
+        "finalDistance": 39.21734310225516,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 299,
+        "totalReward": 8.890206672406617,
+        "finalDistance": 13.45362404707371,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      }
+    ],
+    "startTime": "2026-04-14T19:05:48.523Z",
+    "endTime": "2026-04-14T19:07:42.116Z"
+  },
+  {
+    "config": {
+      "landmark": "Cerebellum-Cortex",
+      "agentType": "ppo",
+      "numEpisodes": 300,
+      "maxStartDistance": 50,
+      "zeroDirection": true,
+      "neighborhoodSize": 7,
+      "ppoConfig": {
+        "lr": 0.0003,
+        "entropyCoeff": 0.01,
+        "clipEpsilon": 0.2,
+        "numEpochs": 4,
+        "minibatchSize": 64,
+        "rolloutSize": 4,
+        "useConvBackbone": false,
+        "trunk": "flat"
+      }
+    },
+    "episodes": [
+      {
+        "episode": 0,
+        "totalReward": -19.71374748722355,
+        "finalDistance": 48.76474136094644,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 1,
+        "totalReward": -19.331414317271125,
+        "finalDistance": 41.54515615568198,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 2,
+        "totalReward": -35.283676801299166,
+        "finalDistance": 60.83584469702052,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 3,
+        "totalReward": -29.45478447519134,
+        "finalDistance": 29.899832775452108,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 4,
+        "totalReward": -16.558175398422918,
+        "finalDistance": 44.76605857119878,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 5,
+        "totalReward": -14.396937812222077,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 6,
+        "totalReward": -53.74622221915014,
+        "finalDistance": 58.625932828399414,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 7,
+        "totalReward": -15.278919687226129,
+        "finalDistance": 26.870057685088806,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 8,
+        "totalReward": -33.659526949366345,
+        "finalDistance": 57.63679380395825,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 9,
+        "totalReward": -47.08284747506385,
+        "finalDistance": 58.40376700179535,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 10,
+        "totalReward": -27.119537274839725,
+        "finalDistance": 45.9782557302906,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 11,
+        "totalReward": -32.4259257452063,
+        "finalDistance": 48.78524367060187,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 12,
+        "totalReward": -46.038840249630866,
+        "finalDistance": 44.93328387732194,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 13,
+        "totalReward": -45.456888950941675,
+        "finalDistance": 70.51241025521678,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 14,
+        "totalReward": -39.52485723930514,
+        "finalDistance": 58.008620049092706,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 15,
+        "totalReward": -61.5995083594895,
+        "finalDistance": 85.65628990331066,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 16,
+        "totalReward": -36.96532908617844,
+        "finalDistance": 60.94259594077036,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 17,
+        "totalReward": -37.38875079179608,
+        "finalDistance": 45.44227107000705,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 18,
+        "totalReward": -41.38772607262533,
+        "finalDistance": 54.644304369257,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 19,
+        "totalReward": -21.556632071109405,
+        "finalDistance": 41.892720131306824,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 20,
+        "totalReward": -20.879408268521285,
+        "finalDistance": 41.376321731154405,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 21,
+        "totalReward": -24.3757298651999,
+        "finalDistance": 44.23799272118933,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 22,
+        "totalReward": -28.78987252279514,
+        "finalDistance": 30.56141357987225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 23,
+        "totalReward": -44.408933130260316,
+        "finalDistance": 50.96076922496363,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 24,
+        "totalReward": -24.309987442527856,
+        "finalDistance": 52.73518749374084,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 25,
+        "totalReward": -34.788115330455554,
+        "finalDistance": 43.30127018922193,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 26,
+        "totalReward": 25.227061926693246,
+        "finalDistance": 4.58257569495584,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 27,
+        "totalReward": -29.700846895360762,
+        "finalDistance": 48.14561246884289,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 28,
+        "totalReward": -17.58309186058818,
+        "finalDistance": 46.78675026115834,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 29,
+        "totalReward": -23.08324985348117,
+        "finalDistance": 40.13726448077895,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 30,
+        "totalReward": -22.448518301703125,
+        "finalDistance": 51.45872132107443,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 31,
+        "totalReward": -23.648128676105546,
+        "finalDistance": 50.61620293937506,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 32,
+        "totalReward": -37.81875878875737,
+        "finalDistance": 56.78027826631356,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 33,
+        "totalReward": -14.601841926475336,
+        "finalDistance": 31.016124838541646,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 34,
+        "totalReward": -2.0010423299504216,
+        "finalDistance": 15.7797338380595,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 35,
+        "totalReward": -11.370356389722877,
+        "finalDistance": 38.44476557348217,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 36,
+        "totalReward": -50.24112512512795,
+        "finalDistance": 79.5361553005927,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 37,
+        "totalReward": -37.87988209406409,
+        "finalDistance": 49.26459174701441,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 38,
+        "totalReward": -42.296076809333165,
+        "finalDistance": 61.91930232165088,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 39,
+        "totalReward": -26.434945154479575,
+        "finalDistance": 39.11521443121589,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 40,
+        "totalReward": -31.382606164419844,
+        "finalDistance": 57.436921923097515,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 41,
+        "totalReward": -6.306929964369322,
+        "finalDistance": 13.674794331177344,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 42,
+        "totalReward": -26.47673358664905,
+        "finalDistance": 53.5723809439155,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 43,
+        "totalReward": -34.72542736097694,
+        "finalDistance": 50.96076922496363,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 44,
+        "totalReward": -6.227593638148058,
+        "finalDistance": 29.563490998188964,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 45,
+        "totalReward": -36.01036909757218,
+        "finalDistance": 61.59545437773797,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 46,
+        "totalReward": -27.33315162277202,
+        "finalDistance": 52.076866265166146,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 47,
+        "totalReward": -17.91420306495645,
+        "finalDistance": 42.82522621072771,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 48,
+        "totalReward": -53.26911267198436,
+        "finalDistance": 47.05316142407437,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 49,
+        "totalReward": -28.044680752286126,
+        "finalDistance": 55.98214000911362,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 50,
+        "totalReward": -34.78892426843982,
+        "finalDistance": 48.641546028061235,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 51,
+        "totalReward": -40.114085650768246,
+        "finalDistance": 39.83716857408418,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 52,
+        "totalReward": -16.471465962876508,
+        "finalDistance": 45.8475735453906,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 53,
+        "totalReward": -26.586213281355256,
+        "finalDistance": 47.47630988187688,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 54,
+        "totalReward": -0.9478564989546007,
+        "finalDistance": 30.364452901377952,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 55,
+        "totalReward": -22.35652832341565,
+        "finalDistance": 39.370039370059054,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 56,
+        "totalReward": -17.19847991981699,
+        "finalDistance": 45.71651780264984,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 57,
+        "totalReward": -11.485184125608713,
+        "finalDistance": 34.26368339802363,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 58,
+        "totalReward": -2.257903295764249,
+        "finalDistance": 9.16515138991168,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 59,
+        "totalReward": -11.662374599617571,
+        "finalDistance": 19.339079605813716,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 60,
+        "totalReward": -9.936891086498237,
+        "finalDistance": 29.748949561287034,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 61,
+        "totalReward": -41.89710911766782,
+        "finalDistance": 67.39436178197698,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 62,
+        "totalReward": -34.34749972280781,
+        "finalDistance": 60.07495318350236,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 63,
+        "totalReward": -43.85770160013382,
+        "finalDistance": 53.99073994677235,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 64,
+        "totalReward": -0.10191332805755215,
+        "finalDistance": 23.62202362203543,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 65,
+        "totalReward": -50.697639318547786,
+        "finalDistance": 52.81098370604357,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 66,
+        "totalReward": -34.177110074514445,
+        "finalDistance": 55.33534132902769,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 67,
+        "totalReward": -11.346786141457864,
+        "finalDistance": 40.049968789001575,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 68,
+        "totalReward": -20.605144350535234,
+        "finalDistance": 46.57252408878007,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 69,
+        "totalReward": 11.866591891745532,
+        "finalDistance": 14.317821063276353,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 70,
+        "totalReward": -25.40781581768233,
+        "finalDistance": 36.72873534441391,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 71,
+        "totalReward": -28.41597665538142,
+        "finalDistance": 54.35071296680477,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 72,
+        "totalReward": -37.57967159778102,
+        "finalDistance": 63.796551630946325,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 73,
+        "totalReward": -18.027465878937836,
+        "finalDistance": 27.910571473905726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 74,
+        "totalReward": -31.331916783807966,
+        "finalDistance": 36.11094017053558,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 75,
+        "totalReward": -25.380289878871075,
+        "finalDistance": 49.52776998815917,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 76,
+        "totalReward": -2.717390146479837,
+        "finalDistance": 28.39013913315678,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 77,
+        "totalReward": -6.707396405391511,
+        "finalDistance": 35.482389998420345,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 78,
+        "totalReward": -10.330244418901447,
+        "finalDistance": 17.916472867168917,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 79,
+        "totalReward": -7.126536642383799,
+        "finalDistance": 26.343879744638983,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 80,
+        "totalReward": -34.602252932861965,
+        "finalDistance": 35.24202037341219,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 81,
+        "totalReward": -23.76945671125422,
+        "finalDistance": 52.820450584977024,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 82,
+        "totalReward": -27.903715344867944,
+        "finalDistance": 54.49770637375485,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 83,
+        "totalReward": -33.24594124365649,
+        "finalDistance": 45.880278987817846,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 84,
+        "totalReward": 1.0364290196700388,
+        "finalDistance": 18.57417562100671,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 85,
+        "totalReward": -35.00291016707975,
+        "finalDistance": 37.22902093797257,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 86,
+        "totalReward": -14.792241704162205,
+        "finalDistance": 44.24929377967517,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 87,
+        "totalReward": -2.3871537749303835,
+        "finalDistance": 29.120439557122072,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 88,
+        "totalReward": -38.10947455816366,
+        "finalDistance": 64.99230723708769,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 89,
+        "totalReward": -19.44010053144356,
+        "finalDistance": 39.01281840626232,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 90,
+        "totalReward": -41.48658432080957,
+        "finalDistance": 47.138094997570704,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 91,
+        "totalReward": -9.332163558379023,
+        "finalDistance": 30.380915061926625,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 92,
+        "totalReward": -27.518865336787663,
+        "finalDistance": 45.12205669071391,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 93,
+        "totalReward": -18.637390168423227,
+        "finalDistance": 47.02127178203499,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 94,
+        "totalReward": -12.96363078361144,
+        "finalDistance": 38.691084244306204,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 95,
+        "totalReward": -17.129120131388436,
+        "finalDistance": 42.80186911806539,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 96,
+        "totalReward": -10.708469083342342,
+        "finalDistance": 36.359317925395686,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 97,
+        "totalReward": -12.42541934724403,
+        "finalDistance": 33.97057550292606,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 98,
+        "totalReward": 3.7777961804876563,
+        "finalDistance": 12.083045973594572,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 99,
+        "totalReward": -8.923317973208604,
+        "finalDistance": 9.899494936611665,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 100,
+        "totalReward": -18.941269508490223,
+        "finalDistance": 43.86342439892262,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 101,
+        "totalReward": -21.718547595497572,
+        "finalDistance": 42.7551166528639,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 102,
+        "totalReward": -34.73033464692881,
+        "finalDistance": 28.478061731796284,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 103,
+        "totalReward": -27.649107190893634,
+        "finalDistance": 51.01960407529639,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 104,
+        "totalReward": -31.61954634315567,
+        "finalDistance": 45.39823785126467,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 105,
+        "totalReward": -53.30065026699269,
+        "finalDistance": 63.796551630946325,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 106,
+        "totalReward": -9.7860388998054,
+        "finalDistance": 27.49545416973504,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 107,
+        "totalReward": -13.414091247095152,
+        "finalDistance": 42.1070065428546,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 108,
+        "totalReward": -16.0716326439016,
+        "finalDistance": 36.72873534441391,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 109,
+        "totalReward": -24.07911232902873,
+        "finalDistance": 36.851051545376556,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 110,
+        "totalReward": -30.543000724492952,
+        "finalDistance": 54.97272050753901,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 111,
+        "totalReward": -3.029360873742894,
+        "finalDistance": 31.701734968294716,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 112,
+        "totalReward": -39.39644495331298,
+        "finalDistance": 65.06919393998976,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 113,
+        "totalReward": -11.759162999096567,
+        "finalDistance": 26.94438717061496,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 114,
+        "totalReward": -29.893276101026032,
+        "finalDistance": 37.69615364994153,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 115,
+        "totalReward": -31.241181927316234,
+        "finalDistance": 60.241181927316134,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 116,
+        "totalReward": 3.9348336243651967,
+        "finalDistance": 25.25866188063018,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 117,
+        "totalReward": -26.686137631637358,
+        "finalDistance": 48.062459362791664,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 118,
+        "totalReward": -1.7029496851424364,
+        "finalDistance": 22.11334438749598,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 119,
+        "totalReward": -18.4645745373753,
+        "finalDistance": 40.91454509095757,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 120,
+        "totalReward": -22.521149025318856,
+        "finalDistance": 26.645825188948457,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 121,
+        "totalReward": -12.495681568528923,
+        "finalDistance": 35.958309192730404,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 122,
+        "totalReward": -23.716840508573853,
+        "finalDistance": 48.67237409455183,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 123,
+        "totalReward": -25.80227432394245,
+        "finalDistance": 50.813384063650005,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 124,
+        "totalReward": -10.639486531666952,
+        "finalDistance": 32.71085446759225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 125,
+        "totalReward": 3.2565970428819297,
+        "finalDistance": 26.038433132583073,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 126,
+        "totalReward": 8.765255855038724,
+        "finalDistance": 16.522711641858304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 127,
+        "totalReward": -20.977010510201694,
+        "finalDistance": 11.74734012447073,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 128,
+        "totalReward": -37.12319401326456,
+        "finalDistance": 59.74947698515862,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 129,
+        "totalReward": -40.61611386960483,
+        "finalDistance": 60.07495318350236,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 130,
+        "totalReward": 7.734537621247018,
+        "finalDistance": 15.84297951775486,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 131,
+        "totalReward": -65.48016682054138,
+        "finalDistance": 92.66067126888301,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 132,
+        "totalReward": -63.37878255820758,
+        "finalDistance": 70.83784299369935,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 133,
+        "totalReward": -9.65909553892256,
+        "finalDistance": 17.74823934929885,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 134,
+        "totalReward": -18.01430532375046,
+        "finalDistance": 29.223278392404914,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 135,
+        "totalReward": 2.30690685838146,
+        "finalDistance": 21.213203435596427,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 136,
+        "totalReward": -38.38023383185764,
+        "finalDistance": 32.802438933713454,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 137,
+        "totalReward": -36.88731915016214,
+        "finalDistance": 50.96076922496363,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 138,
+        "totalReward": -44.475898301235915,
+        "finalDistance": 37.8549864614954,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 139,
+        "totalReward": -51.67715692721238,
+        "finalDistance": 58.26662852782886,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 140,
+        "totalReward": -21.259476383532366,
+        "finalDistance": 39.534794801541594,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 141,
+        "totalReward": -9.468811651359196,
+        "finalDistance": 32.526911934581186,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 142,
+        "totalReward": -32.14588837101946,
+        "finalDistance": 58.18934610390462,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 143,
+        "totalReward": -14.216128554712498,
+        "finalDistance": 42.579337712087536,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 144,
+        "totalReward": -13.8220819848632,
+        "finalDistance": 37.05401462729781,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 145,
+        "totalReward": -11.214610548965785,
+        "finalDistance": 33.85262175962151,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 146,
+        "totalReward": -25.984455106929516,
+        "finalDistance": 54.62600113499065,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 147,
+        "totalReward": -17.800143346567822,
+        "finalDistance": 47.085029467974216,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 148,
+        "totalReward": -0.3034712789298881,
+        "finalDistance": 17.72004514666935,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 149,
+        "totalReward": -23.81212332469805,
+        "finalDistance": 40.33608806019741,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 150,
+        "totalReward": -25.10296665712387,
+        "finalDistance": 43.116122274620196,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 151,
+        "totalReward": -31.332541746414755,
+        "finalDistance": 43.87482193696061,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 152,
+        "totalReward": -18.114440140980214,
+        "finalDistance": 41.48493702538308,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 153,
+        "totalReward": -35.9034592984004,
+        "finalDistance": 62.5939294181153,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 154,
+        "totalReward": -13.26915075227588,
+        "finalDistance": 21,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 155,
+        "totalReward": -27.734378029535492,
+        "finalDistance": 49.50757517794625,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 156,
+        "totalReward": -28.146992619006493,
+        "finalDistance": 54.644304369257,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 157,
+        "totalReward": -3.382361718689327,
+        "finalDistance": 24.186773244895647,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 158,
+        "totalReward": -34.420651241505105,
+        "finalDistance": 64.35060217278468,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 159,
+        "totalReward": -26.52749296401411,
+        "finalDistance": 51.980765673468106,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 160,
+        "totalReward": -19.820715065432267,
+        "finalDistance": 33.37663853655727,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 161,
+        "totalReward": -20.990047789250795,
+        "finalDistance": 46.95742752749558,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 162,
+        "totalReward": -27.546117421186892,
+        "finalDistance": 32.264531609803356,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 163,
+        "totalReward": -11.609524348048529,
+        "finalDistance": 18.33030277982336,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 164,
+        "totalReward": -1.395201941482539,
+        "finalDistance": 19.131126469708992,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 165,
+        "totalReward": -26.901839848373005,
+        "finalDistance": 54.45181356024793,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 166,
+        "totalReward": -11.998094550634034,
+        "finalDistance": 41.98809355043403,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 167,
+        "totalReward": -22.940476786994832,
+        "finalDistance": 49.08156476723211,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 168,
+        "totalReward": -20.861985668491506,
+        "finalDistance": 39.87480407475377,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 169,
+        "totalReward": -14.91096685788421,
+        "finalDistance": 29.68164415931166,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 170,
+        "totalReward": -24.85611747231986,
+        "finalDistance": 53.49766350038102,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 171,
+        "totalReward": -37.904192331337875,
+        "finalDistance": 57.879184513951124,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 172,
+        "totalReward": -2.5994505535974155,
+        "finalDistance": 19,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 173,
+        "totalReward": -36.80998616929436,
+        "finalDistance": 66.2872536767062,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 174,
+        "totalReward": -27.172466071462743,
+        "finalDistance": 56.00892785976178,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 175,
+        "totalReward": -4.9053271991734935,
+        "finalDistance": 26.570660511172846,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 176,
+        "totalReward": -31.966648962081308,
+        "finalDistance": 59.715994507334464,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 177,
+        "totalReward": 2.24887062112415,
+        "finalDistance": 22.40535650240808,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 178,
+        "totalReward": -32.419924097157285,
+        "finalDistance": 49.44694126030446,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 179,
+        "totalReward": -42.92070462471374,
+        "finalDistance": 69.83552104767315,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 180,
+        "totalReward": -29.93438908543235,
+        "finalDistance": 48.75448697299562,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 181,
+        "totalReward": -7.165974586575393,
+        "finalDistance": 27.477263328068172,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 182,
+        "totalReward": -14.954774528497232,
+        "finalDistance": 26.019223662515376,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 183,
+        "totalReward": -12.187322939557234,
+        "finalDistance": 36.796738985948195,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 184,
+        "totalReward": -25.02770188722451,
+        "finalDistance": 50.24937810560445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 185,
+        "totalReward": -18.347337403284214,
+        "finalDistance": 29.427877939124322,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 186,
+        "totalReward": -24.317803935227307,
+        "finalDistance": 38.28837943815329,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 187,
+        "totalReward": -16.168214563332427,
+        "finalDistance": 28.61817604250837,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 188,
+        "totalReward": -21.274700092840064,
+        "finalDistance": 39.8622628559895,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 189,
+        "totalReward": -6.633113583722977,
+        "finalDistance": 31.32091952673165,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 190,
+        "totalReward": -1.0836422925100293,
+        "finalDistance": 13.114877048604,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 191,
+        "totalReward": -18.944813087459586,
+        "finalDistance": 42.118879377305376,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 192,
+        "totalReward": -20.269376782163633,
+        "finalDistance": 29.832867780352597,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 193,
+        "totalReward": -31.79014222193964,
+        "finalDistance": 46.861498055439924,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 194,
+        "totalReward": -26.50338129449966,
+        "finalDistance": 50.457903246171455,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 195,
+        "totalReward": -55.65463924830007,
+        "finalDistance": 85.11169132381285,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 196,
+        "totalReward": -15.132716722701952,
+        "finalDistance": 37.62977544445356,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 197,
+        "totalReward": -22.140452064910946,
+        "finalDistance": 48.72371086031933,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 198,
+        "totalReward": -12.620507425680355,
+        "finalDistance": 39.67366884975475,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 199,
+        "totalReward": -19.18845322645516,
+        "finalDistance": 11.916375287812984,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 200,
+        "totalReward": -26.769010084596925,
+        "finalDistance": 56.124860801609124,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 201,
+        "totalReward": -17.181004218480023,
+        "finalDistance": 35.12833614050059,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 202,
+        "totalReward": -7.745399471442084,
+        "finalDistance": 32.0624390837628,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 203,
+        "totalReward": -30.521592356061078,
+        "finalDistance": 51.16639522186413,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 204,
+        "totalReward": -14.474982919328044,
+        "finalDistance": 41.58124577258358,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 205,
+        "totalReward": -10.25602303367831,
+        "finalDistance": 38.02630668366309,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 206,
+        "totalReward": -14.941645296479374,
+        "finalDistance": 11.704699910719626,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 207,
+        "totalReward": -19.026375242131262,
+        "finalDistance": 13.892443989449804,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 208,
+        "totalReward": -16.83452451379529,
+        "finalDistance": 37.589892258425,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 209,
+        "totalReward": 2.0648447342848044,
+        "finalDistance": 19.28730152198591,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 210,
+        "totalReward": -15.498455483656,
+        "finalDistance": 44.844174649557324,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 211,
+        "totalReward": -14.717882520499908,
+        "finalDistance": 35.41186241925155,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 212,
+        "totalReward": -33.698537193246416,
+        "finalDistance": 60.06662967072483,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 213,
+        "totalReward": -34.5977653237727,
+        "finalDistance": 62.64982043070834,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 214,
+        "totalReward": -27.800961415188443,
+        "finalDistance": 51.45872132107443,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 215,
+        "totalReward": -24.12017884387475,
+        "finalDistance": 32.155870381627054,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 216,
+        "totalReward": -0.6405873817809286,
+        "finalDistance": 10.723805294763608,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 217,
+        "totalReward": -10.240961991913325,
+        "finalDistance": 34.26368339802363,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 218,
+        "totalReward": -2.813514159748649,
+        "finalDistance": 32.31098884280702,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 219,
+        "totalReward": -6.857825138105181,
+        "finalDistance": 33.37663853655727,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 220,
+        "totalReward": -30.956431976567693,
+        "finalDistance": 39.52214569073901,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 221,
+        "totalReward": -9.239473800807142,
+        "finalDistance": 38.48376280978771,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 222,
+        "totalReward": -34.9475772876908,
+        "finalDistance": 52.43090691567332,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 223,
+        "totalReward": -23.01722018202007,
+        "finalDistance": 43.93176527297759,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 224,
+        "totalReward": -12.519556242241043,
+        "finalDistance": 29.546573405388315,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 225,
+        "totalReward": -32.19356929170429,
+        "finalDistance": 61.78187436457395,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 226,
+        "totalReward": -40.87593280856585,
+        "finalDistance": 42.532340636273474,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 227,
+        "totalReward": -50.673050235042254,
+        "finalDistance": 67.56478372643548,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 228,
+        "totalReward": -22.434682734589913,
+        "finalDistance": 40.23679907746142,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 229,
+        "totalReward": -21.94810788038949,
+        "finalDistance": 49.73932046178355,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 230,
+        "totalReward": -32.214341847452474,
+        "finalDistance": 45.65084884205331,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 231,
+        "totalReward": -40.17800560721088,
+        "finalDistance": 28.178005607210743,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 232,
+        "totalReward": -19.308985369796233,
+        "finalDistance": 40.17461885320133,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 233,
+        "totalReward": -2.2868299848756264,
+        "finalDistance": 28.178005607210743,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 234,
+        "totalReward": -15.840497966297649,
+        "finalDistance": 41.19465984809196,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 235,
+        "totalReward": -6.083479725475261,
+        "finalDistance": 27.964262908219126,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 236,
+        "totalReward": -34.230251280048144,
+        "finalDistance": 42.67317658670374,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 237,
+        "totalReward": -16.68819384534375,
+        "finalDistance": 27.331300737432898,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 238,
+        "totalReward": 0.3575467849055854,
+        "finalDistance": 27.202941017470888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 239,
+        "totalReward": -24.10972001198215,
+        "finalDistance": 49.98999899979995,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 240,
+        "totalReward": -12.690172097355832,
+        "finalDistance": 27.94637722496424,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 241,
+        "totalReward": -1.8506130579325935,
+        "finalDistance": 12.083045973594572,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 242,
+        "totalReward": -28.517696948554594,
+        "finalDistance": 27.85677655436824,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 243,
+        "totalReward": -7.247386096977133,
+        "finalDistance": 36.124783736376884,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 244,
+        "totalReward": 16.847212332244165,
+        "finalDistance": 6.164414002968976,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 245,
+        "totalReward": -4.132655434178891,
+        "finalDistance": 20.615528128088304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 246,
+        "totalReward": -19.052094721955896,
+        "finalDistance": 40.66939881532551,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 247,
+        "totalReward": -29.97067007925826,
+        "finalDistance": 54.12947441089743,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 248,
+        "totalReward": -30.897623815181547,
+        "finalDistance": 51.146847410177685,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 249,
+        "totalReward": -15.463220618973313,
+        "finalDistance": 45.12205669071391,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 250,
+        "totalReward": -14.92684944365445,
+        "finalDistance": 32.155870381627054,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 251,
+        "totalReward": -32.0417058397992,
+        "finalDistance": 28.442925306655784,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 252,
+        "totalReward": -20.741022886207787,
+        "finalDistance": 47.60252094164762,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 253,
+        "totalReward": -15.355124403520957,
+        "finalDistance": 26.095976701399778,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 254,
+        "totalReward": 2.5983166868190666,
+        "finalDistance": 20.074859899884732,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 255,
+        "totalReward": -7.799450853810873,
+        "finalDistance": 36.11094017053558,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 256,
+        "totalReward": -11.125861443457673,
+        "finalDistance": 16.522711641858304,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 257,
+        "totalReward": 10.926378213328537,
+        "finalDistance": 13.638181696985855,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 258,
+        "totalReward": -26.953488229492496,
+        "finalDistance": 32.526911934581186,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 259,
+        "totalReward": -22.822126758059827,
+        "finalDistance": 41.09744517606904,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 260,
+        "totalReward": -20.20134796561718,
+        "finalDistance": 29.899832775452108,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 261,
+        "totalReward": -25.76100188681753,
+        "finalDistance": 44.19275958796871,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 262,
+        "totalReward": -13.65813469171453,
+        "finalDistance": 36.565010597564445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 263,
+        "totalReward": -3.3122950293217923,
+        "finalDistance": 12.449899597988733,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 264,
+        "totalReward": -18.016611131873102,
+        "finalDistance": 31.78049716414141,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 265,
+        "totalReward": -13.75289706224129,
+        "finalDistance": 32.57299494980466,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 266,
+        "totalReward": -20.618101283114175,
+        "finalDistance": 31.04834939252005,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 267,
+        "totalReward": -41.393007465978755,
+        "finalDistance": 70.80960386840192,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 268,
+        "totalReward": -21.40770920172378,
+        "finalDistance": 39.06404996924922,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 269,
+        "totalReward": -28.161336799277116,
+        "finalDistance": 35.6931365951495,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 270,
+        "totalReward": -40.94399037836708,
+        "finalDistance": 70.44146506142529,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 271,
+        "totalReward": -9.86278289028276,
+        "finalDistance": 28.372521918222215,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 272,
+        "totalReward": -12.938653568163469,
+        "finalDistance": 13.038404810405298,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 273,
+        "totalReward": -35.93289215786034,
+        "finalDistance": 64.26507605223851,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 274,
+        "totalReward": -22.123461095748944,
+        "finalDistance": 46.2709412050371,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 275,
+        "totalReward": -34.07236302300541,
+        "finalDistance": 61.326992425847855,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 276,
+        "totalReward": -24.154923735893338,
+        "finalDistance": 43.474130238568314,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 277,
+        "totalReward": -10.8743420870379,
+        "finalDistance": 11.874342087037917,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 278,
+        "totalReward": -3.472011289013373,
+        "finalDistance": 15.937377450509228,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 279,
+        "totalReward": -15.294621076039656,
+        "finalDistance": 43.977266854592045,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 280,
+        "totalReward": -21.701486848099055,
+        "finalDistance": 48.45616575834287,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 281,
+        "totalReward": 8.3727433092639,
+        "finalDistance": 12.24744871391589,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 282,
+        "totalReward": 0.08165322705270617,
+        "finalDistance": 16.401219466856727,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 283,
+        "totalReward": -10.620185146905463,
+        "finalDistance": 15.033296378372908,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 284,
+        "totalReward": -20.777982718664408,
+        "finalDistance": 47.94788837894741,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 285,
+        "totalReward": -24.699596609213607,
+        "finalDistance": 38.948684188300895,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 286,
+        "totalReward": -20.286073172208695,
+        "finalDistance": 49.08156476723211,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 287,
+        "totalReward": -33.09371447366996,
+        "finalDistance": 47.86439177509728,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 288,
+        "totalReward": -19.868535932317602,
+        "finalDistance": 45.574115460423364,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 289,
+        "totalReward": -8.514473259073164,
+        "finalDistance": 26.645825188948457,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 290,
+        "totalReward": -15.32799932851324,
+        "finalDistance": 40.47221268969612,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 291,
+        "totalReward": -2.7781330565812414,
+        "finalDistance": 21.118712081942874,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 292,
+        "totalReward": -19.754827125586285,
+        "finalDistance": 44.74371464239419,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 293,
+        "totalReward": -28.7715830969187,
+        "finalDistance": 35.62302626111375,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 294,
+        "totalReward": -30.20636637554321,
+        "finalDistance": 30.479501308256342,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 295,
+        "totalReward": -15.558700460271538,
+        "finalDistance": 45.28796749689701,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 296,
+        "totalReward": -25.524173147324355,
+        "finalDistance": 49.28488612140643,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 297,
+        "totalReward": -13.402463530823951,
+        "finalDistance": 35.958309192730404,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 298,
+        "totalReward": -5.439035504805393,
+        "finalDistance": 14.352700094407323,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 299,
+        "totalReward": -28.556721466955807,
+        "finalDistance": 20.639767440550294,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      }
+    ],
+    "startTime": "2026-04-14T19:07:42.191Z",
+    "endTime": "2026-04-14T19:09:08.345Z"
+  },
+  {
+    "config": {
+      "landmark": "4th-Ventricle",
+      "agentType": "ppo",
+      "numEpisodes": 300,
+      "maxStartDistance": 50,
+      "zeroDirection": true,
+      "neighborhoodSize": 7,
+      "ppoConfig": {
+        "lr": 0.0003,
+        "entropyCoeff": 0.01,
+        "clipEpsilon": 0.2,
+        "numEpochs": 4,
+        "minibatchSize": 64,
+        "rolloutSize": 4,
+        "useConvBackbone": false,
+        "trunk": "flat"
+      }
+    },
+    "episodes": [
+      {
+        "episode": 0,
+        "totalReward": -17.58864842977063,
+        "finalDistance": 28.653097563788805,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 1,
+        "totalReward": -6.993559353844775,
+        "finalDistance": 25.942243542145693,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 2,
+        "totalReward": -23.835355055463584,
+        "finalDistance": 23.558437978779494,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 3,
+        "totalReward": -20.13556093063432,
+        "finalDistance": 44.328320518603,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 4,
+        "totalReward": -9.39140513960201,
+        "finalDistance": 35.888716889852724,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 5,
+        "totalReward": -25.83591180218655,
+        "finalDistance": 50.039984012787215,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 6,
+        "totalReward": -18.702273210289853,
+        "finalDistance": 33.25657829663178,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 7,
+        "totalReward": -27.659437370705593,
+        "finalDistance": 23.021728866442675,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 8,
+        "totalReward": -35.660718066314715,
+        "finalDistance": 61.59545437773797,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 9,
+        "totalReward": 2.400907371647938,
+        "finalDistance": 25.80697580112788,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 10,
+        "totalReward": -44.57801980549666,
+        "finalDistance": 32.38826948140329,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 11,
+        "totalReward": -34.91674917499852,
+        "finalDistance": 57,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 12,
+        "totalReward": -24.70319791964773,
+        "finalDistance": 44.23799272118933,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 13,
+        "totalReward": -25.711627816541593,
+        "finalDistance": 46.62617290749907,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 14,
+        "totalReward": -33.53398147274991,
+        "finalDistance": 53.98147830506312,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 15,
+        "totalReward": -4.121211759617665,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 16,
+        "totalReward": -44.39880519213654,
+        "finalDistance": 48.02082881417188,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 17,
+        "totalReward": -20.960125357273693,
+        "finalDistance": 45.2658811910251,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 18,
+        "totalReward": -24.092195217656016,
+        "finalDistance": 46.76537180435969,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 19,
+        "totalReward": -23.248617986409183,
+        "finalDistance": 41.641325627314025,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 20,
+        "totalReward": -34.79281980542215,
+        "finalDistance": 53.094255809833136,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 21,
+        "totalReward": -20.122352333155963,
+        "finalDistance": 40.92676385936225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 22,
+        "totalReward": -48.36979119838658,
+        "finalDistance": 35.58089374931439,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 23,
+        "totalReward": -23.928159791995675,
+        "finalDistance": 41.677331968349414,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 24,
+        "totalReward": -39.55442632751017,
+        "finalDistance": 44.654227123532216,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 25,
+        "totalReward": -15.030579720434378,
+        "finalDistance": 35.749125863438955,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 26,
+        "totalReward": -30.969520438999464,
+        "finalDistance": 46.87216658103186,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 27,
+        "totalReward": -31.70157253304495,
+        "finalDistance": 48.83646178829912,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 28,
+        "totalReward": -14.148191360132689,
+        "finalDistance": 42.871902220452036,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 29,
+        "totalReward": -17.058384653265293,
+        "finalDistance": 23.68543856465402,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 30,
+        "totalReward": -22.672653599277197,
+        "finalDistance": 39.87480407475377,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 31,
+        "totalReward": -6.929115602527739,
+        "finalDistance": 26.43860813280457,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 32,
+        "totalReward": -33.72384553574515,
+        "finalDistance": 59.033888572581766,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 33,
+        "totalReward": -42.57102185097952,
+        "finalDistance": 57.62811813689564,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 34,
+        "totalReward": -2.1477488925550365,
+        "finalDistance": 19.697715603592208,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 35,
+        "totalReward": -39.020128091092346,
+        "finalDistance": 67.23838189605696,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 36,
+        "totalReward": -33.61833200648506,
+        "finalDistance": 63.2771680782255,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 37,
+        "totalReward": -6.1541146995076454,
+        "finalDistance": 29.9833287011299,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 38,
+        "totalReward": -0.7899259150481603,
+        "finalDistance": 19.44222209522358,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 39,
+        "totalReward": -30.350589556409705,
+        "finalDistance": 53.67494760127857,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 40,
+        "totalReward": -4.3793276250703554,
+        "finalDistance": 7.874007874011811,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 41,
+        "totalReward": -18.948264342188267,
+        "finalDistance": 39.408120990476064,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 42,
+        "totalReward": -18.07154936539486,
+        "finalDistance": 33.77869150810907,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 43,
+        "totalReward": -36.062268214126554,
+        "finalDistance": 33.12099032335839,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 44,
+        "totalReward": -0.41168994136792414,
+        "finalDistance": 20.223748416156685,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 45,
+        "totalReward": -41.433497431373674,
+        "finalDistance": 47.20169488482379,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 46,
+        "totalReward": -35.63627527770939,
+        "finalDistance": 52.64978632435273,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 47,
+        "totalReward": -22.341702622370313,
+        "finalDistance": 43.87482193696061,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 48,
+        "totalReward": -35.35043051839086,
+        "finalDistance": 48.84669896727925,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 49,
+        "totalReward": 6.734372845194743,
+        "finalDistance": 21.307275752662516,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 50,
+        "totalReward": -3.1091200705315973,
+        "finalDistance": 29.68164415931166,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 51,
+        "totalReward": -25.244064080736198,
+        "finalDistance": 54.680892457969264,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 52,
+        "totalReward": -14.680862244448742,
+        "finalDistance": 33.436506994600975,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 53,
+        "totalReward": -13.995580035008253,
+        "finalDistance": 37.134889255254286,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 54,
+        "totalReward": -16.158422872523325,
+        "finalDistance": 33.481338085566414,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 55,
+        "totalReward": -11.683178624875259,
+        "finalDistance": 41.291645644125154,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 56,
+        "totalReward": -18.871556225065227,
+        "finalDistance": 24.24871130596428,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 57,
+        "totalReward": -6.891712111394113,
+        "finalDistance": 30.903074280724887,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 58,
+        "totalReward": -15.147833506501668,
+        "finalDistance": 12.206555615733702,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 59,
+        "totalReward": -23.213851819645313,
+        "finalDistance": 47.968739820845826,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 60,
+        "totalReward": 7.807107839385276,
+        "finalDistance": 14.866068747318506,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 61,
+        "totalReward": -9.395232810382309,
+        "finalDistance": 19.026297590440446,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 62,
+        "totalReward": -28.75751259683508,
+        "finalDistance": 51.19570294468082,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 63,
+        "totalReward": -10.719935912297728,
+        "finalDistance": 39.64845520319802,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 64,
+        "totalReward": 3.6772721717704147,
+        "finalDistance": 20.639767440550294,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 65,
+        "totalReward": -9.56410950804679,
+        "finalDistance": 24.1039415863879,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 66,
+        "totalReward": -4.479608772842454,
+        "finalDistance": 25.099800796022265,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 67,
+        "totalReward": -27.24999402242139,
+        "finalDistance": 48.176757881783615,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 68,
+        "totalReward": -27.38593384217153,
+        "finalDistance": 36.72873534441391,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 69,
+        "totalReward": -0.1965755698875279,
+        "finalDistance": 20.396078054371138,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 70,
+        "totalReward": -19.342539027501406,
+        "finalDistance": 39.21734310225516,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 71,
+        "totalReward": -14.492295554391408,
+        "finalDistance": 27.748873851023216,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 72,
+        "totalReward": -35.544238298992035,
+        "finalDistance": 49.90991885387112,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 73,
+        "totalReward": -12.967302663654644,
+        "finalDistance": 38.28837943815329,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 74,
+        "totalReward": -60.35943312062354,
+        "finalDistance": 85.98837130682264,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 75,
+        "totalReward": -34.29787766344251,
+        "finalDistance": 37.013511046643494,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 76,
+        "totalReward": -33.20251937736748,
+        "finalDistance": 49.69909455915671,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 77,
+        "totalReward": -36.96554018427048,
+        "finalDistance": 56.639209034025185,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 78,
+        "totalReward": -52.44148579342452,
+        "finalDistance": 55.614746245937326,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 79,
+        "totalReward": -20.644959978718784,
+        "finalDistance": 28.231188426986208,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 80,
+        "totalReward": -27.29591491577554,
+        "finalDistance": 50.24937810560445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 81,
+        "totalReward": 2.2325380692783807,
+        "finalDistance": 15.556349186104045,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 82,
+        "totalReward": -6.230574320548932,
+        "finalDistance": 22.38302928559939,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 83,
+        "totalReward": -11.125357662595714,
+        "finalDistance": 39.395431207184416,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 84,
+        "totalReward": -20.88988100317695,
+        "finalDistance": 38.65229618017538,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 85,
+        "totalReward": 1.8275662835672608,
+        "finalDistance": 25.553864678361276,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 86,
+        "totalReward": -19.440837949933677,
+        "finalDistance": 40.85339643163099,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 87,
+        "totalReward": -20.9935770404876,
+        "finalDistance": 40.755367744629666,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 88,
+        "totalReward": -30.000082644343173,
+        "finalDistance": 30.099833886584822,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 89,
+        "totalReward": 1.4001147786135073,
+        "finalDistance": 25.514701644346147,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 90,
+        "totalReward": -8.046326627627007,
+        "finalDistance": 36.68787265568828,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 91,
+        "totalReward": -17.29948991909401,
+        "finalDistance": 18.275666882497067,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 92,
+        "totalReward": -23.417603394335934,
+        "finalDistance": 46.184412955021955,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 93,
+        "totalReward": -21.006037157810074,
+        "finalDistance": 32.31098884280702,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 94,
+        "totalReward": -2.7215004004643415,
+        "finalDistance": 29.732137494637012,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 95,
+        "totalReward": -17.657743601126178,
+        "finalDistance": 33.83784863137726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 96,
+        "totalReward": -4.206064320250665,
+        "finalDistance": 22.494443758403985,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 97,
+        "totalReward": -6.267501647663085,
+        "finalDistance": 21.02379604162864,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 98,
+        "totalReward": -18.900187456273358,
+        "finalDistance": 30.364452901377952,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 99,
+        "totalReward": -2.1743773952364,
+        "finalDistance": 27.49545416973504,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 100,
+        "totalReward": -30.535748541858105,
+        "finalDistance": 56.806689746895124,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 101,
+        "totalReward": -32.07635094817865,
+        "finalDistance": 41.97618372363071,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 102,
+        "totalReward": -49.54779164740128,
+        "finalDistance": 60.868711174132805,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 103,
+        "totalReward": -49.797405723737306,
+        "finalDistance": 72.89032857656768,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 104,
+        "totalReward": -22.807627051042235,
+        "finalDistance": 40.93897898091744,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 105,
+        "totalReward": -30.308225014225606,
+        "finalDistance": 39.20459156782532,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 106,
+        "totalReward": -30.744445452236693,
+        "finalDistance": 39.06404996924922,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 107,
+        "totalReward": -12.608454937416878,
+        "finalDistance": 31.20897306865447,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 108,
+        "totalReward": -11.401263325990818,
+        "finalDistance": 30.822070014844883,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 109,
+        "totalReward": -16.864926642748685,
+        "finalDistance": 44.04543109109048,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 110,
+        "totalReward": -18.091189330375652,
+        "finalDistance": 34.66987164671943,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 111,
+        "totalReward": 9.384718603093225,
+        "finalDistance": 20.223748416156685,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 112,
+        "totalReward": -26.639677785220204,
+        "finalDistance": 43.382023926967726,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 113,
+        "totalReward": -17.276258395403147,
+        "finalDistance": 21.400934559032695,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 114,
+        "totalReward": 2.300495272266379,
+        "finalDistance": 25.709920264364882,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 115,
+        "totalReward": -11.408868276216587,
+        "finalDistance": 22.825424421026653,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 116,
+        "totalReward": -9.507018183324758,
+        "finalDistance": 37.067505985701274,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 117,
+        "totalReward": -9.066656525196018,
+        "finalDistance": 32.12475680841802,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 118,
+        "totalReward": -12.956509543579177,
+        "finalDistance": 40.63249930782009,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 119,
+        "totalReward": -5.829775574315612,
+        "finalDistance": 15.7797338380595,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 120,
+        "totalReward": -35.627236863182006,
+        "finalDistance": 52.73518749374084,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 121,
+        "totalReward": -31.485290672493164,
+        "finalDistance": 56.938563381947034,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 122,
+        "totalReward": -20.327425553474466,
+        "finalDistance": 24.596747752497688,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 123,
+        "totalReward": -11.022969075397635,
+        "finalDistance": 24.919871588754223,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 124,
+        "totalReward": 4.960297075055809,
+        "finalDistance": 24.779023386727733,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 125,
+        "totalReward": -8.77927638931848,
+        "finalDistance": 14.352700094407323,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 126,
+        "totalReward": -22.067370771072664,
+        "finalDistance": 43.116122274620196,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 127,
+        "totalReward": -13.685077307077146,
+        "finalDistance": 30.4138126514911,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 128,
+        "totalReward": -21.831005338207934,
+        "finalDistance": 23.853720883753127,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 129,
+        "totalReward": -41.756213165751724,
+        "finalDistance": 60.473134530963414,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 130,
+        "totalReward": -39.40988214121463,
+        "finalDistance": 36.701498607005135,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 131,
+        "totalReward": 17.280430818293187,
+        "finalDistance": 11,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 132,
+        "totalReward": -1.1145561690295944,
+        "finalDistance": 23.280893453645632,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 133,
+        "totalReward": -16.820201996162986,
+        "finalDistance": 25.45584412271571,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 134,
+        "totalReward": -19.189864328166575,
+        "finalDistance": 48.96937818678118,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 135,
+        "totalReward": -11.954163368441481,
+        "finalDistance": 39.97499218261337,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 136,
+        "totalReward": -35.376080668181025,
+        "finalDistance": 61.7980582219215,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 137,
+        "totalReward": -22.384030111872413,
+        "finalDistance": 49.01020301937138,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 138,
+        "totalReward": -20.31305143431935,
+        "finalDistance": 44.87761134463375,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 139,
+        "totalReward": -9.991225447917156,
+        "finalDistance": 36.359317925395686,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 140,
+        "totalReward": -29.587939101969837,
+        "finalDistance": 21.79449471770337,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 141,
+        "totalReward": -33.81946444690672,
+        "finalDistance": 63.13477647065839,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 142,
+        "totalReward": -24.38185337249471,
+        "finalDistance": 18.16590212458495,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 143,
+        "totalReward": -24.45937166001205,
+        "finalDistance": 41.47288270665544,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 144,
+        "totalReward": -21.525277252763637,
+        "finalDistance": 40.755367744629666,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 145,
+        "totalReward": -12.07636859832457,
+        "finalDistance": 30.870698080866262,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 146,
+        "totalReward": -0.9058881572211569,
+        "finalDistance": 18.681541692269406,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 147,
+        "totalReward": -23.291461604430655,
+        "finalDistance": 22.9128784747792,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 148,
+        "totalReward": -12.782064253592646,
+        "finalDistance": 18.973665961010276,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 149,
+        "totalReward": -35.01922366251548,
+        "finalDistance": 26.019223662515376,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 150,
+        "totalReward": -23.46171340958696,
+        "finalDistance": 39.8622628559895,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 151,
+        "totalReward": -8.034731506608464,
+        "finalDistance": 23.853720883753127,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 152,
+        "totalReward": -11.442324370672221,
+        "finalDistance": 26.570660511172846,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 153,
+        "totalReward": -20.360874516440877,
+        "finalDistance": 14.035668847618199,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 154,
+        "totalReward": -31.80477350586728,
+        "finalDistance": 54.01851534427802,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 155,
+        "totalReward": -31.280078477696364,
+        "finalDistance": 50.941142507800116,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 156,
+        "totalReward": -20.74570351986481,
+        "finalDistance": 45.967379738244816,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 157,
+        "totalReward": -22.034754758808404,
+        "finalDistance": 48.19751030914356,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 158,
+        "totalReward": -8.519285820607587,
+        "finalDistance": 37.027017163147235,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 159,
+        "totalReward": -42.66476618646531,
+        "finalDistance": 68.38128398911503,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 160,
+        "totalReward": -8.419082418751396,
+        "finalDistance": 21.236760581595302,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 161,
+        "totalReward": -29.477804448470458,
+        "finalDistance": 32.17141588429082,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 162,
+        "totalReward": -21.243484476444408,
+        "finalDistance": 27.964262908219126,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 163,
+        "totalReward": -17.69054956071447,
+        "finalDistance": 43.01162633521314,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 164,
+        "totalReward": -26.508379495401037,
+        "finalDistance": 47.81213235152768,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 165,
+        "totalReward": -25.4768708211229,
+        "finalDistance": 50.941142507800116,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 166,
+        "totalReward": -12.17711903608017,
+        "finalDistance": 20.248456731316587,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 167,
+        "totalReward": -27.76953695136343,
+        "finalDistance": 39.408120990476064,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 168,
+        "totalReward": -20.556148918346107,
+        "finalDistance": 48.82622246293481,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 169,
+        "totalReward": -17.954114368392244,
+        "finalDistance": 36.124783736376884,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 170,
+        "totalReward": -48.372856455184156,
+        "finalDistance": 56.55086206239477,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 171,
+        "totalReward": -12.514822075803187,
+        "finalDistance": 38.34057902536163,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 172,
+        "totalReward": -11.845237150358459,
+        "finalDistance": 16.278820596099706,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 173,
+        "totalReward": -12.886315225117603,
+        "finalDistance": 39.45883931389772,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 174,
+        "totalReward": -24.175846933854594,
+        "finalDistance": 22.20360331117452,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 175,
+        "totalReward": -25.757869307582965,
+        "finalDistance": 46.8187996428785,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 176,
+        "totalReward": -26.731501574314635,
+        "finalDistance": 39.761790704142086,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 177,
+        "totalReward": -31.78460213007169,
+        "finalDistance": 42.720018726587654,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 178,
+        "totalReward": -23.88694734152221,
+        "finalDistance": 36.932370625238775,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 179,
+        "totalReward": -52.120930301723135,
+        "finalDistance": 43.30127018922193,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 180,
+        "totalReward": -10.484040937850816,
+        "finalDistance": 38.3275357934736,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 181,
+        "totalReward": 6.619168480353174,
+        "finalDistance": 9.38083151964686,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 182,
+        "totalReward": -22.837132720701252,
+        "finalDistance": 50.76416058598822,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 183,
+        "totalReward": -13.994283718111456,
+        "finalDistance": 41.12177038990418,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 184,
+        "totalReward": -26.7605850628181,
+        "finalDistance": 19.79898987322333,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 185,
+        "totalReward": -1.668902750102938,
+        "finalDistance": 27.16615541441225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 186,
+        "totalReward": -17.93055512176763,
+        "finalDistance": 15.394804318340652,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 187,
+        "totalReward": -28.767283158630555,
+        "finalDistance": 26.739483914241877,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 188,
+        "totalReward": -8.585672210658856,
+        "finalDistance": 20.049937655763422,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 189,
+        "totalReward": -32.631152133012996,
+        "finalDistance": 59.04235767650204,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 190,
+        "totalReward": -15.759531313459577,
+        "finalDistance": 22.40535650240808,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 191,
+        "totalReward": -13.663938598581279,
+        "finalDistance": 40.8656334834051,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 192,
+        "totalReward": -12.41339374870274,
+        "finalDistance": 24.677925358506133,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 193,
+        "totalReward": -18.95338958534276,
+        "finalDistance": 43.42810150121693,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 194,
+        "totalReward": -6.376390470744896,
+        "finalDistance": 17.11724276862369,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 195,
+        "totalReward": -18.645486132557284,
+        "finalDistance": 21.470910553583888,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 196,
+        "totalReward": -25.009833003453505,
+        "finalDistance": 42.42640687119285,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 197,
+        "totalReward": -20.05151971656841,
+        "finalDistance": 38.84584919911006,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 198,
+        "totalReward": -26.592232836271574,
+        "finalDistance": 32.57299494980466,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 199,
+        "totalReward": -32.540827791459186,
+        "finalDistance": 57.86190456595773,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 200,
+        "totalReward": -10.872118081688996,
+        "finalDistance": 19.209372712298546,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 201,
+        "totalReward": -1.8003025600270735,
+        "finalDistance": 16.34013463836819,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 202,
+        "totalReward": -36.308870650683104,
+        "finalDistance": 62.112800613078136,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 203,
+        "totalReward": -21.000122122496585,
+        "finalDistance": 32.49615361854384,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 204,
+        "totalReward": -35.08388534623025,
+        "finalDistance": 63.694583757176716,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 205,
+        "totalReward": -17.512797113326645,
+        "finalDistance": 19.261360284258224,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 206,
+        "totalReward": -21.909537741325526,
+        "finalDistance": 50.70502933634887,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 207,
+        "totalReward": -23.02413422807148,
+        "finalDistance": 29.949958263743873,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 208,
+        "totalReward": -27.639196950548282,
+        "finalDistance": 53.563046963368315,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 209,
+        "totalReward": -19.53027399411875,
+        "finalDistance": 27.440845468024488,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 210,
+        "totalReward": -17.586518582540368,
+        "finalDistance": 18.681541692269406,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 211,
+        "totalReward": -28.686862109282526,
+        "finalDistance": 50.15974481593781,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 212,
+        "totalReward": -13.579197624200857,
+        "finalDistance": 31.20897306865447,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 213,
+        "totalReward": -32.25897623784664,
+        "finalDistance": 46.50806381693394,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 214,
+        "totalReward": -17.39070018466519,
+        "finalDistance": 31.654383582688826,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 215,
+        "totalReward": -25.81297412260537,
+        "finalDistance": 47.634021455258214,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 216,
+        "totalReward": -22.17699291696694,
+        "finalDistance": 49.77951385861457,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 217,
+        "totalReward": -10.26429510870425,
+        "finalDistance": 23.173260452512935,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 218,
+        "totalReward": 1.524639336663261,
+        "finalDistance": 14,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 219,
+        "totalReward": -6.299584304811771,
+        "finalDistance": 26.94438717061496,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 220,
+        "totalReward": -0.6812147151112286,
+        "finalDistance": 28.231188426986208,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 221,
+        "totalReward": -14.957370450934741,
+        "finalDistance": 42.2965719651132,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 222,
+        "totalReward": -4.251885954735694,
+        "finalDistance": 11.74734012447073,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 223,
+        "totalReward": 2.271194345502576,
+        "finalDistance": 16.792855623746664,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 224,
+        "totalReward": -26.156241266672865,
+        "finalDistance": 54.08326913195984,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 225,
+        "totalReward": -17.63905982019887,
+        "finalDistance": 47.52893855326458,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 226,
+        "totalReward": -16.695819537923416,
+        "finalDistance": 44.955533585978046,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 227,
+        "totalReward": -33.23823640621867,
+        "finalDistance": 52.848841046895245,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 228,
+        "totalReward": -29.832828423802894,
+        "finalDistance": 20.273134932713294,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 229,
+        "totalReward": -9.855160064305542,
+        "finalDistance": 29.427877939124322,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 230,
+        "totalReward": -35.64867709016015,
+        "finalDistance": 28.337254630609507,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 231,
+        "totalReward": -10.436608284394476,
+        "finalDistance": 30.56141357987225,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 232,
+        "totalReward": -7.996528219713113,
+        "finalDistance": 29.154759474226502,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 233,
+        "totalReward": -3.915978321337451,
+        "finalDistance": 27.459060435491963,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 234,
+        "totalReward": -13.30150810692434,
+        "finalDistance": 25.612496949731394,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 235,
+        "totalReward": -4.770694514395805,
+        "finalDistance": 23.706539182259394,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 236,
+        "totalReward": -34.64514168247625,
+        "finalDistance": 63.245553203367585,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 237,
+        "totalReward": -55.49763578644414,
+        "finalDistance": 60.03332407921454,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 238,
+        "totalReward": -11.96623875284255,
+        "finalDistance": 41.66533331199932,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 239,
+        "totalReward": -64.57260390263879,
+        "finalDistance": 80.75270893288967,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 240,
+        "totalReward": -30.061387433056495,
+        "finalDistance": 28.089143810376278,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 241,
+        "totalReward": -24.6279573795034,
+        "finalDistance": 20.248456731316587,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 242,
+        "totalReward": 0.36795592687890855,
+        "finalDistance": 26.589471600616662,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 243,
+        "totalReward": -6.600322544173206,
+        "finalDistance": 33.2264954516723,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 244,
+        "totalReward": -34.945717909545074,
+        "finalDistance": 31.827660925679098,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 245,
+        "totalReward": -33.677414288491846,
+        "finalDistance": 42.59107887809371,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 246,
+        "totalReward": -31.16705975908836,
+        "finalDistance": 56.089214649520635,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 247,
+        "totalReward": -35.747340207314856,
+        "finalDistance": 32.89376840679705,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 248,
+        "totalReward": -25.951944326793306,
+        "finalDistance": 44.64302857109943,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 249,
+        "totalReward": -22.03821509296805,
+        "finalDistance": 32.41913015489465,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 250,
+        "totalReward": -13.102791499003098,
+        "finalDistance": 25.25866188063018,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 251,
+        "totalReward": -17.30369751795495,
+        "finalDistance": 20.904544960366874,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 252,
+        "totalReward": -27.72291239463797,
+        "finalDistance": 18.49324200890693,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 253,
+        "totalReward": -3.5984906327314654,
+        "finalDistance": 31.368774282716245,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 254,
+        "totalReward": -14.295946255790957,
+        "finalDistance": 11.874342087037917,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 255,
+        "totalReward": -10.469857648487851,
+        "finalDistance": 40.45985664828782,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 256,
+        "totalReward": -2.009506991367628,
+        "finalDistance": 28.91366458960192,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 257,
+        "totalReward": -10.672464206526392,
+        "finalDistance": 29,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 258,
+        "totalReward": -24.648140879741906,
+        "finalDistance": 19.1049731745428,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 259,
+        "totalReward": -54.60611515910297,
+        "finalDistance": 68.13222438758329,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 260,
+        "totalReward": 1.9505213427949708,
+        "finalDistance": 20.322401432901575,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 261,
+        "totalReward": -19.22999747990783,
+        "finalDistance": 46.36809247747852,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 262,
+        "totalReward": -18.491454184213456,
+        "finalDistance": 31.064449134018133,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 263,
+        "totalReward": -23.914432991666565,
+        "finalDistance": 31.591137997862628,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 264,
+        "totalReward": -20.32866108444645,
+        "finalDistance": 48.84669896727925,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 265,
+        "totalReward": -11.011454503575537,
+        "finalDistance": 36.89173349139343,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 266,
+        "totalReward": -20.65712909133478,
+        "finalDistance": 50.547007824400445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 267,
+        "totalReward": -5.008716305738964,
+        "finalDistance": 9.38083151964686,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 268,
+        "totalReward": -18.568590292405904,
+        "finalDistance": 48.187135212627034,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 269,
+        "totalReward": -8.291729574068974,
+        "finalDistance": 28.053520278211074,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 270,
+        "totalReward": -23.32025066535673,
+        "finalDistance": 23.345235059857504,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 271,
+        "totalReward": -14.765368694230359,
+        "finalDistance": 40.17461885320133,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 272,
+        "totalReward": 10.991442448245351,
+        "finalDistance": 17.029386365926403,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 273,
+        "totalReward": -22.847837060110656,
+        "finalDistance": 23.194827009486403,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 274,
+        "totalReward": -6.978923898253887,
+        "finalDistance": 31.811947441173732,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 275,
+        "totalReward": -37.92578577508969,
+        "finalDistance": 26.870057685088806,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 276,
+        "totalReward": -10.103523871840185,
+        "finalDistance": 30.822070014844883,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 277,
+        "totalReward": -13.64118181816617,
+        "finalDistance": 16.792855623746664,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 278,
+        "totalReward": -24.12725826203902,
+        "finalDistance": 24.596747752497688,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 279,
+        "totalReward": -6.52040697029316,
+        "finalDistance": 22.93468988235943,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 280,
+        "totalReward": -9.731558428705046,
+        "finalDistance": 22.9128784747792,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 281,
+        "totalReward": -11.963351559393946,
+        "finalDistance": 30.822070014844883,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 282,
+        "totalReward": -28.088066775806734,
+        "finalDistance": 44.22668877499196,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 283,
+        "totalReward": -45.73926037567339,
+        "finalDistance": 72.73926037567333,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 284,
+        "totalReward": -1.5216821453107725,
+        "finalDistance": 28.91366458960192,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 285,
+        "totalReward": -5.997449176604995,
+        "finalDistance": 29.563490998188964,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 286,
+        "totalReward": -15.133778195226796,
+        "finalDistance": 21.61018278497431,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 287,
+        "totalReward": -0.027066809979602757,
+        "finalDistance": 14.696938456699069,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 288,
+        "totalReward": -4.020990323907014,
+        "finalDistance": 18.35755975068582,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 289,
+        "totalReward": -5.329116885118986,
+        "finalDistance": 27.49545416973504,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 290,
+        "totalReward": -15.547327164200773,
+        "finalDistance": 23.600847442411894,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 291,
+        "totalReward": -7.9433072214284035,
+        "finalDistance": 17.029386365926403,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 292,
+        "totalReward": -16.44518614263992,
+        "finalDistance": 35.35533905932738,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 293,
+        "totalReward": -28.095023109729148,
+        "finalDistance": 21.095023109728988,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 294,
+        "totalReward": -11.122739527557345,
+        "finalDistance": 36.565010597564445,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 295,
+        "totalReward": -27.83721296308258,
+        "finalDistance": 37.986839826445156,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 296,
+        "totalReward": -25.077099128959055,
+        "finalDistance": 49.80963762164909,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 297,
+        "totalReward": -17.923828271222543,
+        "finalDistance": 47.12748667179272,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 298,
+        "totalReward": -21.915772769190998,
+        "finalDistance": 37.49666651850535,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      },
+      {
+        "episode": 299,
+        "totalReward": -11.857199349430612,
+        "finalDistance": 32.89376840679705,
+        "steps": 200,
+        "success": false,
+        "epsilon": 0
+      }
+    ],
+    "startTime": "2026-04-14T19:09:08.421Z",
+    "endTime": "2026-04-14T19:10:34.524Z"
+  }
+]

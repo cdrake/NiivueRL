@@ -3,9 +3,11 @@ import { createQNetwork, copyWeights } from './network';
 import { ReplayBuffer } from './ReplayBuffer';
 import type { Experience } from './ReplayBuffer';
 import { NUM_ACTIONS } from '../env/types';
+import type { State } from '../env/types';
 import { STATE_DIM } from '../env/BrainEnv';
+import type { Agent, AgentActionResult } from './types';
 
-export class DQNAgent {
+export class DQNAgent implements Agent {
   private qNetwork: tf.Sequential;
   private targetNetwork: tf.Sequential;
   private replayBuffer: ReplayBuffer;
@@ -34,22 +36,33 @@ export class DQNAgent {
     this.epsilonDecay = 0.995;
   }
 
-  selectAction(state: Float32Array): number {
+  selectAction(state: State): AgentActionResult {
+    const stateArray = this.stateToArray(state);
     if (Math.random() < this.epsilon) {
-      return Math.floor(Math.random() * NUM_ACTIONS);
+      return { action: Math.floor(Math.random() * NUM_ACTIONS) };
     }
-    return tf.tidy(() => {
-      const input = tf.tensor2d([Array.from(state)], [1, STATE_DIM]);
+    const action = tf.tidy(() => {
+      const input = tf.tensor2d([Array.from(stateArray)], [1, STATE_DIM]);
       const qValues = this.qNetwork.predict(input) as tf.Tensor;
-      return (qValues.argMax(1).dataSync()[0]);
+      return qValues.argMax(1).dataSync()[0];
     });
+    return { action };
+  }
+
+  private stateToArray(state: State): Float32Array {
+    const arr = new Float32Array(STATE_DIM);
+    arr.set(state.neighborhood);
+    arr[state.neighborhood.length] = state.direction[0];
+    arr[state.neighborhood.length + 1] = state.direction[1];
+    arr[state.neighborhood.length + 2] = state.direction[2];
+    return arr;
   }
 
   store(experience: Experience): void {
     this.replayBuffer.push(experience);
   }
 
-  async train(): Promise<number> {
+  async train(_data?: unknown): Promise<number> {
     if (this.replayBuffer.size < this.batchSize) return 0;
 
     const batch = this.replayBuffer.sample(this.batchSize);

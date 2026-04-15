@@ -44,8 +44,12 @@ function parseBcmodel(buffer: ArrayBuffer): BcmodelFile {
 
   for (const [name, info] of Object.entries(header.tensors as Record<string, { data_offsets: [number, number]; shape: number[] }>)) {
     const [begin, end] = info.data_offsets;
-    const count = (end - begin) / 4;
-    const data = new Float32Array(buffer, dataOffset + begin, count);
+    const byteStart = dataOffset + begin;
+    const byteLength = end - begin;
+    // Copy bytes into a new aligned buffer (source offset may not be 4-byte aligned)
+    const aligned = new Uint8Array(byteLength);
+    aligned.set(new Uint8Array(buffer, byteStart, byteLength));
+    const data = new Float32Array(aligned.buffer);
     tensors[name] = { data, shape: info.shape };
   }
 

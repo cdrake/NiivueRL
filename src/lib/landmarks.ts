@@ -47,6 +47,33 @@ export const LANDMARKS: Landmark[] = labels
   })
   .filter((l): l is Landmark => l !== null);
 
+// Mapping from landmark names to bcmodel label indices (subcortical MeshNet output)
+export const LANDMARK_LABEL_INDEX: Record<string, number> = {
+  'Thalamus': 7,
+  'Caudate': 8,
+  'Putamen': 9,
+  'Pallidum': 10,
+  'Hippocampus': 14,
+  'Amygdala': 15,
+  'Brain-Stem': 13,
+  'Cerebellum-White-Matter': 5,
+  'Cerebellum-Cortex': 6,
+  'Lateral-Ventricle': 3,
+  'Inferior-Lateral-Ventricle': 4,
+  '3rd-Ventricle': 11,
+  '4th-Ventricle': 12,
+  'Accumbens-area': 16,
+  'VentralDC': 17,
+};
+
+// Bcmodel colormap arrays (18 entries each, indexed by label)
+export const BCMODEL_COLORMAP = {
+  R: colormapR,
+  G: colormapG,
+  B: colormapB,
+  labels,
+};
+
 export function clampLandmarkToVolume(
   landmark: Landmark,
   dims: [number, number, number],
