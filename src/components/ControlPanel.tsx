@@ -1,7 +1,7 @@
 import type { A2CConfig } from '../agent/A2CAgent';
 import { DEFAULT_A2C_CONFIG } from '../agent/A2CAgent';
 
-export type AgentType = 'dqn' | 'a2c' | 'ppo';
+export type AgentType = 'dqn' | 'a2c' | 'ppo' | 'oracle' | 'random';
 
 interface Props {
   running: boolean;

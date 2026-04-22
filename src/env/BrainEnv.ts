@@ -3,24 +3,32 @@ import type { State, StepResult, Vec3 } from './types';
 
 export let NEIGHBORHOOD_SIZE = 7;
 export let NEIGHBORHOOD_HALF = 3;
-export let NEIGHBORHOOD_TOTAL = NEIGHBORHOOD_SIZE ** 3; // 343
-export let STATE_DIM = NEIGHBORHOOD_TOTAL + 3; // 346
+export let STRIDES = [1];
+export let NEIGHBORHOOD_TOTAL = NEIGHBORHOOD_SIZE ** 3; // 343 per scale
+export let STATE_DIM = NEIGHBORHOOD_TOTAL * STRIDES.length + 3; // (343 * scales) + 3
 
 /**
- * Reconfigure the observation neighborhood size (must be odd). Affects the
+ * Reconfigure the observation neighborhood size and scales. Affects the
  * global STATE_DIM read at runtime by all agents. Must be called before
- * constructing the agent/network for a given experiment. ESM live bindings
- * propagate the update to all importers that dereference these names at
- * runtime (which every current site does, inside methods).
+ * constructing the agent/network for a given experiment.
  */
-export function setNeighborhoodSize(size: number): void {
+export function setObservationConfig(size: number, strides: number[]): void {
   if (size < 3 || size % 2 === 0) {
     throw new Error(`Neighborhood size must be an odd integer >= 3, got ${size}`);
   }
+  if (strides.length === 0) {
+    throw new Error('Strides must be a non-empty array of integers >= 1');
+  }
   NEIGHBORHOOD_SIZE = size;
   NEIGHBORHOOD_HALF = (size - 1) / 2;
+  STRIDES = [...strides];
   NEIGHBORHOOD_TOTAL = size ** 3;
-  STATE_DIM = NEIGHBORHOOD_TOTAL + 3;
+  STATE_DIM = NEIGHBORHOOD_TOTAL * STRIDES.length + 3;
+}
+
+/** @deprecated Use setObservationConfig instead. */
+export function setNeighborhoodSize(size: number): void {
+  setObservationConfig(size, STRIDES);
 }
 const DEFAULT_MAX_STEPS = 200;
 const SUCCESS_RADIUS = 3;
@@ -42,6 +50,27 @@ export interface BrainEnvConfig {
   maxStartDistance?: number;
   /** Ablation: replace direction-to-target vector with zeros in the state. */
   zeroDirection?: boolean;
+  /** Sampling strides (resolutions) for multi-scale observations. */
+  strides?: number[];
+  /**
+   * Multiplier applied to the normalized direction-to-target vector before it
+   * enters the network. Raising this above 1 helps the policy attend to the
+   * 3-dim direction signal when it's concatenated with a large voxel patch.
+   * Default 1 (unscaled).
+   */
+  directionScale?: number;
+}
+
+/**
+ * Curriculum schedule for the starting radius. If set, the runner will call
+ * `env.setMaxStartDistance(r(ep))` before each `reset()`, with
+ *   r(ep) = start + (end - start) * min(1, ep / (annealEpisodes))
+ * Clamped to [start, end].
+ */
+export interface StartDistanceCurriculum {
+  start: number;
+  end: number;
+  annealEpisodes: number;
 }
 
 export class BrainEnv {
@@ -55,6 +84,8 @@ export class BrainEnv {
   private maxSteps: number;
   private maxStartDistance: number;
   private zeroDirection: boolean;
+  private strides: number[];
+  private directionScale: number;
 
   constructor(
     volumeData: ArrayLike<number>,
@@ -70,6 +101,8 @@ export class BrainEnv {
     this.maxSteps = config?.maxSteps ?? DEFAULT_MAX_STEPS;
     this.maxStartDistance = config?.maxStartDistance ?? DEFAULT_MAX_START_DISTANCE;
     this.zeroDirection = config?.zeroDirection ?? false;
+    this.strides = config?.strides ?? [1];
+    this.directionScale = config?.directionScale ?? 1;
 
     // Compute normalization range
     let min = Infinity, max = -Infinity;
@@ -100,6 +133,10 @@ export class BrainEnv {
 
   setTarget(target: Vec3): void {
     this.target = { ...target };
+  }
+
+  setMaxStartDistance(v: number): void {
+    this.maxStartDistance = v;
   }
 
   reset(): State {
@@ -179,28 +216,32 @@ export class BrainEnv {
   }
 
   private getState(): State {
-    const neighborhood = new Float32Array(NEIGHBORHOOD_TOTAL);
-    let i = 0;
-    for (let dz = -NEIGHBORHOOD_HALF; dz <= NEIGHBORHOOD_HALF; dz++) {
-      for (let dy = -NEIGHBORHOOD_HALF; dy <= NEIGHBORHOOD_HALF; dy++) {
-        for (let dx = -NEIGHBORHOOD_HALF; dx <= NEIGHBORHOOD_HALF; dx++) {
-          neighborhood[i++] = this.getVoxel(
-            this.position.x + dx,
-            this.position.y + dy,
-            this.position.z + dz,
-          );
+    const neighborhood = new Float32Array(NEIGHBORHOOD_TOTAL * this.strides.length);
+    let offset = 0;
+    for (const stride of this.strides) {
+      for (let dz = -NEIGHBORHOOD_HALF; dz <= NEIGHBORHOOD_HALF; dz++) {
+        for (let dy = -NEIGHBORHOOD_HALF; dy <= NEIGHBORHOOD_HALF; dy++) {
+          for (let dx = -NEIGHBORHOOD_HALF; dx <= NEIGHBORHOOD_HALF; dx++) {
+            neighborhood[offset++] = this.getVoxel(
+              this.position.x + dx * stride,
+              this.position.y + dy * stride,
+              this.position.z + dz * stride,
+            );
+          }
         }
       }
     }
 
-    // Normalized direction to target (zeroed if ablation enabled)
+    // Normalized direction to target, scaled so it isn't drowned out by the
+    // much-larger voxel patch in the concatenated input (see directionScale).
     const dist = this.distanceToTarget();
+    const k = this.directionScale;
     const direction: [number, number, number] = (this.zeroDirection || dist === 0)
       ? [0, 0, 0]
       : [
-          (this.target.x - this.position.x) / dist,
-          (this.target.y - this.position.y) / dist,
-          (this.target.z - this.position.z) / dist,
+          (k * (this.target.x - this.position.x)) / dist,
+          (k * (this.target.y - this.position.y)) / dist,
+          (k * (this.target.z - this.position.z)) / dist,
         ];
 
     return { neighborhood, direction };
@@ -209,9 +250,9 @@ export class BrainEnv {
   stateToArray(state: State): Float32Array {
     const arr = new Float32Array(STATE_DIM);
     arr.set(state.neighborhood);
-    arr[NEIGHBORHOOD_TOTAL] = state.direction[0];
-    arr[NEIGHBORHOOD_TOTAL + 1] = state.direction[1];
-    arr[NEIGHBORHOOD_TOTAL + 2] = state.direction[2];
+    arr[state.neighborhood.length] = state.direction[0];
+    arr[state.neighborhood.length + 1] = state.direction[1];
+    arr[state.neighborhood.length + 2] = state.direction[2];
     return arr;
   }
 }

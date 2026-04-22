@@ -1,11 +1,13 @@
 import * as tf from '@tensorflow/tfjs';
-import { BrainEnv, setNeighborhoodSize, NEIGHBORHOOD_SIZE } from '../env/BrainEnv';
-import type { BrainEnvConfig } from '../env/BrainEnv';
+import { BrainEnv, setObservationConfig, NEIGHBORHOOD_SIZE, STRIDES } from '../env/BrainEnv';
+import type { BrainEnvConfig, StartDistanceCurriculum } from '../env/BrainEnv';
 import { DQNAgent } from '../agent/DQNAgent';
 import { A2CAgent } from '../agent/A2CAgent';
 import type { A2CConfig } from '../agent/A2CAgent';
 import { PPOAgent } from '../agent/PPOAgent';
 import type { PPOConfig } from '../agent/PPOAgent';
+import { OracleAgent } from '../agent/OracleAgent';
+import { RandomAgent } from '../agent/RandomAgent';
 import { Trajectory } from '../agent/Trajectory';
 import type { Action } from '../env/types';
 import type { Agent } from '../agent/types';
@@ -31,6 +33,10 @@ export interface ExperimentConfig {
   ppoConfig?: Partial<PPOConfig>;
   /** Odd integer >= 3. Sets the observation cube edge length. */
   neighborhoodSize?: number;
+  /** Sampling strides (resolutions) for multi-scale observations. */
+  strides?: number[];
+  /** Optional linear curriculum over episode starting radius. */
+  curriculum?: StartDistanceCurriculum;
 }
 
 export interface ExperimentResult {
@@ -42,9 +48,12 @@ export interface ExperimentResult {
     maxStartDistance?: number;
     maxSteps?: number;
     zeroDirection?: boolean;
+    directionScale?: number;
     neighborhoodSize?: number;
+    strides?: number[];
     a2cConfig?: Partial<A2CConfig>;
     ppoConfig?: Partial<PPOConfig>;
+    curriculum?: StartDistanceCurriculum;
   };
   episodes: EpisodeResult[];
   startTime: string;
@@ -67,12 +76,27 @@ export function configKey(
   agentType: string,
   landmark: string,
   neighborhoodSize?: number,
-  extras?: { trunk?: string; zeroDirection?: boolean },
+  strides?: number[],
+  extras?: {
+    trunk?: string;
+    zeroDirection?: boolean;
+    seed?: number;
+    directionScale?: number;
+    curriculum?: StartDistanceCurriculum;
+  },
 ): string {
   const ns = neighborhoodSize ?? 7;
+  const s = strides ? `s${strides.join(',')}` : 's1';
   const trunk = extras?.trunk ?? 'flat';
   const zd = extras?.zeroDirection ? ':nodir' : '';
-  return `${agentType}:${landmark}:n${ns}:${trunk}${zd}`;
+  const seed = extras?.seed !== undefined ? `:seed${extras.seed}` : '';
+  const ds = extras?.directionScale !== undefined && extras.directionScale !== 1
+    ? `:ds${extras.directionScale}`
+    : '';
+  const cur = extras?.curriculum
+    ? `:cur${extras.curriculum.start}-${extras.curriculum.end}@${extras.curriculum.annealEpisodes}`
+    : '';
+  return `${agentType}:${landmark}:n${ns}:${s}:${trunk}${zd}${ds}${cur}${seed}`;
 }
 
 const SUCCESS_RADIUS = 3;
@@ -103,10 +127,19 @@ export class ExperimentRunner {
     for (let ci = 0; ci < configs.length; ci++) {
       if (this.aborted) break;
       const config = configs[ci];
-      const key = configKey(config.agentType, config.landmark.name, config.neighborhoodSize, {
-        trunk: config.ppoConfig?.trunk,
-        zeroDirection: config.envConfig?.zeroDirection,
-      });
+      const key = configKey(
+        config.agentType,
+        config.landmark.name,
+        config.neighborhoodSize,
+        config.strides ?? config.envConfig?.strides,
+        {
+          trunk: config.ppoConfig?.trunk,
+          zeroDirection: config.envConfig?.zeroDirection,
+          seed: config.seed,
+          directionScale: config.envConfig?.directionScale,
+          curriculum: config.curriculum,
+        },
+      );
 
       // Skip already-completed configs (resume support)
       if (skipKeys?.has(key)) {
@@ -148,18 +181,32 @@ export class ExperimentRunner {
     config: ExperimentConfig,
     onEpisode?: (episode: number) => void,
   ): Promise<ExperimentResult> {
-    // Apply per-experiment neighborhood size BEFORE constructing agents,
+    // Apply per-experiment neighborhood size and strides BEFORE constructing agents,
     // because DQN/A2C/PPO read STATE_DIM at network-build time.
-    if (config.neighborhoodSize && config.neighborhoodSize !== NEIGHBORHOOD_SIZE) {
-      setNeighborhoodSize(config.neighborhoodSize);
-    }
-    const env = new BrainEnv(this.volumeData, this.dims, config.landmark.mniVoxel, config.envConfig);
+    const ns = config.neighborhoodSize ?? NEIGHBORHOOD_SIZE;
+    const s = config.strides ?? config.envConfig?.strides ?? STRIDES;
+    setObservationConfig(ns, s);
+
+    // Ensure env config matches the global strides for sampling consistency.
+    // If a curriculum is set, seed the env's initial maxStartDistance with the
+    // curriculum's starting value so episode 0 begins at the small radius.
+    const envConfig: BrainEnvConfig = {
+      ...config.envConfig,
+      strides: s,
+      ...(config.curriculum ? { maxStartDistance: config.curriculum.start } : {}),
+    };
+
+    const env = new BrainEnv(this.volumeData, this.dims, config.landmark.mniVoxel, envConfig);
 
     let agent: Agent;
     if (config.agentType === 'a2c') {
       agent = await A2CAgent.create(config.a2cConfig);
     } else if (config.agentType === 'ppo') {
       agent = await PPOAgent.create(config.ppoConfig);
+    } else if (config.agentType === 'oracle') {
+      agent = new OracleAgent();
+    } else if (config.agentType === 'random') {
+      agent = new RandomAgent();
     } else {
       agent = new DQNAgent();
     }
@@ -169,6 +216,14 @@ export class ExperimentRunner {
 
     for (let ep = 0; ep < config.numEpisodes; ep++) {
       if (this.aborted) break;
+
+      // Advance curriculum: linearly interpolate start radius over the first
+      // `annealEpisodes` episodes, then hold at `end`.
+      if (config.curriculum) {
+        const { start, end, annealEpisodes } = config.curriculum;
+        const frac = Math.min(1, annealEpisodes > 0 ? ep / annealEpisodes : 1);
+        env.setMaxStartDistance(start + (end - start) * frac);
+      }
 
       const result = await this.runEpisode(env, agent, config.agentType);
       episodes.push({ episode: ep, ...result });
@@ -195,12 +250,15 @@ export class ExperimentRunner {
         agentType: config.agentType,
         numEpisodes: config.numEpisodes,
         seed: config.seed,
-        maxStartDistance: config.envConfig?.maxStartDistance,
-        maxSteps: config.envConfig?.maxSteps,
-        zeroDirection: config.envConfig?.zeroDirection,
-        neighborhoodSize: config.neighborhoodSize ?? NEIGHBORHOOD_SIZE,
+        maxStartDistance: envConfig.maxStartDistance,
+        maxSteps: envConfig.maxSteps,
+        zeroDirection: envConfig.zeroDirection,
+        directionScale: envConfig.directionScale,
+        neighborhoodSize: ns,
+        strides: s,
         a2cConfig: config.a2cConfig,
         ppoConfig: config.ppoConfig,
+        curriculum: config.curriculum,
       },
       episodes,
       startTime,
@@ -309,10 +367,19 @@ export function getCompletedKeys(): Set<string> {
   const results = loadResultsFromStorage();
   return new Set(
     results.map((r) =>
-      configKey(r.config.agentType, r.config.landmark, r.config.neighborhoodSize, {
-        trunk: r.config.ppoConfig?.trunk,
-        zeroDirection: r.config.zeroDirection,
-      }),
+      configKey(
+        r.config.agentType,
+        r.config.landmark,
+        r.config.neighborhoodSize,
+        r.config.strides,
+        {
+          trunk: r.config.ppoConfig?.trunk,
+          zeroDirection: r.config.zeroDirection,
+          seed: r.config.seed,
+          directionScale: r.config.directionScale,
+          curriculum: r.config.curriculum,
+        },
+      ),
     ),
   );
 }

@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { NUM_ACTIONS } from '../env/types';
 import type { State } from '../env/types';
-import { STATE_DIM } from '../env/BrainEnv';
+import { STATE_DIM, STRIDES } from '../env/BrainEnv';
 import type { Agent, AgentActionResult } from './types';
 import { Trajectory } from './Trajectory';
 import { createSplitRLNetwork, createFlatRLNetwork } from './RLNetwork';
@@ -54,8 +54,10 @@ export class A2CAgent implements Agent {
     const fullConfig = { ...DEFAULT_A2C_CONFIG, ...config };
     const agent = new A2CAgent(fullConfig);
 
+    const numScales = STRIDES.length;
+
     if (fullConfig.useConvBackbone) {
-      agent.splitNet = await createSplitRLNetwork();
+      agent.splitNet = await createSplitRLNetwork(numScales);
     } else {
       agent.flatNet = createFlatRLNetwork();
     }
@@ -97,9 +99,10 @@ export class A2CAgent implements Agent {
 
   private selectActionConv(state: State): AgentActionResult {
     const feats = tf.tidy(() => {
+      const ns = this.splitNet!.numScales;
       const neighborhood = tf.tensor(
         Array.from(state.neighborhood),
-        [1, 7, 7, 7, 1],
+        [1, 7, 7, 7, ns],
       );
       return this.extractFeatures(neighborhood);
     });
@@ -172,11 +175,12 @@ export class A2CAgent implements Agent {
     const n = trajectory.length;
 
     const featuresTensor = tf.tidy(() => {
+      const ns = this.splitNet!.numScales;
       const neighborhoods = tf.tensor(
         Array.from({ length: n }, (_, i) =>
           Array.from(trajectory.steps[i].neighborhood),
         ),
-        [n, 7, 7, 7, 1],
+        [n, 7, 7, 7, ns],
       );
       return this.extractFeatures(neighborhoods);
     });

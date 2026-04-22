@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ExperimentRunner,
   downloadResults,
@@ -22,6 +22,29 @@ interface ExperimentPanelProps {
   dims: [number, number, number] | null;
 }
 
+/** Schema for /experiments/<name>.json files. All fields optional. */
+interface ExperimentSpec {
+  name?: string;
+  description?: string;
+  agents?: string[];
+  landmarks?: string[];
+  episodes?: number;
+  replicates?: number;
+  neighborhood?: number;
+  strides?: number[];
+  dirScale?: number | number[];
+  zeroDir?: boolean;
+  maxStartDist?: number;
+  trunk?: 'flat' | 'meshnet' | 'conv';
+  ppo?: { lr?: number; entropy?: number; clip?: number; epochs?: number; mb?: number; roll?: number };
+  a2c?: { lr?: number; entropy?: number };
+  /** Linear curriculum over starting radius: start -> end over anneal episodes. */
+  curriculum?: { start: number; end: number; anneal: number };
+  autorun?: boolean;
+  autodownload?: boolean;
+  clearCache?: boolean;
+}
+
 // Diverse subset: large/deep, small/curved, large/easy, distinct, small/hard
 const DEFAULT_LANDMARKS = [
   'Thalamus',
@@ -31,50 +54,187 @@ const DEFAULT_LANDMARKS = [
   'Putamen',
 ];
 
-const AGENT_TYPES: AgentType[] = ['dqn', 'a2c', 'ppo'];
+const AGENT_TYPES: AgentType[] = ['dqn', 'a2c', 'ppo', 'oracle', 'random'];
 const DEFAULT_EPISODES = 300;
 const DEFAULT_MAX_START_DISTANCE = 50;
-const NEIGHBORHOOD_SIZE_OPTIONS = [5, 7, 9, 11, 13, 15, 19, 25];
+const NEIGHBORHOOD_SIZE_OPTIONS = [3, 5, 7, 9, 11, 13, 15, 19, 25];
 const DEFAULT_NEIGHBORHOOD_SIZE = 7;
+const DEFAULT_STRIDES = '1';
+const DEFAULT_REPLICATES = 3;
+const DEFAULT_DIRECTION_SCALE = 1;
+
+// --- URL query-string helpers --------------------------------------------
+// Supported params (all optional; unset → use default):
+//   agents=ppo,oracle          landmarks=Thalamus,Hippocampus
+//   episodes=600               replicates=3
+//   neighborhood=7             strides=1,4
+//   dirScale=10                zeroDir=1
+//   maxStartDist=50            trunk=flat|meshnet|conv
+//   ppoLr=0.0003  ppoEntropy=0.01  ppoClip=0.2  ppoEpochs=4  ppoMb=64  ppoRoll=4
+//   a2cLr=0.0003  a2cEntropy=0.01
+//   autorun=1                  autodownload=1           clearCache=1
+const URL_PARAMS = typeof window !== 'undefined'
+  ? new URLSearchParams(window.location.search)
+  : new URLSearchParams();
+
+const qNum = (k: string, fallback: number): number => {
+  const v = URL_PARAMS.get(k);
+  const n = v !== null ? Number(v) : NaN;
+  return Number.isFinite(n) ? n : fallback;
+};
+const qStr = (k: string, fallback: string): string => URL_PARAMS.get(k) ?? fallback;
+const qBool = (k: string, fallback: boolean): boolean => {
+  const v = URL_PARAMS.get(k);
+  if (v === null) return fallback;
+  return v === '1' || v === 'true' || v === 'yes';
+};
+const qList = (k: string, fallback: string[]): string[] => {
+  const v = URL_PARAMS.get(k);
+  return v !== null ? v.split(',').map((s) => s.trim()).filter(Boolean) : fallback;
+};
 
 export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelProps) {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState('');
   const [results, setResults] = useState<ExperimentResult[] | null>(null);
-  const [numEpisodes, setNumEpisodes] = useState(DEFAULT_EPISODES);
-  const [selectedAgents, setSelectedAgents] = useState<AgentType[]>(['dqn']);
-  const [selectedLandmarks, setSelectedLandmarks] = useState<string[]>(DEFAULT_LANDMARKS);
-  const [maxStartDistance, setMaxStartDistance] = useState(DEFAULT_MAX_START_DISTANCE);
-  const [neighborhoodSize, setNeighborhoodSize] = useState(DEFAULT_NEIGHBORHOOD_SIZE);
-  const [zeroDirection, setZeroDirection] = useState(false);
-  const [a2cLr, setA2cLr] = useState(DEFAULT_A2C_CONFIG.lr);
-  const [a2cEntropy, setA2cEntropy] = useState(DEFAULT_A2C_CONFIG.entropyCoeff);
+  const [numEpisodes, setNumEpisodes] = useState(() => qNum('episodes', DEFAULT_EPISODES));
+  const [selectedAgents, setSelectedAgents] = useState<AgentType[]>(
+    () => qList('agents', ['dqn']).filter((a): a is AgentType => (AGENT_TYPES as string[]).includes(a)),
+  );
+  const [selectedLandmarks, setSelectedLandmarks] = useState<string[]>(() => qList('landmarks', DEFAULT_LANDMARKS));
+  const [maxStartDistance, setMaxStartDistance] = useState(() => qNum('maxStartDist', DEFAULT_MAX_START_DISTANCE));
+  const [neighborhoodSize, setNeighborhoodSize] = useState(() => qNum('neighborhood', DEFAULT_NEIGHBORHOOD_SIZE));
+  const [stridesInput, setStridesInput] = useState(() => qStr('strides', DEFAULT_STRIDES));
+  const [replicates, setReplicates] = useState(() => Math.max(1, qNum('replicates', DEFAULT_REPLICATES)));
+  const [directionScaleInput, setDirectionScaleInput] = useState(() =>
+    qStr('dirScale', String(DEFAULT_DIRECTION_SCALE)),
+  );
+  const [zeroDirection, setZeroDirection] = useState(() => qBool('zeroDir', false));
+  const [a2cLr, setA2cLr] = useState(() => qNum('a2cLr', DEFAULT_A2C_CONFIG.lr));
+  const [a2cEntropy, setA2cEntropy] = useState(() => qNum('a2cEntropy', DEFAULT_A2C_CONFIG.entropyCoeff));
   const [a2cUseConv, setA2cUseConv] = useState(DEFAULT_A2C_CONFIG.useConvBackbone);
-  const [ppoLr, setPpoLr] = useState(DEFAULT_PPO_CONFIG.lr);
-  const [ppoEntropy, setPpoEntropy] = useState(DEFAULT_PPO_CONFIG.entropyCoeff);
-  const [ppoClipEpsilon, setPpoClipEpsilon] = useState(DEFAULT_PPO_CONFIG.clipEpsilon);
-  const [ppoNumEpochs, setPpoNumEpochs] = useState(DEFAULT_PPO_CONFIG.numEpochs);
-  const [ppoMinibatchSize, setPpoMinibatchSize] = useState(DEFAULT_PPO_CONFIG.minibatchSize);
-  const [ppoRolloutSize, setPpoRolloutSize] = useState(DEFAULT_PPO_CONFIG.rolloutSize);
+  const [ppoLr, setPpoLr] = useState(() => qNum('ppoLr', DEFAULT_PPO_CONFIG.lr));
+  const [ppoEntropy, setPpoEntropy] = useState(() => qNum('ppoEntropy', DEFAULT_PPO_CONFIG.entropyCoeff));
+  const [ppoClipEpsilon, setPpoClipEpsilon] = useState(() => qNum('ppoClip', DEFAULT_PPO_CONFIG.clipEpsilon));
+  const [ppoNumEpochs, setPpoNumEpochs] = useState(() => qNum('ppoEpochs', DEFAULT_PPO_CONFIG.numEpochs));
+  const [ppoMinibatchSize, setPpoMinibatchSize] = useState(() => qNum('ppoMb', DEFAULT_PPO_CONFIG.minibatchSize));
+  const [ppoRolloutSize, setPpoRolloutSize] = useState(() => qNum('ppoRoll', DEFAULT_PPO_CONFIG.rolloutSize));
   const [ppoUseConv, setPpoUseConv] = useState(DEFAULT_PPO_CONFIG.useConvBackbone);
-  const [ppoTrunk, setPpoTrunk] = useState<'flat' | 'meshnet' | 'conv'>(DEFAULT_PPO_CONFIG.trunk ?? 'flat');
+  const [ppoTrunk, setPpoTrunk] = useState<'flat' | 'meshnet' | 'conv'>(
+    () => qStr('trunk', DEFAULT_PPO_CONFIG.trunk ?? 'flat') as 'flat' | 'meshnet' | 'conv',
+  );
+  // Curriculum over starting radius (start, end, annealEpisodes). Unset = off.
+  const [curriculum, setCurriculum] = useState<{ start: number; end: number; anneal: number } | null>(null);
   const runnerRef = useRef<ExperimentRunner | null>(null);
+  const autorunRef = useRef<boolean>(qBool('autorun', false));
+  const autodownloadRef = useRef<boolean>(qBool('autodownload', false));
+  const experimentName = qStr('experiment', '');
+  const [experimentReady, setExperimentReady] = useState<boolean>(experimentName === '');
+  const [experimentSpec, setExperimentSpec] = useState<{ name?: string; description?: string } | null>(null);
+
+  // One-shot cache clear via ?clearCache=1 (runs before first real render uses storage)
+  const clearedRef = useRef(false);
+  if (!clearedRef.current && qBool('clearCache', false)) {
+    clearedRef.current = true;
+    clearStoredResults();
+  }
+
+  // ?experiment=<name> — fetch /experiments/<name>.json and apply its settings
+  useEffect(() => {
+    if (!experimentName) return;
+    let cancelled = false;
+    fetch(`/experiments/${experimentName}.json`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} for /experiments/${experimentName}.json`);
+        return r.json();
+      })
+      .then((spec: ExperimentSpec) => {
+        if (cancelled) return;
+        if (spec.clearCache) clearStoredResults();
+        if (Array.isArray(spec.agents)) {
+          setSelectedAgents(spec.agents.filter((a): a is AgentType => (AGENT_TYPES as string[]).includes(a)));
+        }
+        if (Array.isArray(spec.landmarks)) setSelectedLandmarks(spec.landmarks);
+        if (typeof spec.episodes === 'number') setNumEpisodes(spec.episodes);
+        if (typeof spec.replicates === 'number') setReplicates(Math.max(1, spec.replicates));
+        if (typeof spec.neighborhood === 'number') setNeighborhoodSize(spec.neighborhood);
+        if (Array.isArray(spec.strides)) setStridesInput(spec.strides.join(','));
+        if (typeof spec.dirScale === 'number') setDirectionScaleInput(String(spec.dirScale));
+        else if (Array.isArray(spec.dirScale)) setDirectionScaleInput(spec.dirScale.join(','));
+        if (typeof spec.zeroDir === 'boolean') setZeroDirection(spec.zeroDir);
+        if (typeof spec.maxStartDist === 'number') setMaxStartDistance(spec.maxStartDist);
+        if (spec.trunk === 'flat' || spec.trunk === 'meshnet' || spec.trunk === 'conv') setPpoTrunk(spec.trunk);
+        if (spec.ppo) {
+          if (typeof spec.ppo.lr === 'number') setPpoLr(spec.ppo.lr);
+          if (typeof spec.ppo.entropy === 'number') setPpoEntropy(spec.ppo.entropy);
+          if (typeof spec.ppo.clip === 'number') setPpoClipEpsilon(spec.ppo.clip);
+          if (typeof spec.ppo.epochs === 'number') setPpoNumEpochs(spec.ppo.epochs);
+          if (typeof spec.ppo.mb === 'number') setPpoMinibatchSize(spec.ppo.mb);
+          if (typeof spec.ppo.roll === 'number') setPpoRolloutSize(spec.ppo.roll);
+        }
+        if (spec.a2c) {
+          if (typeof spec.a2c.lr === 'number') setA2cLr(spec.a2c.lr);
+          if (typeof spec.a2c.entropy === 'number') setA2cEntropy(spec.a2c.entropy);
+        }
+        if (spec.curriculum &&
+            typeof spec.curriculum.start === 'number' &&
+            typeof spec.curriculum.end === 'number' &&
+            typeof spec.curriculum.anneal === 'number') {
+          setCurriculum({
+            start: spec.curriculum.start,
+            end: spec.curriculum.end,
+            anneal: spec.curriculum.anneal,
+          });
+        }
+        if (spec.autorun) autorunRef.current = true;
+        if (spec.autodownload) autodownloadRef.current = true;
+        setExperimentSpec({ name: spec.name ?? experimentName, description: spec.description });
+        setExperimentReady(true);
+        console.log(`[experiment] loaded ${experimentName}`, spec);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('[experiment] failed to load', err);
+        setExperimentReady(true); // unblock UI even on failure
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [experimentName]);
+
+  // Parse strides from comma-separated string
+  const strides = stridesInput
+    .split(',')
+    .map((s) => parseInt(s.trim()))
+    .filter((n) => !isNaN(n) && n >= 1);
+
+  // Parse direction scales from comma-separated string (supports sweep)
+  const directionScales = (() => {
+    const parsed = directionScaleInput
+      .split(',')
+      .map((s) => parseFloat(s.trim()))
+      .filter((n) => !isNaN(n) && n >= 0);
+    return parsed.length > 0 ? parsed : [DEFAULT_DIRECTION_SCALE];
+  })();
 
   // Check how many configs are already saved
   const savedResults = loadResultsFromStorage();
   const completedKeys = getCompletedKeys();
 
   const handleRun = useCallback(async () => {
-    if (!volumeData || !dims) return;
+    if (!volumeData || !dims || strides.length === 0) return;
 
     setRunning(true);
     // Merge any previously saved results into state
     const prior = loadResultsFromStorage();
     const skipKeys = new Set(
       prior.map((r) =>
-        configKey(r.config.agentType, r.config.landmark, r.config.neighborhoodSize, {
+        configKey(r.config.agentType, r.config.landmark, r.config.neighborhoodSize, r.config.strides, {
           trunk: r.config.ppoConfig?.trunk,
           zeroDirection: r.config.zeroDirection,
+          seed: r.config.seed,
+          directionScale: r.config.directionScale,
+          curriculum: r.config.curriculum,
         }),
       ),
     );
@@ -100,20 +260,29 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
     };
 
     const configs: ExperimentConfig[] = [];
-    for (const agentType of selectedAgents) {
-      for (const lmName of selectedLandmarks) {
-        const lm = LANDMARKS.find((l) => l.name === lmName);
-        if (!lm) continue;
-        const clamped = clampLandmarkToVolume(lm, dims);
-        configs.push({
-          landmark: clamped,
-          agentType,
-          numEpisodes,
-          envConfig: { maxStartDistance, zeroDirection },
-          neighborhoodSize,
-          ...(agentType === 'a2c' ? { a2cConfig } : {}),
-          ...(agentType === 'ppo' ? { ppoConfig } : {}),
-        });
+    for (const ds of directionScales) {
+      for (const agentType of selectedAgents) {
+        for (const lmName of selectedLandmarks) {
+          const lm = LANDMARKS.find((l) => l.name === lmName);
+          if (!lm) continue;
+          const clamped = clampLandmarkToVolume(lm, dims);
+          for (let seed = 0; seed < replicates; seed++) {
+            configs.push({
+              landmark: clamped,
+              agentType,
+              numEpisodes,
+              seed,
+              envConfig: { maxStartDistance, zeroDirection, directionScale: ds },
+              neighborhoodSize,
+              strides,
+              ...(curriculum
+                ? { curriculum: { start: curriculum.start, end: curriculum.end, annealEpisodes: curriculum.anneal } }
+                : {}),
+              ...(agentType === 'a2c' ? { a2cConfig } : {}),
+              ...(agentType === 'ppo' ? { ppoConfig } : {}),
+            });
+          }
+        }
       }
     }
 
@@ -156,6 +325,9 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
     selectedLandmarks,
     maxStartDistance,
     neighborhoodSize,
+    strides,
+    replicates,
+    directionScaleInput,
     zeroDirection,
     a2cLr,
     a2cEntropy,
@@ -168,11 +340,21 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
     ppoRolloutSize,
     ppoUseConv,
     ppoTrunk,
+    curriculum,
   ]);
 
   const handleAbort = useCallback(() => {
     runnerRef.current?.abort();
   }, []);
+
+  // ?autorun=1 (or experiment spec autorun:true) — kick off handleRun once
+  // the volume is ready AND the experiment spec (if any) has been applied.
+  useEffect(() => {
+    if (autorunRef.current && volumeData && dims && experimentReady && !running) {
+      autorunRef.current = false;
+      void handleRun();
+    }
+  }, [volumeData, dims, experimentReady, running, handleRun]);
 
   const handleDownload = useCallback(() => {
     // Download from localStorage (includes all saved results)
@@ -183,6 +365,14 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
       downloadResults(results);
     }
   }, [results]);
+
+  // ?autodownload=1 — trigger download once the run finishes
+  useEffect(() => {
+    if (autodownloadRef.current && !autorunRef.current && !running && results) {
+      autodownloadRef.current = false;
+      handleDownload();
+    }
+  }, [results, running, handleDownload]);
 
   const handleClearCache = useCallback(() => {
     if (confirm('Clear all saved experiment results from cache?')) {
@@ -205,21 +395,39 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   };
 
   // Count how many of the currently selected configs are already done
-  const totalSelected = selectedAgents.length * selectedLandmarks.length;
+  const totalSelected =
+    directionScales.length * selectedAgents.length * selectedLandmarks.length * replicates;
+  const curriculumForKey = curriculum
+    ? { start: curriculum.start, end: curriculum.end, annealEpisodes: curriculum.anneal }
+    : undefined;
   const alreadyDone = selectedAgents.reduce((count, agent) => {
-    const extras = { trunk: agent === 'ppo' ? ppoTrunk : undefined, zeroDirection };
-    return (
-      count +
-      selectedLandmarks.filter((lm) =>
-        completedKeys.has(configKey(agent, lm, neighborhoodSize, extras)),
-      ).length
-    );
+    const trunk = agent === 'ppo' ? ppoTrunk : undefined;
+    let agentCount = 0;
+    for (const ds of directionScales) {
+      for (const lm of selectedLandmarks) {
+        for (let seed = 0; seed < replicates; seed++) {
+          if (completedKeys.has(configKey(agent, lm, neighborhoodSize, strides, {
+            trunk, zeroDirection, seed, directionScale: ds, curriculum: curriculumForKey,
+          }))) {
+            agentCount++;
+          }
+        }
+      }
+    }
+    return count + agentCount;
   }, 0);
   const remaining = totalSelected - alreadyDone;
 
   return (
     <div style={{ padding: '8px 0' }}>
       <h3 style={{ margin: '0 0 8px' }}>Experiments</h3>
+
+      {experimentSpec && (
+        <div style={{ marginBottom: 8, padding: '6px 8px', background: '#e3f2fd', borderRadius: 4, fontSize: 12 }}>
+          <div><strong>Loaded:</strong> {experimentSpec.name}</div>
+          {experimentSpec.description && <div style={{ color: '#555' }}>{experimentSpec.description}</div>}
+        </div>
+      )}
 
       <div style={{ marginBottom: 8 }}>
         <label style={{ fontSize: 13 }}>
@@ -237,9 +445,9 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
         </label>
       </div>
 
-      <div style={{ marginBottom: 8 }}>
+      <div style={{ marginBottom: 8, display: 'flex', gap: 16 }}>
         <label style={{ fontSize: 13 }}>
-          Neighborhood size (voxels, odd):{' '}
+          Neighborhood:{' '}
           <select
             value={neighborhoodSize}
             onChange={(e) => setNeighborhoodSize(Number(e.target.value))}
@@ -248,14 +456,51 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
           >
             {NEIGHBORHOOD_SIZE_OPTIONS.map((n) => (
               <option key={n} value={n}>
-                {n}³ ({n ** 3} voxels)
+                {n}³
               </option>
             ))}
           </select>
         </label>
+
+        <label style={{ fontSize: 13 }}>
+          Strides (e.g. 1,2,4):{' '}
+          <input
+            type="text"
+            value={stridesInput}
+            onChange={(e) => setStridesInput(e.target.value)}
+            placeholder="1"
+            style={{ width: 60 }}
+            disabled={running}
+          />
+        </label>
+
+        <label style={{ fontSize: 13 }}>
+          Replicates:{' '}
+          <input
+            type="number"
+            value={replicates}
+            onChange={(e) => setReplicates(Math.max(1, Number(e.target.value)))}
+            min={1}
+            max={20}
+            step={1}
+            style={{ width: 50 }}
+            disabled={running}
+          />
+        </label>
       </div>
 
-      <div style={{ marginBottom: 8 }}>
+      <div style={{ marginBottom: 8, display: 'flex', gap: 16, alignItems: 'center' }}>
+        <label style={{ fontSize: 13 }}>
+          Direction scale (sweep: 10,30,100):{' '}
+          <input
+            type="text"
+            value={directionScaleInput}
+            onChange={(e) => setDirectionScaleInput(e.target.value)}
+            placeholder="1"
+            style={{ width: 100 }}
+            disabled={running || zeroDirection}
+          />
+        </label>
         <label style={{ fontSize: 13 }}>
           <input
             type="checkbox"
@@ -263,7 +508,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
             onChange={(e) => setZeroDirection(e.target.checked)}
             disabled={running}
           />
-          Zero direction vector (ablation)
+          Zero direction (ablation)
         </label>
       </div>
 
@@ -278,9 +523,14 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
             max={200}
             step={10}
             style={{ width: 70 }}
-            disabled={running}
+            disabled={running || !!curriculum}
           />
         </label>
+        {curriculum && (
+          <span style={{ marginLeft: 8, fontSize: 12, color: '#2a7' }}>
+            curriculum active: {curriculum.start} → {curriculum.end} over {curriculum.anneal} eps
+          </span>
+        )}
       </div>
 
       <div style={{ marginBottom: 8 }}>
@@ -453,28 +703,38 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 13, fontWeight: 'bold', marginBottom: 4 }}>Landmarks:</div>
         <div style={{ maxHeight: 150, overflowY: 'auto', fontSize: 12 }}>
-          {LANDMARKS.map((lm) => (
-            <label key={lm.name} style={{ display: 'block' }}>
-              <input
-                type="checkbox"
-                checked={selectedLandmarks.includes(lm.name)}
-                onChange={() => toggleLandmark(lm.name)}
-                disabled={running}
-              />
-              {lm.name}
-              {completedKeys.has(
-                configKey(selectedAgents[0] ?? '', lm.name, neighborhoodSize, {
-                  trunk: selectedAgents[0] === 'ppo' ? ppoTrunk : undefined,
-                  zeroDirection,
-                }),
-              ) && ' (cached)'}
-            </label>
-          ))}
+          {LANDMARKS.map((lm) => {
+            const agent = selectedAgents[0] ?? '';
+            const trunk = agent === 'ppo' ? ppoTrunk : undefined;
+            let cached = 0;
+            for (const ds of directionScales) {
+              for (let seed = 0; seed < replicates; seed++) {
+                if (completedKeys.has(configKey(agent, lm.name, neighborhoodSize, strides, {
+                  trunk, zeroDirection, seed, directionScale: ds, curriculum: curriculumForKey,
+                }))) {
+                  cached++;
+                }
+              }
+            }
+            const totalPerLm = directionScales.length * replicates;
+            return (
+              <label key={lm.name} style={{ display: 'block' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedLandmarks.includes(lm.name)}
+                  onChange={() => toggleLandmark(lm.name)}
+                  disabled={running}
+                />
+                {lm.name}
+                {cached > 0 && ` (${cached}/${totalPerLm} cached)`}
+              </label>
+            );
+          })}
         </div>
       </div>
 
       <div style={{ marginBottom: 8, fontSize: 12, color: '#888' }}>
-        Total: {totalSelected} configs x {numEpisodes} episodes
+        Total: {directionScales.length}×{selectedAgents.length}×{selectedLandmarks.length}×{replicates} = {totalSelected} configs × {numEpisodes} episodes
         {alreadyDone > 0 && (
           <span style={{ color: '#2a7' }}> — {alreadyDone} cached, {remaining} remaining</span>
         )}

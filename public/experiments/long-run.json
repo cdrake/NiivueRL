@@ -1,0 +1,18 @@
+{
+  "name": "long-run",
+  "description": "Long training run at dirScale=10 to see PPO asymptote. 2 landmarks x 3 seeds x 1000 eps.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 1000,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 64, "roll": 4 },
+  "autorun": true,
+  "autodownload": true,
+  "clearCache": true
+}

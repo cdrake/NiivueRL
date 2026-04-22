@@ -12,13 +12,12 @@ export interface RLNetworkOutputs {
  * A2C network split into two parts:
  * - featureExtractor: frozen pretrained conv layers (run outside gradient tape)
  * - headModel: trainable dense + policy/value heads
- *
- * This avoids TF.js's lack of gradient support for dilated conv3d.
  */
 export interface SplitRLNetwork {
   featureExtractor: tf.LayersModel;
   headModel: tf.LayersModel;
   featureDim: number;
+  numScales: number;
 }
 
 /** Flat A2C network — no conv backbone, same 346-dim input as DQN. */
@@ -28,15 +27,15 @@ export interface FlatRLNetwork {
 
 /**
  * Trainable end-to-end 3D conv actor-critic. Two inputs: neighborhood
- * cube (n,n,n,1) and direction (3). Outputs: [policy(6), value(1)].
- * Two trainable 3x3x3 conv layers with 16 filters, maxpool/2, then dense heads.
+ * cube (n,n,n,num_scales) and direction (3). Outputs: [policy(6), value(1)].
  */
 export interface ConvRLNetwork {
   model: tf.LayersModel;
   neighborhoodSize: number;
+  numScales: number;
 }
 
-export async function createSplitRLNetwork(): Promise<SplitRLNetwork> {
+export async function createSplitRLNetwork(numScales: number = 1): Promise<SplitRLNetwork> {
   // Load bcmodel and extract conv weights
   const bcmodel = await loadBcmodel('/subcortical.bcmodel');
 
@@ -54,7 +53,7 @@ export async function createSplitRLNetwork(): Promise<SplitRLNetwork> {
   const conv1WeightT = transposeConvKernel(conv1Weight.data, conv1Weight.shape);
 
   // --- Feature extractor (frozen) ---
-  const neighborhoodInput = tf.input({ shape: [7, 7, 7, 1], name: 'neighborhood' });
+  const neighborhoodInput = tf.input({ shape: [7, 7, 7, numScales], name: 'neighborhood' });
 
   const conv0 = tf.layers.conv3d({
     filters: conv0WeightT.shape[4],
@@ -84,11 +83,22 @@ export async function createSplitRLNetwork(): Promise<SplitRLNetwork> {
     name: 'feature_extractor',
   });
 
-  // Set pretrained weights
-  featureExtractor.getLayer('conv0').setWeights([
-    tf.tensor(conv0WeightT.data, conv0WeightT.shape),
-    tf.tensor(conv0Bias.data, conv0Bias.shape),
-  ]);
+  // Set pretrained weights for conv0
+  // If numScales > 1, first channel gets weights, others are zeroed.
+  const c0w = tf.tensor(conv0WeightT.data, conv0WeightT.shape);
+  const c0b = tf.tensor(conv0Bias.data, conv0Bias.shape);
+
+  let effectiveC0w = c0w;
+  if (numScales > 1) {
+    const shape = [...conv0WeightT.shape];
+    shape[3] = numScales;
+    const zeros = tf.zeros(shape);
+    // Slice first channel
+    const slice = zeros.slice([0, 0, 0, 1, 0], [3, 3, 3, numScales - 1, 16]);
+    effectiveC0w = tf.concat([c0w, slice], 3);
+  }
+
+  featureExtractor.getLayer('conv0').setWeights([effectiveC0w, c0b]);
   featureExtractor.getLayer('conv1').setWeights([
     tf.tensor(conv1WeightT.data, conv1WeightT.shape),
     tf.tensor(conv1Bias.data, conv1Bias.shape),
@@ -132,11 +142,11 @@ export async function createSplitRLNetwork(): Promise<SplitRLNetwork> {
     name: 'head_model',
   });
 
-  return { featureExtractor, headModel, featureDim };
+  return { featureExtractor, headModel, featureDim, numScales };
 }
 
-export function createConvRLNetwork(size: number): ConvRLNetwork {
-  const nbrInput = tf.input({ shape: [size, size, size, 1], name: 'neighborhood' });
+export function createConvRLNetwork(size: number, numScales: number = 1): ConvRLNetwork {
+  const nbrInput = tf.input({ shape: [size, size, size, numScales], name: 'neighborhood' });
   const dirInput = tf.input({ shape: [3], name: 'direction' });
 
   let x = tf.layers.conv3d({
@@ -167,7 +177,7 @@ export function createConvRLNetwork(size: number): ConvRLNetwork {
     outputs: [policyOutput, valueOutput],
     name: 'conv_ac',
   });
-  return { model, neighborhoodSize: size };
+  return { model, neighborhoodSize: size, numScales };
 }
 
 export function createFlatRLNetwork(): FlatRLNetwork {

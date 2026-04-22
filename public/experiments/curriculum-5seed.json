@@ -1,0 +1,18 @@
+{
+  "name": "curriculum-5seed",
+  "description": "PPO with start-radius curriculum (20 -> 50 over 150 eps), bigger rollouts, 5 seeds. 2 landmarks x 5 seeds x 300 eps.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 300,
+  "replicates": 5,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 256, "roll": 16 },
+  "curriculum": { "start": 20, "end": 50, "anneal": 150 },
+  "autorun": true,
+  "autodownload": true
+}

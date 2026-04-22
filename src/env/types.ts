@@ -18,7 +18,8 @@ export interface Vec3 {
 }
 
 export interface State {
-  neighborhood: Float32Array; // 7x7x7 = 343 voxel values
+  /** Concatenated neighborhood patches. If strides=[1, 2], contains 2 * size^3 voxels. */
+  neighborhood: Float32Array;
   direction: [number, number, number]; // normalized direction to target
 }
 

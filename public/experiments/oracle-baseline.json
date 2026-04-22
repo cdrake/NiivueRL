@@ -1,0 +1,17 @@
+{
+  "name": "oracle-baseline",
+  "description": "Sanity check: oracle + random baselines only. Oracle should get ~100% success, random ~0%. Confirms the env is sound.",
+  "agents": ["oracle", "random"],
+  "landmarks": ["Thalamus", "Hippocampus", "Lateral-Ventricle", "Brain-Stem", "Putamen"],
+  "episodes": 100,
+  "replicates": 1,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 1,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "autorun": true,
+  "autodownload": true,
+  "clearCache": true
+}

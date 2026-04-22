@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Large neuroimaging datasets (pulled via scripts, not committed)
+/data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

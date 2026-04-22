@@ -1,0 +1,18 @@
+{
+  "name": "dirscale-sweep",
+  "description": "Sweep direction scale to find the sweet spot for PPO. dirScale in {10, 30, 100} x 2 landmarks x 3 seeds x 300 eps.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 300,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": [10, 30, 100],
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 64, "roll": 4 },
+  "autorun": true,
+  "autodownload": true,
+  "clearCache": true
+}

@@ -1,0 +1,18 @@
+{
+  "name": "multiscale",
+  "description": "Compare PPO flat with strides=[1] vs strides=[1,4] (multi-scale observation). Uses dirScale=10 to let the agent actually learn.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 600,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1, 4],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 64, "roll": 4 },
+  "autorun": true,
+  "autodownload": true,
+  "clearCache": false
+}

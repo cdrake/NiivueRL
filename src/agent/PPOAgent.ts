@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { NUM_ACTIONS } from '../env/types';
 import type { State } from '../env/types';
-import { STATE_DIM, NEIGHBORHOOD_SIZE } from '../env/BrainEnv';
+import { STATE_DIM, NEIGHBORHOOD_SIZE, STRIDES } from '../env/BrainEnv';
 import type { Agent, AgentActionResult } from './types';
 import { Trajectory } from './Trajectory';
 import type { TrajectoryStep } from './Trajectory';
@@ -79,10 +79,12 @@ export class PPOAgent implements Agent {
     fullConfig.trunk = trunk;
     const agent = new PPOAgent(fullConfig);
 
+    const numScales = STRIDES.length;
+
     if (trunk === 'meshnet') {
-      agent.splitNet = await createSplitRLNetwork();
+      agent.splitNet = await createSplitRLNetwork(numScales);
     } else if (trunk === 'conv') {
-      agent.convNet = createConvRLNetwork(NEIGHBORHOOD_SIZE);
+      agent.convNet = createConvRLNetwork(NEIGHBORHOOD_SIZE, numScales);
     } else {
       agent.flatNet = createFlatRLNetwork();
     }
@@ -104,7 +106,8 @@ export class PPOAgent implements Agent {
   private selectActionTrainableConv(state: State): AgentActionResult {
     return tf.tidy(() => {
       const size = this.convNet!.neighborhoodSize;
-      const nbr = tf.tensor(Array.from(state.neighborhood), [1, size, size, size, 1]);
+      const ns = this.convNet!.numScales;
+      const nbr = tf.tensor(Array.from(state.neighborhood), [1, size, size, size, ns]);
       const dir = tf.tensor2d([state.direction], [1, 3]);
       const [policyTensor, valueTensor] = this.convNet!.model.predict([nbr, dir]) as tf.Tensor[];
       const probs = policyTensor.dataSync() as Float32Array;
@@ -137,9 +140,10 @@ export class PPOAgent implements Agent {
 
   private selectActionConv(state: State): AgentActionResult {
     const feats = tf.tidy(() => {
+      const ns = this.splitNet!.numScales;
       const neighborhood = tf.tensor(
         Array.from(state.neighborhood),
-        [1, 7, 7, 7, 1],
+        [1, 7, 7, 7, ns],
       );
       return this.extractFeatures(neighborhood);
     });
@@ -207,9 +211,10 @@ export class PPOAgent implements Agent {
     let featuresTensor: tf.Tensor | null = null;
     if (this.splitNet) {
       featuresTensor = tf.tidy(() => {
+        const ns = this.splitNet!.numScales;
         const neighborhoods = tf.tensor(
           pooledSteps.map((s) => Array.from(s.neighborhood)),
-          [n, 7, 7, 7, 1],
+          [n, 7, 7, 7, ns],
         );
         return this.extractFeatures(neighborhoods);
       });
@@ -280,11 +285,12 @@ export class PPOAgent implements Agent {
       valueTensor = out[1];
     } else if (this.convNet) {
       const size = this.convNet.neighborhoodSize;
-      const flat = new Float32Array(bs * size * size * size);
+      const ns = this.convNet.numScales;
+      const flat = new Float32Array(bs * size * size * size * ns);
       for (let b = 0; b < bs; b++) {
-        flat.set(pooledSteps[batchIdx[b]].neighborhood, b * size * size * size);
+        flat.set(pooledSteps[batchIdx[b]].neighborhood, b * size * size * size * ns);
       }
-      const neighborhoods = tf.tensor(flat, [bs, size, size, size, 1]);
+      const neighborhoods = tf.tensor(flat, [bs, size, size, size, ns]);
       const directions = tf.tensor2d(
         batchIdx.map((i) => pooledSteps[i].direction),
         [bs, 3],
