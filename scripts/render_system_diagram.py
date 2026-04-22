@@ -126,11 +126,11 @@ def panel_mdp(ax):
         '#E3F2FD')
     # Environment box (bottom-right).
     box((6.4, 1.2), 3.2, 2.0,
-        'environment\n(step action, clamp)',
+        'environment\nstep action\nclamp to volume',
         '#FFF3E0')
     # Reward box (bottom-left).
     box((0.4, 1.2), 3.2, 2.0,
-        'reward $r_t$\n$-(d_{t+1}\\!-\\!d_t) - 0.1\\ (+10\\text{ on success})$',
+        'reward $r_t$\n$-(d_{t+1}\\!-\\!d_t) - 0.1$\n$+10$ on success',
         '#FCE4EC')
 
     # Arrows between boxes.

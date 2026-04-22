@@ -1,0 +1,18 @@
+{
+  "name": "singlescale-600",
+  "description": "Matched-budget control for the multi-scale comparison: PPO flat with strides=[1], 600 episodes, 3 seeds, dirScale=10. Pairs with multiscale.json (strides=[1,4]) so the only varying knob is the strides set.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 600,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 64, "roll": 4 },
+  "autorun": true,
+  "autodownload": true,
+  "clearCache": false
+}
