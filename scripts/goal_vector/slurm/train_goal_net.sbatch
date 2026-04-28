@@ -48,22 +48,29 @@ SEED="${SEED:-0}"
 HIERARCHICAL="${HIERARCHICAL:-0}"
 SAVE_TAG="${SAVE_TAG:-theia_$(date +%Y%m%d_%H%M%S)}"
 
-# ---- Module + venv setup ---------------------------------------------------
-# Theia HPC (USC RC, lmod). Anaconda's Python ships a venv-capable python3,
-# and the pip-installed `tensorflow[and-cuda]` bundles its own CUDA + cuDNN
-# (compatible with the node's NVIDIA driver), so we don't need a system CUDA
-# module.
-module purge
-module load shared
-module load python3/anaconda/3.12
+# ---- Python + venv setup ---------------------------------------------------
+# Theia HPC (USC RC). The anaconda module loads on the login node only; the
+# compute nodes can't resolve "python3/anaconda/3.12". The install itself
+# lives on shared filesystem, so we call it by absolute path. The pip-
+# installed `tensorflow[and-cuda]` bundles its own CUDA + cuDNN compatible
+# with the node's NVIDIA driver, so no CUDA module is needed.
+ANACONDA_PY=/home/apps/anaconda/3.12/bin/python3
+if [[ ! -x "${ANACONDA_PY}" ]]; then
+    echo "ERROR: ${ANACONDA_PY} not visible from this node ($(hostname))." >&2
+    echo "  Compute nodes may not share /home/apps; ask RC for an alternate path." >&2
+    exit 1
+fi
 
-REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+# Slurm copies the batch script to a spool dir, so $0 doesn't resolve to the
+# repo. Use $SLURM_SUBMIT_DIR (the directory where `sbatch` was called from)
+# and fall back to the path-based resolution for direct shell testing.
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
 cd "${REPO_ROOT}"
 
 VENV="${REPO_ROOT}/.venv-theia"
 if [[ ! -d "${VENV}" ]]; then
-    echo "[setup] creating venv at ${VENV}"
-    python3 -m venv "${VENV}"
+    echo "[setup] creating venv at ${VENV} from ${ANACONDA_PY}"
+    "${ANACONDA_PY}" -m venv "${VENV}"
     "${VENV}/bin/pip" install --upgrade pip
     "${VENV}/bin/pip" install \
         "tensorflow[and-cuda]==2.19.*" \
@@ -79,15 +86,21 @@ echo "[env] python: $(which python)  ($(python --version))"
 echo "[env] tf: $(python -c 'import tensorflow as tf; print(tf.__version__)')"
 python -c "import tensorflow as tf; print('[env] GPUs visible:', tf.config.list_physical_devices('GPU'))"
 
-# ---- Stage data ------------------------------------------------------------
+# ---- Verify data is pre-staged --------------------------------------------
+# Theia compute nodes have unreliable outbound network, so we don't try to
+# download AOMIC from S3 here. Run scripts/goal_vector/download.py on the
+# login node first; this job just asserts the staged subjects are present.
 DATA_DIR="${REPO_ROOT}/data/aomic_id1000"
-N_PRESENT="$(find "${DATA_DIR}" -mindepth 2 -name aseg.mgz 2>/dev/null | wc -l | tr -d ' ' || echo 0)"
-if [[ "${N_PRESENT}" -lt "${N_SUBJECTS}" ]]; then
-    echo "[data] have ${N_PRESENT}/${N_SUBJECTS} subjects, downloading the rest..."
-    python scripts/goal_vector/download.py --n "${N_SUBJECTS}" --start 1 --workers 8
-else
-    echo "[data] ${N_PRESENT} subjects already staged at ${DATA_DIR}"
+mkdir -p "${DATA_DIR}"
+N_PRESENT=$(find "${DATA_DIR}" -mindepth 2 -name aseg.mgz 2>/dev/null | wc -l)
+N_PRESENT=$((N_PRESENT))  # normalize whitespace + force integer
+if [ "${N_PRESENT}" -lt "${N_SUBJECTS}" ]; then
+    echo "ERROR: only ${N_PRESENT}/${N_SUBJECTS} subjects staged at ${DATA_DIR}." >&2
+    echo "  Pre-stage on the login node before sbatch:" >&2
+    echo "    cd ${REPO_ROOT} && .venv-theia/bin/python scripts/goal_vector/download.py --n ${N_SUBJECTS} --workers 8" >&2
+    exit 1
 fi
+echo "[data] ${N_PRESENT} subjects staged at ${DATA_DIR}"
 
 # ---- Train -----------------------------------------------------------------
 SAVE_DIR="${REPO_ROOT}/models/goal_vector_${SAVE_TAG}"

@@ -15,6 +15,7 @@
   "curriculum": { "start": 20, "end": 50, "anneal": 150 },
   "goalVector": "predicted",
   "goalVectorModelUrl": "/goal_vector_model",
+  "collapse": { "atEp": 100, "window": 50, "minSucc": 0.05, "maxRestarts": 2 },
   "autorun": true,
   "autodownload": true
 }

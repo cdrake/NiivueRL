@@ -24,6 +24,17 @@ export interface EpisodeResult {
   epsilon: number;
 }
 
+export interface CollapseDetection {
+  /** 1-based episode number at which to evaluate collapse (e.g. 100 = after 100 eps). */
+  checkAtEpisode: number;
+  /** Window size for the success-rate check (last N eps before checkAtEpisode). */
+  window: number;
+  /** Minimum success rate (0..1) required to *not* be considered collapsed. */
+  minSuccessRate: number;
+  /** Maximum number of restarts before accepting the collapsed run as-is. */
+  maxRestarts: number;
+}
+
 export interface ExperimentConfig {
   landmark: Landmark;
   agentType: AgentType;
@@ -44,6 +55,12 @@ export interface ExperimentConfig {
    * one-hot index from the model's metadata.
    */
   goalVectorModel?: GoalVectorModel | null;
+  /**
+   * If set, evaluate the per-seed run for collapse at `checkAtEpisode` and
+   * restart with a fresh agent (same seed label, fresh weight init) up to
+   * `maxRestarts` times. Final reported episodes are from the last attempt.
+   */
+  collapseDetection?: CollapseDetection;
 }
 
 export interface ExperimentResult {
@@ -62,6 +79,9 @@ export interface ExperimentResult {
     ppoConfig?: Partial<PPOConfig>;
     curriculum?: StartDistanceCurriculum;
     goalVector?: 'predicted' | 'oracle' | 'zero';
+    collapseDetection?: CollapseDetection;
+    /** Number of times this seed was restarted by collapse detection. */
+    restarts?: number;
   };
   episodes: EpisodeResult[];
   startTime: string;
@@ -228,47 +248,83 @@ export class ExperimentRunner {
 
     const env = new BrainEnv(this.volumeData, this.dims, config.landmark.mniVoxel, envConfig);
 
-    let agent: Agent;
-    if (config.agentType === 'a2c') {
-      agent = await A2CAgent.create(config.a2cConfig);
-    } else if (config.agentType === 'ppo') {
-      agent = await PPOAgent.create(config.ppoConfig);
-    } else if (config.agentType === 'oracle') {
-      agent = new OracleAgent();
-    } else if (config.agentType === 'random') {
-      agent = new RandomAgent();
-    } else {
-      agent = new DQNAgent();
-    }
+    const buildAgent = async (): Promise<Agent> => {
+      if (config.agentType === 'a2c') return A2CAgent.create(config.a2cConfig);
+      if (config.agentType === 'ppo') return PPOAgent.create(config.ppoConfig);
+      if (config.agentType === 'oracle') return new OracleAgent();
+      if (config.agentType === 'random') return new RandomAgent();
+      return new DQNAgent();
+    };
 
-    const episodes: EpisodeResult[] = [];
+    const collapseCfg = config.collapseDetection;
     const startTime = new Date().toISOString();
 
-    for (let ep = 0; ep < config.numEpisodes; ep++) {
-      if (this.aborted) break;
+    let agent: Agent = await buildAgent();
+    let episodes: EpisodeResult[] = [];
+    let restarts = 0;
+    let restartTriggered = false;
 
-      // Advance curriculum: linearly interpolate start radius over the first
-      // `annealEpisodes` episodes, then hold at `end`.
-      if (config.curriculum) {
-        const { start, end, annealEpisodes } = config.curriculum;
-        const frac = Math.min(1, annealEpisodes > 0 ? ep / annealEpisodes : 1);
-        env.setMaxStartDistance(start + (end - start) * frac);
+    // Outer attempts loop: reruns from episode 0 with a fresh agent if the
+    // current attempt is flagged as collapsed at `collapseCfg.checkAtEpisode`.
+    // Without `collapseDetection`, this runs exactly once.
+    while (true) {
+      restartTriggered = false;
+      episodes = [];
+
+      for (let ep = 0; ep < config.numEpisodes; ep++) {
+        if (this.aborted) break;
+
+        // Advance curriculum: linearly interpolate start radius over the first
+        // `annealEpisodes` episodes, then hold at `end`.
+        if (config.curriculum) {
+          const { start, end, annealEpisodes } = config.curriculum;
+          const frac = Math.min(1, annealEpisodes > 0 ? ep / annealEpisodes : 1);
+          env.setMaxStartDistance(start + (end - start) * frac);
+        }
+
+        const result = await this.runEpisode(env, agent, config.agentType);
+        episodes.push({ episode: ep, ...result });
+        agent.decayEpsilon();
+
+        console.log(
+          `[${config.agentType.toUpperCase()} ${config.landmark.name}] ep ${ep} reward=${result.totalReward.toFixed(2)} dist=${result.finalDistance.toFixed(1)} steps=${result.steps}${result.success ? ' SUCCESS' : ''}`,
+        );
+
+        onEpisode?.(ep);
+
+        // Yield to UI every 5 episodes so the browser doesn't freeze
+        if (ep % 5 === 0) {
+          await new Promise((r) => setTimeout(r, 0));
+        }
+
+        // Collapse detection: at the configured checkpoint, look back over
+        // `window` episodes and restart if success rate is below threshold.
+        if (
+          collapseCfg &&
+          restarts < collapseCfg.maxRestarts &&
+          ep + 1 === collapseCfg.checkAtEpisode
+        ) {
+          const w = Math.min(collapseCfg.window, episodes.length);
+          const recent = episodes.slice(-w);
+          const succ = recent.filter((e) => e.success).length / recent.length;
+          if (succ < collapseCfg.minSuccessRate) {
+            console.warn(
+              `[collapse] ${config.agentType.toUpperCase()} ${config.landmark.name} seed=${config.seed} ` +
+                `attempt=${restarts + 1} ep=${ep + 1} succ=${(succ * 100).toFixed(1)}% < ` +
+                `${(collapseCfg.minSuccessRate * 100).toFixed(1)}% — restarting with fresh agent`,
+            );
+            restarts++;
+            restartTriggered = true;
+            break;
+          }
+        }
       }
 
-      const result = await this.runEpisode(env, agent, config.agentType);
-      episodes.push({ episode: ep, ...result });
-      agent.decayEpsilon();
+      if (this.aborted || !restartTriggered) break;
 
-      console.log(
-        `[${config.agentType.toUpperCase()} ${config.landmark.name}] ep ${ep} reward=${result.totalReward.toFixed(2)} dist=${result.finalDistance.toFixed(1)} steps=${result.steps}${result.success ? ' SUCCESS' : ''}`,
-      );
-
-      onEpisode?.(ep);
-
-      // Yield to UI every 5 episodes so the browser doesn't freeze
-      if (ep % 5 === 0) {
-        await new Promise((r) => setTimeout(r, 0));
-      }
+      // Tear down the collapsed agent and rebuild for the next attempt.
+      agent.dispose();
+      agent = await buildAgent();
     }
 
     const endTime = new Date().toISOString();
@@ -290,6 +346,7 @@ export class ExperimentRunner {
         ppoConfig: config.ppoConfig,
         curriculum: config.curriculum,
         goalVector: this.goalVectorLabel(config),
+        ...(collapseCfg ? { collapseDetection: collapseCfg, restarts } : {}),
       },
       episodes,
       startTime,

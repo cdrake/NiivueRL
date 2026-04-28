@@ -55,6 +55,13 @@ interface ExperimentSpec {
   goalVector?: GoalVectorMode;
   /** URL prefix for the tfjs goal-vector model directory (model.json + metadata.json). */
   goalVectorModelUrl?: string;
+  /**
+   * Per-seed collapse detection: if the success rate over the last `window`
+   * episodes at episode `atEp` is below `minSucc`, dispose the agent and
+   * restart from episode 0 with a fresh weight init, up to `maxRestarts`
+   * times. Reported episodes come from the final attempt only.
+   */
+  collapse?: { atEp: number; window: number; minSucc: number; maxRestarts: number };
   autorun?: boolean;
   autodownload?: boolean;
   clearCache?: boolean;
@@ -142,6 +149,13 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   );
   // Curriculum over starting radius (start, end, annealEpisodes). Unset = off.
   const [curriculum, setCurriculum] = useState<{ start: number; end: number; anneal: number } | null>(null);
+  // Per-seed collapse detection. Unset = off.
+  const [collapseDetection, setCollapseDetection] = useState<{
+    checkAtEpisode: number;
+    window: number;
+    minSuccessRate: number;
+    maxRestarts: number;
+  } | null>(null);
   // Goal-vector source: oracle (default), predicted (CNN), or zero (ablation).
   const [goalVectorMode, setGoalVectorMode] = useState<GoalVectorMode>(() =>
     (qStr('goalVector', 'oracle') as GoalVectorMode),
@@ -213,6 +227,18 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
             start: spec.curriculum.start,
             end: spec.curriculum.end,
             anneal: spec.curriculum.anneal,
+          });
+        }
+        if (spec.collapse &&
+            typeof spec.collapse.atEp === 'number' &&
+            typeof spec.collapse.window === 'number' &&
+            typeof spec.collapse.minSucc === 'number' &&
+            typeof spec.collapse.maxRestarts === 'number') {
+          setCollapseDetection({
+            checkAtEpisode: spec.collapse.atEp,
+            window: spec.collapse.window,
+            minSuccessRate: spec.collapse.minSucc,
+            maxRestarts: spec.collapse.maxRestarts,
           });
         }
         if (spec.autorun) autorunRef.current = true;
@@ -364,6 +390,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
               ...(agentType === 'a2c' ? { a2cConfig } : {}),
               ...(agentType === 'ppo' ? { ppoConfig } : {}),
               ...(goalVectorModel ? { goalVectorModel } : {}),
+              ...(collapseDetection ? { collapseDetection } : {}),
             });
           }
         }

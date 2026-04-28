@@ -36,9 +36,9 @@
     "z"
   ],
   "position_normalization": "2 * voxel / dims - 1",
-  "best_val_cos": 0.9685457944869995,
-  "epochs": 12,
-  "n_train_subjects": 80,
-  "n_val_subjects": 20,
+  "best_val_cos": 0.9760318994522095,
+  "epochs": 40,
+  "n_train_subjects": 160,
+  "n_val_subjects": 40,
   "output_post_normalize": true
 }
