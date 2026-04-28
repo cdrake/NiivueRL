@@ -1,5 +1,6 @@
 import { Action, NUM_ACTIONS } from './types';
 import type { State, StepResult, Vec3 } from './types';
+import type { GoalVectorModel } from '../lib/goalVectorModel';
 
 export let NEIGHBORHOOD_SIZE = 7;
 export let NEIGHBORHOOD_HALF = 3;
@@ -59,6 +60,21 @@ export interface BrainEnvConfig {
    * Default 1 (unscaled).
    */
   directionScale?: number;
+  /**
+   * Pre-trained goal-vector network. When set, the direction component of the
+   * state is the model's predicted unit direction toward the target landmark
+   * (computed from a local T1 patch + position + target one-hot), instead of
+   * the oracle (target - position) / |·|. Used to demonstrate the agent works
+   * without a hand-supplied goal vector at deploy time.
+   */
+  goalVectorModel?: GoalVectorModel | null;
+  /**
+   * Index of the current target landmark in the goal-vector model's
+   * `landmark_names` list. Required when `goalVectorModel` is set; ignored
+   * otherwise. The runner is responsible for resolving this from the
+   * landmark's name via `goalVectorModel.landmarkIndex(name)`.
+   */
+  goalVectorTargetIndex?: number;
 }
 
 /**
@@ -86,6 +102,8 @@ export class BrainEnv {
   private zeroDirection: boolean;
   private strides: number[];
   private directionScale: number;
+  private goalVectorModel: GoalVectorModel | null;
+  private goalVectorTargetIndex: number;
 
   constructor(
     volumeData: ArrayLike<number>,
@@ -103,6 +121,8 @@ export class BrainEnv {
     this.zeroDirection = config?.zeroDirection ?? false;
     this.strides = config?.strides ?? [1];
     this.directionScale = config?.directionScale ?? 1;
+    this.goalVectorModel = config?.goalVectorModel ?? null;
+    this.goalVectorTargetIndex = config?.goalVectorTargetIndex ?? -1;
 
     // Compute normalization range
     let min = Infinity, max = -Infinity;
@@ -232,17 +252,39 @@ export class BrainEnv {
       }
     }
 
-    // Normalized direction to target, scaled so it isn't drowned out by the
-    // much-larger voxel patch in the concatenated input (see directionScale).
-    const dist = this.distanceToTarget();
+    // Normalized direction to target. Three sources, in priority order:
+    //   1. zeroDirection ablation -> [0,0,0]
+    //   2. goalVectorModel -> the deployed prediction (no oracle access)
+    //   3. oracle (target - position) / |·|, scaled by directionScale
+    // The model path is what makes the system viable at clinical inference
+    // time; the oracle path is the training-only baseline we're trying to
+    // remove.
     const k = this.directionScale;
-    const direction: [number, number, number] = (this.zeroDirection || dist === 0)
-      ? [0, 0, 0]
-      : [
+    let direction: [number, number, number];
+    if (this.zeroDirection) {
+      direction = [0, 0, 0];
+    } else if (this.goalVectorModel) {
+      const pred = this.goalVectorModel.predict(
+        this.volumeData,
+        this.dims,
+        this.voxelMin,
+        this.voxelMax,
+        this.position,
+        this.goalVectorTargetIndex,
+      );
+      direction = [k * pred[0], k * pred[1], k * pred[2]];
+    } else {
+      const dist = this.distanceToTarget();
+      if (dist === 0) {
+        direction = [0, 0, 0];
+      } else {
+        direction = [
           (k * (this.target.x - this.position.x)) / dist,
           (k * (this.target.y - this.position.y)) / dist,
           (k * (this.target.z - this.position.z)) / dist,
         ];
+      }
+    }
 
     return { neighborhood, direction };
   }

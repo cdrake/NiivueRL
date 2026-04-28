@@ -1,8 +1,12 @@
 import type { Landmark } from '../env/types';
 
-// Subcortical landmarks from brainchop-models colormap.json
-// MNI voxel coordinates are approximate centroids in the t1_crop volume (256x256x256 → cropped)
-// These will be validated at runtime against actual volume dimensions.
+// Subcortical landmarks from brainchop-models colormap.json. The centroid
+// table below was generated from AOMIC ID1000 sub-0083's aseg.mgz — a held-out
+// val subject the goal-vector network never saw during training. We deploy
+// against this subject's brain.mgz so the predicted-direction signal is
+// in-distribution. See scripts/goal_vector/prep_aomic_deployment.py (or
+// /tmp/prep_aomic_deployment.py) for the generator and public/aomic_test_
+// landmarks.json for the JSON dump.
 const colormapR = [0, 245, 205, 120, 196, 220, 230, 0, 122, 236, 12, 204, 42, 119, 220, 103, 255, 165];
 const colormapG = [0, 245, 62, 18, 58, 248, 148, 118, 186, 13, 48, 182, 204, 159, 216, 255, 165, 42];
 const colormapB = [0, 245, 78, 134, 250, 164, 34, 14, 220, 176, 255, 142, 164, 176, 20, 255, 0, 42];
@@ -14,24 +18,23 @@ const labels = [
   'Accumbens-area', 'VentralDC',
 ];
 
-// Approximate MNI voxel coordinates for subcortical structures in a standard 1mm MNI brain.
-// These are rough centroids and will be clamped to valid dims at runtime.
+// Voxel-space centroids for AOMIC ID1000 sub-0083 (held-out val subject).
 const mniCoords: Record<string, [number, number, number]> = {
-  'Thalamus':                   [99, 134, 82],
-  'Caudate':                    [108, 155, 90],
-  'Putamen':                    [115, 145, 82],
-  'Pallidum':                   [110, 140, 80],
-  'Hippocampus':                [110, 115, 68],
-  'Amygdala':                   [115, 115, 62],
-  'Brain-Stem':                 [90, 118, 58],
-  'Cerebellum-White-Matter':    [100, 100, 45],
-  'Cerebellum-Cortex':          [108, 90, 40],
-  'Lateral-Ventricle':          [96, 145, 92],
-  'Inferior-Lateral-Ventricle': [108, 120, 62],
-  '3rd-Ventricle':              [90, 140, 82],
-  '4th-Ventricle':              [90, 108, 50],
-  'Accumbens-area':             [112, 155, 60],
-  'VentralDC':                  [102, 130, 72],
+  'Thalamus':                   [130, 140, 125],
+  'Caudate':                    [129, 128, 152],
+  'Putamen':                    [131, 139, 145],
+  'Pallidum':                   [130, 142, 141],
+  'Hippocampus':                [129, 159, 127],
+  'Amygdala':                   [129, 158, 145],
+  'Brain-Stem':                 [131, 177, 126],
+  'Cerebellum-White-Matter':    [132, 187, 105],
+  'Cerebellum-Cortex':          [130, 193, 98],
+  'Lateral-Ventricle':          [128, 135, 127],
+  'Inferior-Lateral-Ventricle': [125, 158, 129],
+  '3rd-Ventricle':              [130, 145, 134],
+  '4th-Ventricle':              [132, 185, 114],
+  'Accumbens-area':             [129, 142, 157],
+  'VentralDC':                  [130, 154, 133],
 };
 
 export const LANDMARKS: Landmark[] = labels

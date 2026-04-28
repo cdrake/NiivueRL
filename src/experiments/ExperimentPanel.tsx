@@ -16,6 +16,9 @@ import type { A2CConfig } from '../agent/A2CAgent';
 import { DEFAULT_A2C_CONFIG } from '../agent/A2CAgent';
 import type { PPOConfig } from '../agent/PPOAgent';
 import { DEFAULT_PPO_CONFIG } from '../agent/PPOAgent';
+import { GoalVectorModel } from '../lib/goalVectorModel';
+
+type GoalVectorMode = 'oracle' | 'predicted' | 'zero';
 
 interface ExperimentPanelProps {
   volumeData: ArrayLike<number> | null;
@@ -40,10 +43,24 @@ interface ExperimentSpec {
   a2c?: { lr?: number; entropy?: number };
   /** Linear curriculum over starting radius: start -> end over anneal episodes. */
   curriculum?: { start: number; end: number; anneal: number };
+  /**
+   * Source of the direction-to-target signal in the env's state vector.
+   *   - 'oracle' (default): exact (target - position) / |·|, only available
+   *     because the env knows where the answer is — clinically unacceptable.
+   *   - 'predicted': output of a pre-trained CNN that takes a local T1 patch +
+   *     position + target one-hot and predicts a unit direction. This is the
+   *     deploy-time signal.
+   *   - 'zero': ablation, [0, 0, 0] direction.
+   */
+  goalVector?: GoalVectorMode;
+  /** URL prefix for the tfjs goal-vector model directory (model.json + metadata.json). */
+  goalVectorModelUrl?: string;
   autorun?: boolean;
   autodownload?: boolean;
   clearCache?: boolean;
 }
+
+const DEFAULT_GOAL_VECTOR_MODEL_URL = '/goal_vector_model';
 
 // Diverse subset: large/deep, small/curved, large/easy, distinct, small/hard
 const DEFAULT_LANDMARKS = [
@@ -125,6 +142,14 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   );
   // Curriculum over starting radius (start, end, annealEpisodes). Unset = off.
   const [curriculum, setCurriculum] = useState<{ start: number; end: number; anneal: number } | null>(null);
+  // Goal-vector source: oracle (default), predicted (CNN), or zero (ablation).
+  const [goalVectorMode, setGoalVectorMode] = useState<GoalVectorMode>(() =>
+    (qStr('goalVector', 'oracle') as GoalVectorMode),
+  );
+  const [goalVectorModelUrl, setGoalVectorModelUrl] = useState<string>(() =>
+    qStr('goalVectorModelUrl', DEFAULT_GOAL_VECTOR_MODEL_URL),
+  );
+  const goalVectorModelRef = useRef<GoalVectorModel | null>(null);
   const runnerRef = useRef<ExperimentRunner | null>(null);
   const autorunRef = useRef<boolean>(qBool('autorun', false));
   const autodownloadRef = useRef<boolean>(qBool('autodownload', false));
@@ -162,6 +187,10 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
         if (typeof spec.dirScale === 'number') setDirectionScaleInput(String(spec.dirScale));
         else if (Array.isArray(spec.dirScale)) setDirectionScaleInput(spec.dirScale.join(','));
         if (typeof spec.zeroDir === 'boolean') setZeroDirection(spec.zeroDir);
+        if (spec.goalVector === 'oracle' || spec.goalVector === 'predicted' || spec.goalVector === 'zero') {
+          setGoalVectorMode(spec.goalVector);
+        }
+        if (typeof spec.goalVectorModelUrl === 'string') setGoalVectorModelUrl(spec.goalVectorModelUrl);
         if (typeof spec.maxStartDist === 'number') setMaxStartDistance(spec.maxStartDist);
         if (spec.trunk === 'flat' || spec.trunk === 'meshnet' || spec.trunk === 'conv') setPpoTrunk(spec.trunk);
         if (spec.ppo) {
@@ -225,6 +254,59 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
     if (!volumeData || !dims || strides.length === 0) return;
 
     setRunning(true);
+
+    // Lazy-load the goal-vector model (cached across runs).
+    let goalVectorModel: GoalVectorModel | null = null;
+    if (goalVectorMode === 'predicted') {
+      try {
+        if (!goalVectorModelRef.current) {
+          setProgress(`Loading goal-vector model from ${goalVectorModelUrl}...`);
+          goalVectorModelRef.current = await GoalVectorModel.load(goalVectorModelUrl);
+          console.log('[goal-vector] model loaded', goalVectorModelRef.current.metadata);
+        }
+        goalVectorModel = goalVectorModelRef.current;
+      } catch (err) {
+        setProgress(`Failed to load goal-vector model: ${err}. Aborting.`);
+        setRunning(false);
+        return;
+      }
+      // Sanity-check: at the chosen landmarks, sample a few offsets and report
+      // mean cosine of the predicted unit vector vs the oracle direction. This
+      // makes it obvious in the console when the deployment volume is OOD or
+      // the patch indexing has drifted from training.
+      if (goalVectorModel && volumeData && dims) {
+        let voxelMin = Infinity, voxelMax = -Infinity;
+        for (let i = 0; i < volumeData.length; i++) {
+          const v = volumeData[i];
+          if (v < voxelMin) voxelMin = v;
+          if (v > voxelMax) voxelMax = v;
+        }
+        const rand = (seed => () => { seed = (1664525 * seed + 1013904223) | 0; return ((seed >>> 0) % 1_000_000) / 1_000_000; })(42);
+        for (const lmName of selectedLandmarks) {
+          const lm = LANDMARKS.find((l) => l.name === lmName);
+          if (!lm) continue;
+          const idx = goalVectorModel.landmarkIndex(lmName);
+          if (idx < 0) continue;
+          const c = lm.mniVoxel;
+          let sumCos = 0; const n = 50;
+          for (let i = 0; i < n; i++) {
+            const ox = (rand() * 2 - 1) * 30, oy = (rand() * 2 - 1) * 30, oz = (rand() * 2 - 1) * 30;
+            const pos = {
+              x: Math.max(3, Math.min(dims[0] - 4, Math.round(c.x + ox))),
+              y: Math.max(3, Math.min(dims[1] - 4, Math.round(c.y + oy))),
+              z: Math.max(3, Math.min(dims[2] - 4, Math.round(c.z + oz))),
+            };
+            const [dx, dy, dz] = goalVectorModel.predict(volumeData, dims, voxelMin, voxelMax, pos, idx);
+            const tx = c.x - pos.x, ty = c.y - pos.y, tz = c.z - pos.z;
+            const tn = Math.hypot(tx, ty, tz) || 1;
+            sumCos += (dx * tx + dy * ty + dz * tz) / tn;
+          }
+          console.log(`[goal-vector sanity] ${lmName}: mean_cos=${(sumCos / n).toFixed(4)} over ${n} samples`);
+        }
+      }
+    }
+    const effectiveZeroDir = goalVectorMode === 'zero' || zeroDirection;
+
     // Merge any previously saved results into state
     const prior = loadResultsFromStorage();
     const skipKeys = new Set(
@@ -235,6 +317,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
           seed: r.config.seed,
           directionScale: r.config.directionScale,
           curriculum: r.config.curriculum,
+          goalVector: r.config.goalVector,
         }),
       ),
     );
@@ -272,7 +355,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
               agentType,
               numEpisodes,
               seed,
-              envConfig: { maxStartDistance, zeroDirection, directionScale: ds },
+              envConfig: { maxStartDistance, zeroDirection: effectiveZeroDir, directionScale: ds },
               neighborhoodSize,
               strides,
               ...(curriculum
@@ -280,6 +363,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
                 : {}),
               ...(agentType === 'a2c' ? { a2cConfig } : {}),
               ...(agentType === 'ppo' ? { ppoConfig } : {}),
+              ...(goalVectorModel ? { goalVectorModel } : {}),
             });
           }
         }
@@ -341,6 +425,8 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
     ppoUseConv,
     ppoTrunk,
     curriculum,
+    goalVectorMode,
+    goalVectorModelUrl,
   ]);
 
   const handleAbort = useCallback(() => {
@@ -400,6 +486,7 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   const curriculumForKey = curriculum
     ? { start: curriculum.start, end: curriculum.end, annealEpisodes: curriculum.anneal }
     : undefined;
+  const effectiveZeroDirForKey = goalVectorMode === 'zero' || zeroDirection;
   const alreadyDone = selectedAgents.reduce((count, agent) => {
     const trunk = agent === 'ppo' ? ppoTrunk : undefined;
     let agentCount = 0;
@@ -407,7 +494,8 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
       for (const lm of selectedLandmarks) {
         for (let seed = 0; seed < replicates; seed++) {
           if (completedKeys.has(configKey(agent, lm, neighborhoodSize, strides, {
-            trunk, zeroDirection, seed, directionScale: ds, curriculum: curriculumForKey,
+            trunk, zeroDirection: effectiveZeroDirForKey, seed, directionScale: ds,
+            curriculum: curriculumForKey, goalVector: goalVectorMode,
           }))) {
             agentCount++;
           }
@@ -506,9 +594,22 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
             type="checkbox"
             checked={zeroDirection}
             onChange={(e) => setZeroDirection(e.target.checked)}
-            disabled={running}
+            disabled={running || goalVectorMode !== 'oracle'}
           />
           Zero direction (ablation)
+        </label>
+        <label style={{ fontSize: 13 }}>
+          Goal vector:{' '}
+          <select
+            value={goalVectorMode}
+            onChange={(e) => setGoalVectorMode(e.target.value as GoalVectorMode)}
+            disabled={running}
+            style={{ fontSize: 13 }}
+          >
+            <option value="oracle">oracle (cheating)</option>
+            <option value="predicted">predicted (CNN)</option>
+            <option value="zero">zero (ablation)</option>
+          </select>
         </label>
       </div>
 
@@ -710,7 +811,8 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
             for (const ds of directionScales) {
               for (let seed = 0; seed < replicates; seed++) {
                 if (completedKeys.has(configKey(agent, lm.name, neighborhoodSize, strides, {
-                  trunk, zeroDirection, seed, directionScale: ds, curriculum: curriculumForKey,
+                  trunk, zeroDirection: effectiveZeroDirForKey, seed, directionScale: ds,
+                  curriculum: curriculumForKey, goalVector: goalVectorMode,
                 }))) {
                   cached++;
                 }

@@ -1,0 +1,20 @@
+{
+  "name": "predicted-vs-oracle",
+  "description": "End-to-end test of the goal-vector CNN: replace the env's oracle direction signal with the trained network's prediction. PPO with the same curriculum as curriculum-5seed; 2 landmarks, 3 seeds, 300 eps. Pair this with the curriculum-5seed run (oracle direction) for the comparison baseline.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 300,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 256, "roll": 16 },
+  "curriculum": { "start": 20, "end": 50, "anneal": 150 },
+  "goalVector": "predicted",
+  "goalVectorModelUrl": "/goal_vector_model",
+  "autorun": true,
+  "autodownload": true
+}

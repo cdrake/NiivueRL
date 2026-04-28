@@ -1,0 +1,80 @@
+{
+  "subject": "sub-0083",
+  "centroids": {
+    "Lateral-Ventricle": [
+      128,
+      135,
+      127
+    ],
+    "Inferior-Lateral-Ventricle": [
+      125,
+      158,
+      129
+    ],
+    "Cerebellum-White-Matter": [
+      132,
+      187,
+      105
+    ],
+    "Cerebellum-Cortex": [
+      130,
+      193,
+      98
+    ],
+    "Thalamus": [
+      130,
+      140,
+      125
+    ],
+    "Caudate": [
+      129,
+      128,
+      152
+    ],
+    "Putamen": [
+      131,
+      139,
+      145
+    ],
+    "Pallidum": [
+      130,
+      142,
+      141
+    ],
+    "3rd-Ventricle": [
+      130,
+      145,
+      134
+    ],
+    "4th-Ventricle": [
+      132,
+      185,
+      114
+    ],
+    "Brain-Stem": [
+      131,
+      177,
+      126
+    ],
+    "Hippocampus": [
+      129,
+      159,
+      127
+    ],
+    "Amygdala": [
+      129,
+      158,
+      145
+    ],
+    "Accumbens-area": [
+      129,
+      142,
+      157
+    ],
+    "VentralDC": [
+      130,
+      154,
+      133
+    ]
+  }
+}

@@ -15,6 +15,9 @@ dist-ssr
 # Large neuroimaging datasets (pulled via scripts, not committed)
 /data/
 
+# Local Python venvs (e.g. tfjs converter shim)
+.venv*/
+
 # Experiment result dumps (derived — regenerate by running experiments)
 experiment_results_*.json
 docs/curriculum_5seed_results.json

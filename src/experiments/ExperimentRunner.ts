@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { BrainEnv, setObservationConfig, NEIGHBORHOOD_SIZE, STRIDES } from '../env/BrainEnv';
 import type { BrainEnvConfig, StartDistanceCurriculum } from '../env/BrainEnv';
+import type { GoalVectorModel } from '../lib/goalVectorModel';
 import { DQNAgent } from '../agent/DQNAgent';
 import { A2CAgent } from '../agent/A2CAgent';
 import type { A2CConfig } from '../agent/A2CAgent';
@@ -37,6 +38,12 @@ export interface ExperimentConfig {
   strides?: number[];
   /** Optional linear curriculum over episode starting radius. */
   curriculum?: StartDistanceCurriculum;
+  /**
+   * If set, replace the env's oracle direction signal with this trained
+   * goal-vector model's prediction. The runner resolves the landmark's
+   * one-hot index from the model's metadata.
+   */
+  goalVectorModel?: GoalVectorModel | null;
 }
 
 export interface ExperimentResult {
@@ -54,6 +61,7 @@ export interface ExperimentResult {
     a2cConfig?: Partial<A2CConfig>;
     ppoConfig?: Partial<PPOConfig>;
     curriculum?: StartDistanceCurriculum;
+    goalVector?: 'predicted' | 'oracle' | 'zero';
   };
   episodes: EpisodeResult[];
   startTime: string;
@@ -83,6 +91,7 @@ export function configKey(
     seed?: number;
     directionScale?: number;
     curriculum?: StartDistanceCurriculum;
+    goalVector?: 'predicted' | 'oracle' | 'zero';
   },
 ): string {
   const ns = neighborhoodSize ?? 7;
@@ -96,7 +105,10 @@ export function configKey(
   const cur = extras?.curriculum
     ? `:cur${extras.curriculum.start}-${extras.curriculum.end}@${extras.curriculum.annealEpisodes}`
     : '';
-  return `${agentType}:${landmark}:n${ns}:${s}:${trunk}${zd}${ds}${cur}${seed}`;
+  const gv = extras?.goalVector && extras.goalVector !== 'oracle'
+    ? `:gv${extras.goalVector}`
+    : '';
+  return `${agentType}:${landmark}:n${ns}:${s}:${trunk}${zd}${ds}${cur}${gv}${seed}`;
 }
 
 const SUCCESS_RADIUS = 3;
@@ -113,6 +125,12 @@ export class ExperimentRunner {
 
   abort(): void {
     this.aborted = true;
+  }
+
+  private goalVectorLabel(config: ExperimentConfig): 'predicted' | 'oracle' | 'zero' {
+    if (config.envConfig?.zeroDirection) return 'zero';
+    if (config.goalVectorModel) return 'predicted';
+    return 'oracle';
   }
 
   async runAll(
@@ -138,6 +156,7 @@ export class ExperimentRunner {
           seed: config.seed,
           directionScale: config.envConfig?.directionScale,
           curriculum: config.curriculum,
+          goalVector: this.goalVectorLabel(config),
         },
       );
 
@@ -190,10 +209,21 @@ export class ExperimentRunner {
     // Ensure env config matches the global strides for sampling consistency.
     // If a curriculum is set, seed the env's initial maxStartDistance with the
     // curriculum's starting value so episode 0 begins at the small radius.
+    const goalVectorTargetIndex = config.goalVectorModel
+      ? config.goalVectorModel.landmarkIndex(config.landmark.name)
+      : -1;
+    if (config.goalVectorModel && goalVectorTargetIndex < 0) {
+      console.warn(
+        `[goal-vector] landmark '${config.landmark.name}' not in model metadata; ` +
+          `falling back to oracle direction for this config.`,
+      );
+    }
     const envConfig: BrainEnvConfig = {
       ...config.envConfig,
       strides: s,
       ...(config.curriculum ? { maxStartDistance: config.curriculum.start } : {}),
+      goalVectorModel: goalVectorTargetIndex >= 0 ? config.goalVectorModel : null,
+      goalVectorTargetIndex,
     };
 
     const env = new BrainEnv(this.volumeData, this.dims, config.landmark.mniVoxel, envConfig);
@@ -259,6 +289,7 @@ export class ExperimentRunner {
         a2cConfig: config.a2cConfig,
         ppoConfig: config.ppoConfig,
         curriculum: config.curriculum,
+        goalVector: this.goalVectorLabel(config),
       },
       episodes,
       startTime,
@@ -378,6 +409,7 @@ export function getCompletedKeys(): Set<string> {
           seed: r.config.seed,
           directionScale: r.config.directionScale,
           curriculum: r.config.curriculum,
+          goalVector: r.config.goalVector,
         },
       ),
     ),

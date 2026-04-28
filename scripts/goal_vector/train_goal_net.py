@@ -12,12 +12,18 @@ just want to see the loss go down on held-out subjects -- if it does, the
 signal is learnable from intensity context alone.
 """
 import argparse
+import json
 from pathlib import Path
 
 import nibabel as nib
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import layers, Model
+
+# Use Keras 2 (tf_keras) rather than the bundled Keras 3 so that
+# tensorflowjs's converter emits a model.json that tfjs-layers 4.x can load
+# without per-layer schema patching. The model topology is identical.
+import tf_keras as keras
+from tf_keras import layers, Model
 
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "aomic_id1000"
@@ -121,12 +127,16 @@ def sample_batch(
     return X_patch, X_pos, X_target, y_dir
 
 
-def _scale_branch(x):
-    """One conv branch: 16 -> 32 -> 32, ReLU, padding='same', GAP."""
+def _scale_branch(x, patch_size: int):
+    """One conv branch: 16 -> 32 -> 32, ReLU, padding='same', then a global
+    average via AveragePooling3D(pool_size=patch_size) + Flatten. We avoid
+    GlobalAveragePooling3D because tfjs-layers 4.x doesn't ship it; the
+    pool+flatten combination is mathematically identical and supported."""
     x = layers.Conv3D(16, 3, activation="relu", padding="same")(x)
     x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
     x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
-    return layers.GlobalAveragePooling3D()(x)
+    x = layers.AveragePooling3D(pool_size=patch_size)(x)
+    return layers.Flatten()(x)
 
 
 def build_model(
@@ -150,21 +160,31 @@ def build_model(
         if hierarchical:
             branches = []
             for s in range(n_scales):
-                x_s = layers.Lambda(lambda t, idx=s: t[..., idx : idx + 1])(inp_patch)
-                branches.append(_scale_branch(x_s))
+                x_s = layers.Lambda(
+                    lambda t, idx=s: t[..., idx : idx + 1],
+                    output_shape=(patch_size, patch_size, patch_size, 1),
+                )(inp_patch)
+                branches.append(_scale_branch(x_s, patch_size))
             feat = layers.Concatenate()(branches) if len(branches) > 1 else branches[0]
         else:
-            feat = _scale_branch(inp_patch)
+            feat = _scale_branch(inp_patch, patch_size)
         merged = layers.Concatenate()([feat, inp_pos, inp_target])
     else:
         # Keep inp_patch in the graph but with zero contribution so Keras
         # accepts it as a model input (the data generator always supplies it).
-        zero_patch = layers.Lambda(lambda t: tf.zeros_like(t[:, :1, 0, 0, 0]))(inp_patch)
+        zero_patch = layers.Lambda(
+            lambda t: tf.zeros_like(t[:, :1, 0, 0, 0]),
+            output_shape=(1,),
+        )(inp_patch)
         merged = layers.Concatenate()([zero_patch, inp_pos, inp_target])
     x = layers.Dense(64, activation="relu")(merged)
     x = layers.Dense(64, activation="relu")(x)
     x = layers.Dense(3)(x)
-    out = layers.Lambda(lambda t: tf.math.l2_normalize(t, axis=-1), name="unit_dir")(x)
+    out = layers.Lambda(
+        lambda t: tf.math.l2_normalize(t, axis=-1),
+        output_shape=(3,),
+        name="unit_dir",
+    )(x)
     return Model([inp_patch, inp_pos, inp_target], out)
 
 
@@ -193,6 +213,8 @@ def main() -> None:
     ap.add_argument("--hierarchical", action="store_true",
                     help="separate conv branch per scale (Ghesu-style); "
                          "default mixes scales as channels of a shared trunk")
+    ap.add_argument("--save-dir", type=str, default=None,
+                    help="if set, save trained model + metadata.json here for browser deploy")
     args = ap.parse_args()
     strides = tuple(args.strides)
 
@@ -213,7 +235,7 @@ def main() -> None:
     print(f"strides = {strides}  patch shape = ({pd},{pd},{pd},{n_scales})  "
           f"use_patch={not args.no_patch}  hierarchical={args.hierarchical}")
     model = build_model(pd, n_scales, use_patch=not args.no_patch, hierarchical=args.hierarchical)
-    model.compile(optimizer=tf.keras.optimizers.Adam(3e-4), loss=cosine_loss, metrics=[cosine_similarity_metric])
+    model.compile(optimizer=keras.optimizers.Adam(3e-4), loss=cosine_loss, metrics=[cosine_similarity_metric])
     model.summary(print_fn=lambda s: print("  " + s))
 
     def gen(subjects):
@@ -245,6 +267,36 @@ def main() -> None:
     print(f"\n[summary] strides={list(strides)} use_patch={not args.no_patch} "
           f"hierarchical={args.hierarchical} epochs={args.epochs} "
           f"best_val_cos={best_val_cos:.4f}")
+
+    if args.save_dir:
+        save_dir = Path(args.save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        # Save in native Keras format. The browser side will load via tfjs after
+        # running scripts/goal_vector/convert_to_tfjs.py against this directory.
+        model.save(save_dir / "model.keras")
+        meta = {
+            "patch_radius": args.patch_radius,
+            "patch_size": pd,
+            "strides": list(strides),
+            "n_scales": n_scales,
+            "use_patch": not args.no_patch,
+            "hierarchical": args.hierarchical,
+            "landmark_names": LM_NAMES,
+            "n_landmarks": N_LM,
+            "input_order": ["patch", "pos", "target"],
+            # Python builds patches as brain[ii, jj, kk] -> shape (x, y, z).
+            # The TS env loops dz outer / dx inner, so its flat array reshapes
+            # to (z, y, x). The browser must transpose (z,y,x) -> (x,y,z) before
+            # feeding the model so axis 0 = x at both train and inference time.
+            "patch_axes": ["x", "y", "z"],
+            "position_normalization": "2 * voxel / dims - 1",
+            "best_val_cos": float(best_val_cos),
+            "epochs": args.epochs,
+            "n_train_subjects": len(train_dirs),
+            "n_val_subjects": len(val_dirs),
+        }
+        (save_dir / "metadata.json").write_text(json.dumps(meta, indent=2))
+        print(f"[save] wrote {save_dir / 'model.keras'} and metadata.json")
 
 
 if __name__ == "__main__":
