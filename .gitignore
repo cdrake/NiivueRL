@@ -25,6 +25,7 @@ docs/curriculum_vs_baseline.json
 !.vscode/extensions.json
 .idea
 .DS_Store
+.claude/
 *.suo
 *.ntvs*
 *.njsproj
