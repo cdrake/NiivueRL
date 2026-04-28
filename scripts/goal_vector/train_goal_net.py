@@ -121,15 +121,40 @@ def sample_batch(
     return X_patch, X_pos, X_target, y_dir
 
 
-def build_model(patch_size: int, n_scales: int, use_patch: bool = True) -> Model:
+def _scale_branch(x):
+    """One conv branch: 16 -> 32 -> 32, ReLU, padding='same', GAP."""
+    x = layers.Conv3D(16, 3, activation="relu", padding="same")(x)
+    x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
+    x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
+    return layers.GlobalAveragePooling3D()(x)
+
+
+def build_model(
+    patch_size: int,
+    n_scales: int,
+    use_patch: bool = True,
+    hierarchical: bool = False,
+) -> Model:
+    """Goal-vector model.
+
+    - hierarchical=False: scales enter as channels of a single conv trunk.
+      Filters at every layer mix all scales together.
+    - hierarchical=True: each scale runs through its own conv branch and the
+      branch features are concatenated before the dense head (Ghesu-style).
+      The branches do not share weights.
+    """
     inp_patch = layers.Input((patch_size, patch_size, patch_size, n_scales), name="patch")
     inp_pos = layers.Input((3,), name="pos")
     inp_target = layers.Input((N_LM,), name="target")
     if use_patch:
-        x = layers.Conv3D(16, 3, activation="relu", padding="same")(inp_patch)
-        x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
-        x = layers.Conv3D(32, 3, activation="relu", padding="same")(x)
-        feat = layers.GlobalAveragePooling3D()(x)
+        if hierarchical:
+            branches = []
+            for s in range(n_scales):
+                x_s = layers.Lambda(lambda t, idx=s: t[..., idx : idx + 1])(inp_patch)
+                branches.append(_scale_branch(x_s))
+            feat = layers.Concatenate()(branches) if len(branches) > 1 else branches[0]
+        else:
+            feat = _scale_branch(inp_patch)
         merged = layers.Concatenate()([feat, inp_pos, inp_target])
     else:
         # Keep inp_patch in the graph but with zero contribution so Keras
@@ -165,6 +190,9 @@ def main() -> None:
                     help="ablate the T1 patch input (pos + target only)")
     ap.add_argument("--strides", type=int, nargs="+", default=[1],
                     help="patch sampling strides (e.g. 1 4 for multi-scale)")
+    ap.add_argument("--hierarchical", action="store_true",
+                    help="separate conv branch per scale (Ghesu-style); "
+                         "default mixes scales as channels of a shared trunk")
     args = ap.parse_args()
     strides = tuple(args.strides)
 
@@ -182,8 +210,9 @@ def main() -> None:
 
     pd = 2 * args.patch_radius + 1
     n_scales = len(strides)
-    print(f"strides = {strides}  patch shape = ({pd},{pd},{pd},{n_scales})  use_patch={not args.no_patch}")
-    model = build_model(pd, n_scales, use_patch=not args.no_patch)
+    print(f"strides = {strides}  patch shape = ({pd},{pd},{pd},{n_scales})  "
+          f"use_patch={not args.no_patch}  hierarchical={args.hierarchical}")
+    model = build_model(pd, n_scales, use_patch=not args.no_patch, hierarchical=args.hierarchical)
     model.compile(optimizer=tf.keras.optimizers.Adam(3e-4), loss=cosine_loss, metrics=[cosine_similarity_metric])
     model.summary(print_fn=lambda s: print("  " + s))
 
@@ -214,7 +243,8 @@ def main() -> None:
     )
     best_val_cos = max(history.history["val_cosine_similarity_metric"])
     print(f"\n[summary] strides={list(strides)} use_patch={not args.no_patch} "
-          f"epochs={args.epochs} best_val_cos={best_val_cos:.4f}")
+          f"hierarchical={args.hierarchical} epochs={args.epochs} "
+          f"best_val_cos={best_val_cos:.4f}")
 
 
 if __name__ == "__main__":
