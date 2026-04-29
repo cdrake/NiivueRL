@@ -13,6 +13,7 @@ signal is learnable from intensity context alone.
 """
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import nibabel as nib
@@ -27,6 +28,17 @@ from tf_keras import layers, Model
 
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "aomic_id1000"
+
+# Make the sibling mni_sampler module importable whether this script is run as
+# `python scripts/goal_vector/train_goal_net.py` or `python -m
+# scripts.goal_vector.train_goal_net`.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from mni_sampler import (  # noqa: E402
+    load_mni as _mni_load,
+    sample_batch_mni as _mni_sample_batch,
+    mni_intensity_percentiles as _mni_percentiles,
+    histogram_match_to as _mni_histogram_match,
+)
 
 # Same 15 subcortical structures as src/lib/landmarks.ts
 LANDMARKS: dict[str, tuple[int, ...]] = {
@@ -250,20 +262,72 @@ def main() -> None:
                          "-> Conv -> AvgPool); requires patch_size >= 8")
     ap.add_argument("--save-dir", type=str, default=None,
                     help="if set, save trained model + metadata.json here for browser deploy")
+    ap.add_argument("--mni-frac", type=float, default=0.0,
+                    help="probability per sample of drawing from the MNI152 source "
+                         "instead of AOMIC. 0 disables MNI mixing entirely. "
+                         "When >0 also enables histogram-matching of AOMIC patches "
+                         "to the MNI152 brain-interior intensity distribution.")
+    ap.add_argument("--mni-volume", type=str, default=None,
+                    help="path to the MNI152 NIfTI volume (e.g. data/mni152.nii.gz). "
+                         "Required when --mni-frac > 0.")
+    ap.add_argument("--mni-landmarks-json", type=str, default=None,
+                    help="path to the MNI152 landmark centroids JSON written by "
+                         "scripts/goal_vector/dump_mni_landmarks.py. "
+                         "Required when --mni-frac > 0.")
     args = ap.parse_args()
     strides = tuple(args.strides)
+    if args.mni_frac > 0.0:
+        if not args.mni_volume or not args.mni_landmarks_json:
+            raise SystemExit(
+                "--mni-frac > 0 requires --mni-volume and --mni-landmarks-json"
+            )
 
-    sub_dirs = sorted(p for p in DATA.glob("sub-*") if (p / "aseg.mgz").exists())
-    if not sub_dirs:
-        raise SystemExit(f"no subjects at {DATA}; run scripts/goal_vector/download.py first")
     rng = np.random.default_rng(args.seed)
-    rng.shuffle(sub_dirs)
-    n_val = max(1, int(args.val_frac * len(sub_dirs)))
-    val_dirs, train_dirs = sub_dirs[:n_val], sub_dirs[n_val:]
+    sub_dirs = sorted(p for p in DATA.glob("sub-*") if (p / "aseg.mgz").exists())
+    use_aomic = args.mni_frac < 1.0
+    if use_aomic and not sub_dirs:
+        raise SystemExit(f"no subjects at {DATA}; run scripts/goal_vector/download.py first")
+    if use_aomic:
+        rng.shuffle(sub_dirs)
+        n_val = max(1, int(args.val_frac * len(sub_dirs)))
+        val_dirs, train_dirs = sub_dirs[:n_val], sub_dirs[n_val:]
+        print(f"loading {len(train_dirs)} train + {len(val_dirs)} val subjects from {DATA}")
+        train_subjects = [(*load_subject(d), landmark_centroids(load_subject(d)[1])) for d in train_dirs]
+        val_subjects = [(*load_subject(d), landmark_centroids(load_subject(d)[1])) for d in val_dirs]
+    else:
+        train_dirs, val_dirs = [], []
+        train_subjects, val_subjects = [], []
 
-    print(f"loading {len(train_dirs)} train + {len(val_dirs)} val subjects from {DATA}")
-    train_subjects = [(*load_subject(d), landmark_centroids(load_subject(d)[1])) for d in train_dirs]
-    val_subjects = [(*load_subject(d), landmark_centroids(load_subject(d)[1])) for d in val_dirs]
+    # Optional MNI152 source. When --mni-frac > 0, draw a fraction of samples
+    # from the deployment volume directly using ground-truth landmark voxel
+    # coords (parsed from src/lib/landmarks.ts via dump_mni_landmarks.py). The
+    # MNI subject is shared between train and val splits since there's only one
+    # volume; it serves both as additional training signal and as the
+    # MNI-domain validation slice we actually care about.
+    mni_subject = None
+    mni_p_lo = mni_p_hi = aomic_p_lo = aomic_p_hi = None
+    if args.mni_frac > 0.0:
+        print(f"[mni] loading {args.mni_volume} + {args.mni_landmarks_json}")
+        mni_subject = _mni_load(args.mni_volume, args.mni_landmarks_json)
+        mni_brain = mni_subject[0]
+        mni_p_lo, mni_p_hi = _mni_percentiles(mni_brain, 2.0, 98.0)
+        print(f"[mni] brain shape={mni_brain.shape} interior p2={mni_p_lo:.4f} p98={mni_p_hi:.4f}")
+        # Compute AOMIC's matching percentiles once so histogram-matching is a
+        # constant-time linear remap per patch. Train + val share one set of
+        # statistics; the goal is to bridge the two domains, not to model
+        # subject-specific intensity.
+        if use_aomic:
+            aomic_pool = np.concatenate([s[0][s[0] > 0].ravel() for s in train_subjects])
+            aomic_p_lo = float(np.percentile(aomic_pool, 2.0))
+            aomic_p_hi = float(np.percentile(aomic_pool, 98.0))
+            print(f"[mni] AOMIC pooled p2={aomic_p_lo:.4f} p98={aomic_p_hi:.4f} "
+                  f"-> histogram-match into [{mni_p_lo:.4f},{mni_p_hi:.4f}]")
+        # When a MNI subject is mixed in, also append it to train/val so the
+        # metadata's split summary reflects the extra "subject" we trained on.
+        # The actual sampling probability is controlled by args.mni_frac, not
+        # by the position in the list.
+        train_subjects = list(train_subjects) + [mni_subject]
+        val_subjects = list(val_subjects) + [mni_subject]
 
     pd = 2 * args.patch_radius + 1
     n_scales = len(strides)
@@ -283,11 +347,45 @@ def main() -> None:
     model.compile(optimizer=keras.optimizers.Adam(3e-4), loss=cosine_loss, metrics=[cosine_similarity_metric])
     model.summary(print_fn=lambda s: print("  " + s))
 
-    def gen(subjects):
+    def _maybe_histogram_match(X_p: np.ndarray) -> np.ndarray:
+        """When mixing AOMIC + MNI, remap AOMIC patch intensities into the MNI
+        brain-interior range so the network sees one intensity scale. The remap
+        keeps zero-valued voxels at zero (background mask preserved)."""
+        if mni_p_lo is None or aomic_p_lo is None:
+            return X_p
+        return _mni_histogram_match(X_p, aomic_p_lo, aomic_p_hi, mni_p_lo, mni_p_hi)
+
+    def gen(subjects, *, mni_only_subjects=None):
+        # mni_only_subjects: list of MNI subject tuples to sample from when the
+        # mni_frac coin flip succeeds. When None we fall back to any element of
+        # `subjects`, but in practice main() always supplies it explicitly.
         while True:
-            X_p, X_pos, X_t, y = sample_batch(
-                subjects, args.batch_size, args.patch_radius, strides, args.sample_radius, rng
-            )
+            if mni_only_subjects and rng.random() < args.mni_frac:
+                X_p, X_pos, X_t, y = _mni_sample_batch(
+                    mni_only_subjects[0],
+                    args.batch_size,
+                    args.patch_radius,
+                    strides,
+                    args.sample_radius,
+                    rng,
+                )
+            else:
+                # AOMIC source. If mni_frac > 0 we histogram-match the patches
+                # so the network gets a single intensity distribution.
+                aomic_pool = [s for s in subjects if s is not mni_subject] if mni_subject is not None else subjects
+                if not aomic_pool:
+                    # mni_frac == 1.0 path; the coin flip above always picks MNI.
+                    aomic_pool = subjects
+                X_p, X_pos, X_t, y = sample_batch(
+                    aomic_pool,
+                    args.batch_size,
+                    args.patch_radius,
+                    strides,
+                    args.sample_radius,
+                    rng,
+                )
+                if mni_subject is not None:
+                    X_p = _maybe_histogram_match(X_p)
             yield (X_p, X_pos, X_t), y
 
     sig = (
@@ -298,8 +396,15 @@ def main() -> None:
         ),
         tf.TensorSpec((None, 3), tf.float32),
     )
-    train_ds = tf.data.Dataset.from_generator(lambda: gen(train_subjects), output_signature=sig).prefetch(2)
-    val_ds = tf.data.Dataset.from_generator(lambda: gen(val_subjects), output_signature=sig).prefetch(2)
+    mni_pool = [mni_subject] if mni_subject is not None else None
+    train_ds = tf.data.Dataset.from_generator(
+        lambda: gen(train_subjects, mni_only_subjects=mni_pool),
+        output_signature=sig,
+    ).prefetch(2)
+    val_ds = tf.data.Dataset.from_generator(
+        lambda: gen(val_subjects, mni_only_subjects=mni_pool),
+        output_signature=sig,
+    ).prefetch(2)
 
     history = model.fit(
         train_ds,
@@ -341,6 +446,18 @@ def main() -> None:
             "epochs": args.epochs,
             "n_train_subjects": len(train_dirs),
             "n_val_subjects": len(val_dirs),
+            "mni_frac": float(args.mni_frac),
+            "mni_volume_used": str(args.mni_volume) if args.mni_volume else None,
+            "mni_landmarks_json_used": (
+                str(args.mni_landmarks_json) if args.mni_landmarks_json else None
+            ),
+            "mni_intensity_p2_p98": (
+                [mni_p_lo, mni_p_hi] if mni_p_lo is not None else None
+            ),
+            "aomic_intensity_p2_p98": (
+                [aomic_p_lo, aomic_p_hi] if aomic_p_lo is not None else None
+            ),
+            "domain": "mixed" if args.mni_frac > 0.0 else "aomic",
         }
         (save_dir / "metadata.json").write_text(json.dumps(meta, indent=2))
         print(f"[save] wrote {save_dir / 'model.keras'} and metadata.json")
