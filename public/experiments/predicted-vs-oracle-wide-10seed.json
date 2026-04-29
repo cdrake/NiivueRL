@@ -1,0 +1,21 @@
+{
+  "name": "predicted-vs-oracle-wide-10seed",
+  "description": "10 seeds, wide-FOV 15^3 goal-vector. Wide-FOV variant of predicted-vs-oracle-10seed: same PPO + curriculum config, but the goal-vector network is the hierarchical 15^3 / strides=[1,2,4] model trained on Theia (val. cosine 0.9968). 10 replicates tighten 95% CIs vs. the 3-seed predicted-vs-oracle-wide run, to firm up or invalidate the wide-FOV regression observed on Lateral-Ventricle.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 300,
+  "replicates": 10,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 256, "roll": 16 },
+  "curriculum": { "start": 20, "end": 50, "anneal": 150 },
+  "goalVector": "predicted",
+  "goalVectorModelUrl": "/goal_vector_model_wide",
+  "collapse": { "atEp": 100, "window": 50, "minSucc": 0.05, "maxRestarts": 2 },
+  "autorun": true,
+  "autodownload": true
+}

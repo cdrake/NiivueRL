@@ -41,9 +41,19 @@
       "description": "End-to-end test of the goal-vector CNN: the trained network replaces the env's oracle direction signal. PPO, 2 landmarks × 3 seeds × 300 eps."
     },
     {
+      "slug": "predicted-vs-oracle-10seed",
+      "title": "Predicted goal-vector vs oracle (10 seeds)",
+      "description": "10-seed rerun of predicted-vs-oracle (baseline 7^3 goal-vector) to tighten 95% CIs. PPO, 2 landmarks × 10 seeds × 300 eps."
+    },
+    {
       "slug": "predicted-vs-oracle-wide",
       "title": "Predicted goal-vector (wide-FOV)",
       "description": "Same as predicted-vs-oracle, but using the hierarchical 15^3 / strides=[1,2,4] goal-vector network trained on Theia (val. cosine 0.9968)."
+    },
+    {
+      "slug": "predicted-vs-oracle-wide-10seed",
+      "title": "Predicted goal-vector (wide-FOV, 10 seeds)",
+      "description": "10-seed rerun of predicted-vs-oracle-wide to firm up or invalidate the wide-FOV regression on Lateral-Ventricle. PPO, 2 landmarks × 10 seeds × 300 eps."
     },
     {
       "slug": "oracle-aomic",
