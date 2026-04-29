@@ -139,11 +139,37 @@ def _scale_branch(x, patch_size: int):
     return layers.Flatten()(x)
 
 
+def _wide_branch(x, patch_size: int):
+    """Wider per-scale branch with two downsample stages.
+
+    The default _scale_branch keeps spatial dims at patch_size throughout and
+    averages everything at the end, which means almost all spatial information
+    is collapsed into the channel statistics. _wide_branch instead actually
+    downsamples (Conv -> MaxPool -> Conv -> MaxPool -> Conv -> AvgPool) so
+    deeper layers see broader receptive fields with more channels. Works for
+    any patch_size >= 8 (15, 17, 19, ...). Uses only Conv3D, MaxPooling3D,
+    AveragePooling3D, ReLU -- all supported by tfjs-layers 4.x.
+    """
+    x = layers.Conv3D(32, 3, padding="same", activation="relu")(x)
+    x = layers.MaxPooling3D(pool_size=2, padding="valid")(x)  # patch_size // 2
+    s1 = patch_size // 2
+    x = layers.Conv3D(64, 3, padding="same", activation="relu")(x)
+    x = layers.MaxPooling3D(pool_size=2, padding="valid")(x)  # patch_size // 4
+    s2 = s1 // 2
+    x = layers.Conv3D(96, 3, padding="same", activation="relu")(x)
+    # Collapse the remaining s2^3 cube to 1^3 via average pool over the full
+    # extent, then flatten to 96 features. tfjs-layers requires a static
+    # pool_size, which is fine because patch_size is fixed at construction.
+    x = layers.AveragePooling3D(pool_size=s2)(x)
+    return layers.Flatten()(x)
+
+
 def build_model(
     patch_size: int,
     n_scales: int,
     use_patch: bool = True,
     hierarchical: bool = False,
+    wide_trunk: bool = False,
 ) -> Model:
     """Goal-vector model.
 
@@ -152,10 +178,16 @@ def build_model(
     - hierarchical=True: each scale runs through its own conv branch and the
       branch features are concatenated before the dense head (Ghesu-style).
       The branches do not share weights.
+    - wide_trunk=True: each branch uses _wide_branch (Conv->MaxPool x2 ->
+      Conv -> AvgPool) instead of the default _scale_branch. Requires
+      patch_size >= 8. Pairs naturally with hierarchical=True for a
+      multi-scale wide-FOV model.
     """
     inp_patch = layers.Input((patch_size, patch_size, patch_size, n_scales), name="patch")
     inp_pos = layers.Input((3,), name="pos")
     inp_target = layers.Input((N_LM,), name="target")
+    branch_fn = _wide_branch if wide_trunk else _scale_branch
+    head_units = 128 if wide_trunk else 64
     if use_patch:
         if hierarchical:
             branches = []
@@ -164,10 +196,10 @@ def build_model(
                     lambda t, idx=s: t[..., idx : idx + 1],
                     output_shape=(patch_size, patch_size, patch_size, 1),
                 )(inp_patch)
-                branches.append(_scale_branch(x_s, patch_size))
+                branches.append(branch_fn(x_s, patch_size))
             feat = layers.Concatenate()(branches) if len(branches) > 1 else branches[0]
         else:
-            feat = _scale_branch(inp_patch, patch_size)
+            feat = branch_fn(inp_patch, patch_size)
         merged = layers.Concatenate()([feat, inp_pos, inp_target])
     else:
         # Keep inp_patch in the graph but with zero contribution so Keras
@@ -177,8 +209,8 @@ def build_model(
             output_shape=(1,),
         )(inp_patch)
         merged = layers.Concatenate()([zero_patch, inp_pos, inp_target])
-    x = layers.Dense(64, activation="relu")(merged)
-    x = layers.Dense(64, activation="relu")(x)
+    x = layers.Dense(head_units, activation="relu")(merged)
+    x = layers.Dense(head_units // 2, activation="relu")(x)
     x = layers.Dense(3)(x)
     out = layers.Lambda(
         lambda t: tf.math.l2_normalize(t, axis=-1),
@@ -213,6 +245,9 @@ def main() -> None:
     ap.add_argument("--hierarchical", action="store_true",
                     help="separate conv branch per scale (Ghesu-style); "
                          "default mixes scales as channels of a shared trunk")
+    ap.add_argument("--wide-trunk", action="store_true",
+                    help="use the deeper downsampling branch (Conv->MaxPool x2 "
+                         "-> Conv -> AvgPool); requires patch_size >= 8")
     ap.add_argument("--save-dir", type=str, default=None,
                     help="if set, save trained model + metadata.json here for browser deploy")
     args = ap.parse_args()
@@ -232,9 +267,19 @@ def main() -> None:
 
     pd = 2 * args.patch_radius + 1
     n_scales = len(strides)
+    if args.wide_trunk and pd < 8:
+        raise SystemExit(f"--wide-trunk needs patch_size >= 8 (got {pd}); "
+                         f"raise --patch-radius to >= 4")
     print(f"strides = {strides}  patch shape = ({pd},{pd},{pd},{n_scales})  "
-          f"use_patch={not args.no_patch}  hierarchical={args.hierarchical}")
-    model = build_model(pd, n_scales, use_patch=not args.no_patch, hierarchical=args.hierarchical)
+          f"use_patch={not args.no_patch}  hierarchical={args.hierarchical}  "
+          f"wide_trunk={args.wide_trunk}")
+    model = build_model(
+        pd,
+        n_scales,
+        use_patch=not args.no_patch,
+        hierarchical=args.hierarchical,
+        wide_trunk=args.wide_trunk,
+    )
     model.compile(optimizer=keras.optimizers.Adam(3e-4), loss=cosine_loss, metrics=[cosine_similarity_metric])
     model.summary(print_fn=lambda s: print("  " + s))
 
@@ -281,6 +326,8 @@ def main() -> None:
             "n_scales": n_scales,
             "use_patch": not args.no_patch,
             "hierarchical": args.hierarchical,
+            "wide_trunk": args.wide_trunk,
+            "sample_radius": args.sample_radius,
             "landmark_names": LM_NAMES,
             "n_landmarks": N_LM,
             "input_order": ["patch", "pos", "target"],
