@@ -23,6 +23,14 @@ export interface GoalVectorMetadata {
    * so this wrapper must L2-normalize the output itself before returning.
    */
   output_post_normalize?: boolean;
+  /**
+   * If true, the converted model takes n_scales separate single-channel
+   * patch inputs (`patch_s0`, `patch_s1`, ..., `patch_s{n_scales-1}`)
+   * instead of one packed `[patch_size, patch_size, patch_size, n_scales]`
+   * tensor. Hierarchical models go this route because their interior
+   * slice-Lambdas can't be deserialized by tfjs-layers.
+   */
+  per_scale_inputs?: boolean;
 }
 
 /**
@@ -79,25 +87,28 @@ export class GoalVectorModel {
     position: Vec3,
     targetIndex: number,
   ): [number, number, number] {
-    const { patch_radius, patch_size, strides, n_scales, n_landmarks } = this.metadata;
+    const { patch_radius, patch_size, strides, n_scales, n_landmarks, per_scale_inputs } = this.metadata;
     const r = patch_radius;
     const ps = patch_size;
     const denom = voxelMax === voxelMin ? 1 : voxelMax - voxelMin;
     const [W, H, D] = dims;
 
-    // Build patch in (x, y, z, c) layout — axis 0 = x (matches Python training).
-    const patchData = new Float32Array(ps * ps * ps * n_scales);
-    let idx = 0;
-    for (let ix = -r; ix <= r; ix++) {
-      for (let iy = -r; iy <= r; iy++) {
-        for (let iz = -r; iz <= r; iz++) {
-          for (let c = 0; c < n_scales; c++) {
-            const s = strides[c];
+    // Build per-scale patches in (x, y, z) order — axis 0 = x. Hierarchical
+    // models consume them as separate single-channel inputs; non-hierarchical
+    // models consume them packed into a single n_scales-channel tensor.
+    const perScaleData: Float32Array[] = strides.map(() => new Float32Array(ps * ps * ps));
+    for (let c = 0; c < n_scales; c++) {
+      const s = strides[c];
+      let i = 0;
+      const buf = perScaleData[c];
+      for (let ix = -r; ix <= r; ix++) {
+        for (let iy = -r; iy <= r; iy++) {
+          for (let iz = -r; iz <= r; iz++) {
             const x = Math.min(Math.max(0, position.x + ix * s), W - 1);
             const y = Math.min(Math.max(0, position.y + iy * s), H - 1);
             const z = Math.min(Math.max(0, position.z + iz * s), D - 1);
             const flat = x + y * W + z * W * H;
-            patchData[idx++] = (volumeData[flat] - voxelMin) / denom;
+            buf[i++] = (volumeData[flat] - voxelMin) / denom;
           }
         }
       }
@@ -114,10 +125,24 @@ export class GoalVectorModel {
     }
 
     const result = tf.tidy(() => {
-      const patchT = tf.tensor(patchData, [1, ps, ps, ps, n_scales]);
       const posT = tf.tensor(posData, [1, 3]);
       const targetT = tf.tensor(targetData, [1, n_landmarks]);
-      const out = this.model.predict([patchT, posT, targetT]) as tf.Tensor;
+      let inputs: tf.Tensor[];
+      if (per_scale_inputs) {
+        const patches = perScaleData.map((d) => tf.tensor(d, [1, ps, ps, ps, 1]));
+        inputs = [...patches, posT, targetT];
+      } else {
+        // Pack the per-scale buffers into one [1, ps, ps, ps, n_scales] tensor
+        // in (x, y, z, c) layout — interleave the channels per voxel.
+        const packed = new Float32Array(ps * ps * ps * n_scales);
+        for (let i = 0; i < ps * ps * ps; i++) {
+          for (let c = 0; c < n_scales; c++) {
+            packed[i * n_scales + c] = perScaleData[c][i];
+          }
+        }
+        inputs = [tf.tensor(packed, [1, ps, ps, ps, n_scales]), posT, targetT];
+      }
+      const out = this.model.predict(inputs) as tf.Tensor;
       return out.dataSync();
     });
 

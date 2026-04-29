@@ -41,6 +41,11 @@
       "description": "End-to-end test of the goal-vector CNN: the trained network replaces the env's oracle direction signal. PPO, 2 landmarks × 3 seeds × 300 eps."
     },
     {
+      "slug": "predicted-vs-oracle-wide",
+      "title": "Predicted goal-vector (wide-FOV)",
+      "description": "Same as predicted-vs-oracle, but using the hierarchical 15^3 / strides=[1,2,4] goal-vector network trained on Theia (val. cosine 0.9968)."
+    },
+    {
       "slug": "oracle-aomic",
       "title": "Oracle baseline (AOMIC sub-0083)",
       "description": "Oracle direction-vector baseline on the AOMIC test subject. Mirrors predicted-vs-oracle.json hyperparams exactly — only the goal-vector source differs."

@@ -1,0 +1,21 @@
+{
+  "name": "predicted-vs-oracle-wide",
+  "description": "Wide-FOV variant of predicted-vs-oracle: same PPO + curriculum config, but the goal-vector network is the hierarchical 15^3 / strides=[1,2,4] model trained on Theia (val. cosine 0.9968). Pairs with predicted-vs-oracle (baseline 7^3) and oracle-aomic for the 3-way comparison in Section 5.7.",
+  "agents": ["ppo"],
+  "landmarks": ["Thalamus", "Lateral-Ventricle"],
+  "episodes": 300,
+  "replicates": 3,
+  "neighborhood": 7,
+  "strides": [1],
+  "dirScale": 10,
+  "zeroDir": false,
+  "maxStartDist": 50,
+  "trunk": "flat",
+  "ppo": { "lr": 0.0003, "entropy": 0.01, "clip": 0.2, "epochs": 4, "mb": 256, "roll": 16 },
+  "curriculum": { "start": 20, "end": 50, "anneal": 150 },
+  "goalVector": "predicted",
+  "goalVectorModelUrl": "/goal_vector_model_wide",
+  "collapse": { "atEp": 100, "window": 50, "minSucc": 0.05, "maxRestarts": 2 },
+  "autorun": true,
+  "autodownload": true
+}

@@ -1,0 +1,47 @@
+{
+  "patch_radius": 7,
+  "patch_size": 15,
+  "strides": [
+    1,
+    2,
+    4
+  ],
+  "n_scales": 3,
+  "use_patch": true,
+  "hierarchical": true,
+  "wide_trunk": true,
+  "sample_radius": 80,
+  "landmark_names": [
+    "Lateral-Ventricle",
+    "Inf-Lat-Vent",
+    "Cerebellum-White-Matter",
+    "Cerebellum-Cortex",
+    "Thalamus",
+    "Caudate",
+    "Putamen",
+    "Pallidum",
+    "3rd-Ventricle",
+    "4th-Ventricle",
+    "Brain-Stem",
+    "Hippocampus",
+    "Amygdala",
+    "Accumbens-area",
+    "VentralDC"
+  ],
+  "n_landmarks": 15,
+  "input_order": [
+    "patch",
+    "pos",
+    "target"
+  ],
+  "patch_axes": [
+    "x",
+    "y",
+    "z"
+  ],
+  "position_normalization": "2 * voxel / dims - 1",
+  "best_val_cos": 0.9968228936195374,
+  "epochs": 80,
+  "n_train_subjects": 160,
+  "n_val_subjects": 40
+}

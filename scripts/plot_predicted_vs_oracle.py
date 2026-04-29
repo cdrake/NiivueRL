@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_PRED = REPO / "docs" / "predicted_vs_oracle_predicted.json"
+DEFAULT_PRED_WIDE = REPO / "docs" / "predicted_vs_oracle_predicted_wide.json"
 DEFAULT_ORAC = REPO / "docs" / "predicted_vs_oracle_oracle.json"
 DEFAULT_OUT = REPO / "docs" / "figures" / "predicted-vs-oracle"
 
@@ -50,6 +51,8 @@ def stack_curves(seed_arrs, window: int):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--predicted", type=Path, default=DEFAULT_PRED)
+    ap.add_argument("--predicted-wide", type=Path, default=DEFAULT_PRED_WIDE,
+                    help="optional third arm: wide-FOV predicted goal-vector results")
     ap.add_argument("--oracle", type=Path, default=DEFAULT_ORAC)
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
     ap.add_argument("--window", type=int, default=30)
@@ -57,9 +60,20 @@ def main():
 
     pred = load_runs(args.predicted)
     orac = load_runs(args.oracle)
-    landmarks = sorted(set(pred.keys()) & set(orac.keys()))
+    have_wide = args.predicted_wide.exists()
+    pred_wide = load_runs(args.predicted_wide) if have_wide else {}
+
+    arms = [("predicted (7^3)", pred, "tab:green"),
+            ("oracle", orac, "tab:gray")]
+    if have_wide:
+        arms.insert(1, ("predicted (15^3, multi-scale)", pred_wide, "tab:blue"))
+
+    common = set(pred.keys()) & set(orac.keys())
+    if have_wide:
+        common &= set(pred_wide.keys())
+    landmarks = sorted(common)
     if not landmarks:
-        raise SystemExit("no landmarks shared between predicted and oracle results")
+        raise SystemExit("no landmarks shared across all input runs")
 
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -68,8 +82,7 @@ def main():
         axes = [axes]
 
     for ax, lm in zip(axes, landmarks):
-        for label, src, color in [("predicted", pred, "tab:green"),
-                                  ("oracle", orac, "tab:gray")]:
+        for label, src, color in arms:
             x, m, ci = stack_curves(src[lm], args.window)
             ax.plot(x, m * 100, color=color, label=f"{label} (n={len(src[lm])} seeds)", lw=2)
             ax.fill_between(x, (m - ci) * 100, (m + ci) * 100, color=color, alpha=0.15)
@@ -79,7 +92,10 @@ def main():
         ax.legend(loc="upper left", frameon=False)
     axes[0].set_ylabel(f"Success rate (%, {args.window}-ep rolling)")
 
-    fig.suptitle("Predicted goal vector vs. oracle (AOMIC sub-0083, PPO, k=10, curriculum 20→50)")
+    title = "Predicted goal vector vs. oracle (AOMIC sub-0083, PPO, k=10, curriculum 20→50)"
+    if have_wide:
+        title = "Predicted (7^3 vs. wide-FOV 15^3) goal vector vs. oracle (AOMIC sub-0083, PPO, k=10)"
+    fig.suptitle(title)
     fig.tight_layout()
     out_png = args.out / "success_rate.png"
     fig.savefig(out_png, dpi=140)
@@ -88,15 +104,15 @@ def main():
     # Also write a small summary table.
     summary = []
     for lm in landmarks:
-        for label, src in [("predicted", pred), ("oracle", orac)]:
+        for label, src, _color in arms:
             seeds = src[lm]
             last100 = np.array([a[-100:].mean() for a in seeds])
             summary.append((lm, label, last100.mean(), last100.std(ddof=1), [f"{s:.2f}" for s in last100]))
     out_txt = args.out / "summary_table.txt"
     with open(out_txt, "w") as f:
-        f.write("landmark             mode       mean_last100   std    per_seed\n")
+        f.write(f"{'landmark':<20} {'mode':<32} mean_last100   std    per_seed\n")
         for lm, lab, m, s, ps in summary:
-            f.write(f"{lm:<20} {lab:<10} {m*100:>11.1f}%  {s*100:>5.1f}  {','.join(ps)}\n")
+            f.write(f"{lm:<20} {lab:<32} {m*100:>11.1f}%  {s*100:>5.1f}  {','.join(ps)}\n")
     print(f"wrote {out_txt}")
 
 

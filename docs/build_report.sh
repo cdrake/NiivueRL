@@ -13,6 +13,7 @@ pandoc project_report.md \
   -V fontsize=10pt \
   -V linkcolor=blue \
   -V urlcolor=blue \
+  -V header-includes='\usepackage{float}\floatplacement{figure}{H}' \
   --resource-path=.:./figures
 
 echo "Built $(pwd)/project_report.pdf"
