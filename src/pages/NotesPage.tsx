@@ -62,26 +62,28 @@ export default function NotesPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header style={{ padding: '20px 28px', borderBottom: '1px solid #2a2a5a', background: '#16213e' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <header style={{ padding: '20px 28px', borderBottom: '1px solid #2a2a5a', background: '#16213e', flexShrink: 0 }}>
         <Link to="/" style={{ fontSize: 12, color: '#88f' }}>← back to experiments</Link>
       </header>
-      <article
-        style={{
-          maxWidth: 760,
-          margin: '0 auto',
-          padding: '32px 28px 64px',
-          lineHeight: 1.6,
-          fontSize: 15,
-          color: '#ddd',
-        }}
-      >
-        {error ? (
-          <div style={{ color: '#f88' }}>Failed to load notes: {error}</div>
-        ) : (
-          <div className="notes-md" dangerouslySetInnerHTML={{ __html: html }} />
-        )}
-      </article>
+      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <article
+          style={{
+            maxWidth: 760,
+            margin: '0 auto',
+            padding: '32px 28px 64px',
+            lineHeight: 1.6,
+            fontSize: 15,
+            color: '#ddd',
+          }}
+        >
+          {error ? (
+            <div style={{ color: '#f88' }}>Failed to load notes: {error}</div>
+          ) : (
+            <div className="notes-md" dangerouslySetInnerHTML={{ __html: html }} />
+          )}
+        </article>
+      </div>
       <style>{`
         .notes-md h1 { color: #4fc3f7; font-size: 24px; margin-bottom: 16px; }
         .notes-md h2 { color: #4fc3f7; font-size: 17px; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #2a2a5a; padding-bottom: 4px; }
