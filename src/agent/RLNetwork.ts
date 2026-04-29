@@ -37,7 +37,7 @@ export interface ConvRLNetwork {
 
 export async function createSplitRLNetwork(numScales: number = 1): Promise<SplitRLNetwork> {
   // Load bcmodel and extract conv weights
-  const bcmodel = await loadBcmodel('/subcortical.bcmodel');
+  const bcmodel = await loadBcmodel(`${import.meta.env.BASE_URL}subcortical.bcmodel`);
 
   const conv0Weight = bcmodel.tensors['conv0.weight'];
   const conv0Bias = bcmodel.tensors['conv0.bias'];

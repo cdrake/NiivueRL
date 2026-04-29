@@ -23,6 +23,10 @@ type GoalVectorMode = 'oracle' | 'predicted' | 'zero';
 interface ExperimentPanelProps {
   volumeData: ArrayLike<number> | null;
   dims: [number, number, number] | null;
+  /** Force a specific experiment slug to load (overrides URL ?experiment=). */
+  initialExperiment?: string;
+  /** Force autorun (overrides URL ?autorun=). */
+  initialAutorun?: boolean;
 }
 
 /** Schema for /experiments/<name>.json files. All fields optional. */
@@ -67,7 +71,7 @@ interface ExperimentSpec {
   clearCache?: boolean;
 }
 
-const DEFAULT_GOAL_VECTOR_MODEL_URL = '/goal_vector_model';
+const DEFAULT_GOAL_VECTOR_MODEL_URL = `${import.meta.env.BASE_URL}goal_vector_model`;
 
 // Diverse subset: large/deep, small/curved, large/easy, distinct, small/hard
 const DEFAULT_LANDMARKS = [
@@ -117,7 +121,7 @@ const qList = (k: string, fallback: string[]): string[] => {
   return v !== null ? v.split(',').map((s) => s.trim()).filter(Boolean) : fallback;
 };
 
-export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelProps) {
+export default function ExperimentPanel({ volumeData, dims, initialExperiment, initialAutorun }: ExperimentPanelProps) {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState('');
   const [results, setResults] = useState<ExperimentResult[] | null>(null);
@@ -165,9 +169,9 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   );
   const goalVectorModelRef = useRef<GoalVectorModel | null>(null);
   const runnerRef = useRef<ExperimentRunner | null>(null);
-  const autorunRef = useRef<boolean>(qBool('autorun', false));
+  const autorunRef = useRef<boolean>(initialAutorun ?? qBool('autorun', false));
   const autodownloadRef = useRef<boolean>(qBool('autodownload', false));
-  const experimentName = qStr('experiment', '');
+  const experimentName = initialExperiment ?? qStr('experiment', '');
   const [experimentReady, setExperimentReady] = useState<boolean>(experimentName === '');
   const [experimentSpec, setExperimentSpec] = useState<{ name?: string; description?: string } | null>(null);
 
@@ -182,9 +186,10 @@ export default function ExperimentPanel({ volumeData, dims }: ExperimentPanelPro
   useEffect(() => {
     if (!experimentName) return;
     let cancelled = false;
-    fetch(`/experiments/${experimentName}.json`)
+    const url = `${import.meta.env.BASE_URL}experiments/${experimentName}.json`;
+    fetch(url)
       .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status} for /experiments/${experimentName}.json`);
+        if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
         return r.json();
       })
       .then((spec: ExperimentSpec) => {

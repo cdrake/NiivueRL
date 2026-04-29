@@ -1,0 +1,49 @@
+{
+  "experiments": [
+    {
+      "slug": "oracle-baseline",
+      "title": "Oracle baseline",
+      "description": "Sanity check: oracle + random baselines only. Oracle should get ~100% success, random ~0%. Confirms the env is sound."
+    },
+    {
+      "slug": "curriculum-5seed",
+      "title": "PPO + curriculum (5 seeds)",
+      "description": "PPO with start-radius curriculum (20 → 50 over 150 eps), bigger rollouts, 5 seeds. 2 landmarks × 5 seeds × 300 eps."
+    },
+    {
+      "slug": "dirscale-diag",
+      "title": "Direction-scale diagnostic",
+      "description": "Does amplifying the direction-to-target signal rescue PPO from its random-like performance?"
+    },
+    {
+      "slug": "dirscale-sweep",
+      "title": "Direction-scale sweep",
+      "description": "Sweep direction scale to find the sweet spot for PPO. dirScale ∈ {10, 30, 100} × 2 landmarks × 3 seeds × 300 eps."
+    },
+    {
+      "slug": "long-run",
+      "title": "Long training run",
+      "description": "Long training run at dirScale=10 to see PPO asymptote. 2 landmarks × 3 seeds × 1000 eps."
+    },
+    {
+      "slug": "multiscale",
+      "title": "Multi-scale observation",
+      "description": "Compare PPO flat with strides=[1] vs strides=[1,4] (multi-scale observation). dirScale=10."
+    },
+    {
+      "slug": "singlescale-600",
+      "title": "Single-scale control (600 ep)",
+      "description": "Matched-budget control for the multi-scale comparison: PPO flat with strides=[1], 600 episodes, 3 seeds, dirScale=10."
+    },
+    {
+      "slug": "predicted-vs-oracle",
+      "title": "Predicted goal-vector vs oracle",
+      "description": "End-to-end test of the goal-vector CNN: the trained network replaces the env's oracle direction signal. PPO, 2 landmarks × 3 seeds × 300 eps."
+    },
+    {
+      "slug": "oracle-aomic",
+      "title": "Oracle baseline (AOMIC sub-0083)",
+      "description": "Oracle direction-vector baseline on the AOMIC test subject. Mirrors predicted-vs-oracle.json hyperparams exactly — only the goal-vector source differs."
+    }
+  ]
+}

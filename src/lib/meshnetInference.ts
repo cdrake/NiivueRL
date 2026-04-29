@@ -80,7 +80,7 @@ export async function runParcellation(
   volumeImg: TypedArray,
   dims: [number, number, number],
 ): Promise<Uint8Array> {
-  const bcmodel = await loadBcmodel('/subcortical.bcmodel');
+  const bcmodel = await loadBcmodel(`${import.meta.env.BASE_URL}subcortical.bcmodel`);
   const normalized = quantileNormalize(volumeImg);
 
   const model = buildMeshNet(bcmodel);

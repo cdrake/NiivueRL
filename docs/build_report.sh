@@ -9,11 +9,10 @@ cd "$(dirname "$0")"
 pandoc project_report.md \
   -o project_report.pdf \
   --pdf-engine=xelatex \
-  -V geometry:margin=1in \
-  -V fontsize=11pt \
+  -V geometry:"margin=0.7in,top=0.55in,bottom=0.55in" \
+  -V fontsize=10pt \
   -V linkcolor=blue \
   -V urlcolor=blue \
-  --resource-path=.:./figures \
-  --toc-depth=2
+  --resource-path=.:./figures
 
 echo "Built $(pwd)/project_report.pdf"

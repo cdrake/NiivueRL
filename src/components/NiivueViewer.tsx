@@ -91,7 +91,7 @@ const NiivueViewer = forwardRef<NiivueViewerHandle, Props>(({ showRender3D, onRe
     nvRef.current = nv;
 
     (window as unknown as { nv: Niivue }).nv = nv;
-    nv.loadVolumes([{ url: '/aomic_test.nii.gz' }])
+    nv.loadVolumes([{ url: `${import.meta.env.BASE_URL}aomic_test.nii.gz` }])
       .then(() => {
         console.log('[NiivueViewer] volumes loaded:', nv.volumes.length, 'dims:', nv.volumes[0]?.dims);
         nv.createEmptyDrawing();
